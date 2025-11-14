@@ -2,4 +2,5 @@
 # frozen_string_literal: true
 
 require_relative "../lib/screen_kit"
+require_relative "../lib/screen_kit/cli"
 ScreenKit::CLI.start

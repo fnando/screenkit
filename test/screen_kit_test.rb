@@ -3,7 +3,4 @@
 require "test_helper"
 
 class ScreenKitTest < Minitest::Test
-  test "passes" do
-    assert true
-  end
 end

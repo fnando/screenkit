@@ -8,9 +8,9 @@ module ScreenKit
       true
     end
 
-    desc "new PATH", "Create a new gem"
+    desc "new PATH", "Create a new project"
     def new(path)
-      generator = Generator.new
+      generator = Generators::Project.new
       generator.destination_root = File.expand_path(path)
       generator.options = options
       generator.invoke_all
