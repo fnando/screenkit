@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../../schemas/project.json
+---
+# ScreenKit project configuration file.
+schema: 1
+
+# The backtracks directory contains background music files. The directory can
+# contain many audio tracks, but one will be randomly selected for each episode.
+backtracks_dir: backtracks
+
+# The episodes directory is where the source files for each episode are stored.
+# A new episode can be generated with `screenkit episode new`.
+episodes_dir: episodes
+
+# The output directory is where the generated video files will be saved.
+# You can change this to any directory you prefer.
+output_dir: output/%{episode_number}-%{episode_slug}
+
+# The logo to be displayed in the video intro.
+# Works best with a transparent PNG file in large resolution.
+logo_path: resources/logo.png
+
+# The sounds directory contains sound effect files used in the video.
+# These files are used for various sound effects like the intro logo sound.
+sounds_dir: resources/sounds
+
+# The sound to be played along with the logo in the intro.
+# This must correspond to a sound file in the sounds directory, with any audio
+# extension (e.g. mp3, m4a, wav).
+logo_sound: chime
+
+# Scene configurations define how different scenes in the video are rendered.
+# There are three types of scenes: intro, outro, and segment.
+# - Intro: The opening scene of the video, typically featuring the logo.
+# - Outro: The closing scene of the video.
+# - Segment: The main content scenes of the video.
+scenes:
+  intro:
+    # The duration of the intro scene in seconds.
+    duration: 5.5
+
+    # The fade-in duration in seconds.
+    fade_in: 0
+
+    # The fade-out duration in seconds.
+    fade_out: 0.5
+
+    # The font file that will be used for any text in the intro scene.
+    font_path: resources/fonts/opensans/OpenSans-ExtraBold.ttf
+
+  outro:
+    # The duration of the outro scene in seconds.
+    duration: 5.5
+
+    # The fade-in duration in seconds.
+    fade_in: 0.5
+
+    # The fade-out duration in seconds.
+    fade_out: 0.5
+
+  segment:
+    # The duration of the crossover transition between segments in seconds.
+    crossover_duration: 0.5
+
+# Callout configurations define the appearance and behavior of callouts used
+# in the video. Callouts are visual elements that highlight important
+# information. Each callout type can have its own settings for icon, background,
+# text styles, animations, and sounds.
+callouts:
+  info:
+    # yaml-language-server: $schema=../../schemas/callouts/default.json
+    icon_path: images/info.png
+    background_color: "#ffffff"
+    shadow_color: "#2242d3"
+    title_style:
+      color: "#ffffff"
+      size: 32
+      font_path: resources/fonts/opensans/OpenSans-Bold.ttf
+    body_style:
+      color: "#ffffff55"
+      size: 32
+      font_path: resources/fonts/opensans/OpenSans-Medium.ttf
+    anchor: [10, 20]
+    margin: 20
+    padding: 10
+    anchor: [top, center]
+    in_transition:
+      animation: slide_left
+      duration: 0.4
+      sound: chime
+    out_transition:
+      animation: fade_out
+      duration: 0.3
+      sound:
+        name: soft
+        volume: 0.7

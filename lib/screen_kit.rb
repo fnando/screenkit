@@ -3,12 +3,30 @@
 require "thor"
 require "yaml"
 require "json-schema"
+require "mini_magick"
+require "pathname"
 
 module ScreenKit
-  require_relative "screen_kit/version"
-  require_relative "screen_kit/generators/project"
-  require_relative "screen_kit/project/config"
+  require_relative "screenkit/version"
+  require_relative "screenkit/generators/project"
+  require_relative "screenkit/project/config"
+  require_relative "screenkit/callout"
+  require_relative "screenkit/callout/text_style"
+  require_relative "screenkit/transition"
+  require_relative "screenkit/callout/styles/base"
+  require_relative "screenkit/callout/styles/default"
+
+  def self.root_dir
+    @root_dir ||= Pathname.new(__dir__)
+  end
 
   # Raised when the configuration schema is invalid.
   InvalidConfigSchemaError = Class.new(StandardError)
+
+  # Raised when a file is not found.
+  FileNotFoundError = Class.new(StandardError)
+
+  # Load all styles.
+  style_paths = Gem.find_files_from_load_path("screenkit/callout/styles/*.rb")
+  style_paths.each { require(it) }
 end

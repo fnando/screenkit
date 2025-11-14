@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/project.json",
+  "title": "ScreenKit Project Configuration",
+  "description": "Schema for ScreenKit project configuration file (screenkit.yml)",
+  "type": "object",
+  "required": [
+    "schema",
+    "backtracks_dir",
+    "episodes_dir",
+    "output_dir",
+    "logo_path",
+    "sounds_dir",
+    "logo_sound",
+    "scenes",
+    "callouts"
+  ],
+  "properties": {
+    "schema": {
+      "type": "integer",
+      "description": "The schema version number",
+      "enum": [1]
+    },
+    "backtracks_dir": {
+      "type": "string",
+      "description": "Directory containing background music files"
+    },
+    "episodes_dir": {
+      "type": "string",
+      "description": "Directory where source files for each episode are stored"
+    },
+    "output_dir": {
+      "type": "string",
+      "description": "Directory where generated video files will be saved. Supports placeholders like %{episode_number} and %{episode_slug}"
+    },
+    "logo_path": {
+      "type": "string",
+      "description": "Path to the logo to be displayed in the video intro"
+    },
+    "sounds_dir": {
+      "type": "string",
+      "description": "Directory containing sound effect files"
+    },
+    "logo_sound": {
+      "type": "string",
+      "description": "Sound to be played with the logo in the intro (without extension)"
+    },
+    "scenes": {
+      "type": "object",
+      "description": "Scene configurations for different parts of the video",
+      "required": ["intro", "outro", "segment"],
+      "properties": {
+        "intro": {
+          "$ref": "#/$defs/introScene"
+        },
+        "outro": {
+          "$ref": "#/$defs/outroScene"
+        },
+        "segment": {
+          "$ref": "#/$defs/segmentScene"
+        }
+      },
+      "additionalProperties": false
+    },
+    "callouts": {
+      "type": "object",
+      "description": "Callout configurations for different types (info, warning, etc.)",
+      "additionalProperties": {
+        "$ref": "callout.json"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "introScene": {
+      "type": "object",
+      "description": "Opening scene configuration",
+      "required": ["duration", "fade_in", "fade_out", "font_path"],
+      "properties": {
+        "duration": {
+          "type": "number",
+          "description": "Duration of the intro scene in seconds",
+          "minimum": 0
+        },
+        "fade_in": {
+          "type": "number",
+          "description": "Fade-in duration in seconds",
+          "minimum": 0
+        },
+        "fade_out": {
+          "type": "number",
+          "description": "Fade-out duration in seconds",
+          "minimum": 0
+        },
+        "font_path": {
+          "type": "string",
+          "description": "Font file path for text in the intro scene"
+        }
+      },
+      "additionalProperties": false
+    },
+    "outroScene": {
+      "type": "object",
+      "description": "Closing scene configuration",
+      "required": ["duration", "fade_in", "fade_out"],
+      "properties": {
+        "duration": {
+          "type": "number",
+          "description": "Duration of the outro scene in seconds",
+          "minimum": 0
+        },
+        "fade_in": {
+          "type": "number",
+          "description": "Fade-in duration in seconds",
+          "minimum": 0
+        },
+        "fade_out": {
+          "type": "number",
+          "description": "Fade-out duration in seconds",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "segmentScene": {
+      "type": "object",
+      "description": "Main content scene configuration",
+      "required": ["crossover_duration"],
+      "properties": {
+        "crossover_duration": {
+          "type": "number",
+          "description": "Duration of the crossover transition between segments in seconds",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

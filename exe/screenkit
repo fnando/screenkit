@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "../lib/screen_kit"
-require_relative "../lib/screen_kit/cli"
+require_relative "../lib/screenkit"
+require_relative "../lib/screenkit/cli"
 ScreenKit::CLI.start
