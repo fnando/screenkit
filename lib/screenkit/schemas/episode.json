@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/episode.json",
+  "title": "ScreenKit Episode Configuration",
+  "description": "Schema for ScreenKit episode configuration file (config.yml)",
+  "type": "object",
+  "required": ["title"],
+  "properties": {
+    "voice": {
+      "$ref": "refs/voice.json"
+    },
+    "title": {
+      "type": "string",
+      "description": "The episode title",
+      "minLength": 1,
+      "pattern": "\\S"
+    }
+  }
+}

@@ -7,15 +7,19 @@
   "required": [
     "schema",
     "backtracks_dir",
-    "episodes_dir",
+    "episode_dir",
     "output_dir",
     "logo_path",
     "sounds_dir",
     "logo_sound",
     "scenes",
-    "callouts"
+    "callouts",
+    "voice"
   ],
   "properties": {
+    "voice": {
+      "$ref": "refs/voice.json"
+    },
     "schema": {
       "type": "integer",
       "description": "The schema version number",
@@ -25,9 +29,9 @@
       "type": "string",
       "description": "Directory containing background music files"
     },
-    "episodes_dir": {
+    "episode_dir": {
       "type": "string",
-      "description": "Directory where source files for each episode are stored"
+      "description": "Directory where episode source files are stored"
     },
     "output_dir": {
       "type": "string",

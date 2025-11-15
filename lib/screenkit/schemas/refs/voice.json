@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/voice.json",
+  "title": "The synthesized voice",
+  "oneOf": [
+    {
+      "type": "boolean",
+      "enum": [false]
+    },
+    {
+      "type": "object",
+      "required": ["engine"],
+      "additionalProperties": true,
+      "properties": {
+        "engine": {
+          "type": "string",
+          "description": "The TTS engine to use"
+        }
+      }
+    }
+  ]
+}

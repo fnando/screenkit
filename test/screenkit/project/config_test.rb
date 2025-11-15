@@ -34,7 +34,7 @@ class ConfigTest < Minitest::Test
                   .join("lib/screenkit/generators/project/screenkit.yml")
     config = ScreenKit::Project::Config.load_file(config_path)
 
-    assert_instance_of Pathname, config.episodes_dir
+    assert_instance_of Pathname, config.episode_dir
     assert_instance_of Pathname, config.logo_path
   end
 end

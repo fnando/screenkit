@@ -3,8 +3,8 @@
 module ScreenKit
   module Project
     class Config
-      # The directory where episode files are stored
-      attr_reader :episodes_dir
+      # The directory where episode source files are stored
+      attr_reader :episode_dir
 
       # The path to the logo file
       attr_reader :logo_path

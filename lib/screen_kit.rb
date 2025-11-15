@@ -8,13 +8,19 @@ require "pathname"
 
 module ScreenKit
   require_relative "screenkit/version"
+  require_relative "screenkit/core_ext/string"
   require_relative "screenkit/generators/project"
+  require_relative "screenkit/generators/episode"
   require_relative "screenkit/project/config"
   require_relative "screenkit/callout"
   require_relative "screenkit/callout/text_style"
   require_relative "screenkit/transition"
   require_relative "screenkit/callout/styles/base"
   require_relative "screenkit/callout/styles/default"
+  require_relative "screenkit/cli"
+  require_relative "screenkit/cli/base"
+  require_relative "screenkit/cli/episode"
+  require_relative "screenkit/cli/root"
 
   def self.root_dir
     @root_dir ||= Pathname.new(__dir__)

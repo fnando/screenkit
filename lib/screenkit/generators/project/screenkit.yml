@@ -9,11 +9,21 @@ backtracks_dir: backtracks
 
 # The episodes directory is where the source files for each episode are stored.
 # A new episode can be generated with `screenkit episode new`.
-episodes_dir: episodes
+#
+# The episode directory name can include placeholders:
+# - %{episode_number}: The episode number
+# - %{episode_slug}: A URL-friendly slug for the episode title
+# - %{date}: The current timestamp in `yyyy-mm-dd` format.
+#
+# You can have padded episodes number by using a format string that looks like
+# `%<episode_number>03d` (e.g. `001`).
+episode_dir: episodes/%<episode_number>03d-%{episode_slug}
 
 # The output directory is where the generated video files will be saved.
 # You can change this to any directory you prefer.
-output_dir: output/%{episode_number}-%{episode_slug}
+#
+# You can use the same placeholders as in `episode_dir`.
+output_dir: output/%<episode_number>03d-%{episode_slug}
 
 # The logo to be displayed in the video intro.
 # Works best with a transparent PNG file in large resolution.
@@ -27,6 +37,16 @@ sounds_dir: resources/sounds
 # This must correspond to a sound file in the sounds directory, with any audio
 # extension (e.g. mp3, m4a, wav).
 logo_sound: chime
+
+# Voice configuration.
+# Right now, only ElevenLabs is supported.
+voice:
+  engine: elevenlabs
+  id: 56AoDkrOh6qfVPDXZ7Pt
+  speed: 0.9
+  stability: 0.5
+  similarity: 0.75
+  exaggeration: 0.0
 
 # Scene configurations define how different scenes in the video are rendered.
 # There are three types of scenes: intro, outro, and segment.
@@ -68,20 +88,19 @@ scenes:
 callouts:
   info:
     # yaml-language-server: $schema=../../schemas/callouts/default.json
-    icon_path: images/info.png
-    background_color: "#ffffff"
+    background_color: "#ffff00"
     shadow_color: "#2242d3"
     title_style:
-      color: "#ffffff"
-      size: 32
-      font_path: resources/fonts/opensans/OpenSans-Bold.ttf
+      color: "#000000"
+      size: 40
+      font_path: resources/fonts/opensans/OpenSans-ExtraBold.ttf
     body_style:
-      color: "#ffffff55"
+      color: "#000000"
       size: 32
-      font_path: resources/fonts/opensans/OpenSans-Medium.ttf
+      font_path: resources/fonts/opensans/OpenSans-Semibold.ttf
     anchor: [10, 20]
     margin: 20
-    padding: 10
+    padding: 50
     anchor: [top, center]
     in_transition:
       animation: slide_left
