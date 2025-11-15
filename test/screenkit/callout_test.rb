@@ -7,12 +7,18 @@ module ScreenKit
     test "fails with unresolved style" do
       error = assert_raises(ScreenKit::Callout::UndefinedStyleError) do
         Callout.new(
-                margin: 10,
-                style: "invalid",
-                anchor: %w[top center],
-                in_transition: {sound: "chime", duration: 0.5, animation: "fade_in"},
-                out_transition: {sound: "chime", duration: 0.5, animation: "fade_out"},
-              )
+          margin: 10,
+          style: "invalid",
+          anchor: %w[top center],
+          in_transition: {
+            sound: "chime", duration: 0.5,
+            animation: "fade_in"
+          },
+          out_transition: {
+            sound: "chime", duration: 0.5,
+            animation: "fade_out"
+          }
+        )
       end
 
       assert_includes error.message, %[Style "invalid" is not defined]

@@ -3,6 +3,8 @@
 module ScreenKit
   module Project
     class Config
+      extend SchemaValidator
+
       # The directory where episode source files are stored
       attr_reader :episode_dir
 
@@ -27,11 +29,9 @@ module ScreenKit
       end
 
       def self.load(config)
-        errors = JSON::Validator.fully_validate("file://#{schema_path}", config)
+        validate!(config)
 
-        return new(**config) if errors.empty?
-
-        raise InvalidConfigSchemaError, errors.first
+        new(**config)
       end
 
       def initialize(**kwargs)

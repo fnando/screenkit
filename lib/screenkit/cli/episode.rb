@@ -18,7 +18,7 @@ module ScreenKit
           config.episode_dir.basename.to_s,
           episode_number: episode_number + 1,
           episode_slug: options.title.dasherize,
-          date: Time.now.strftime("%Y-%m-%d"),
+          date: Time.now.strftime("%Y-%m-%d")
         )
         options[:episode_dir] = config.episode_dir.parent.join(dir)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class DefaultTest < Minitest::Test
@@ -27,7 +29,7 @@ class DefaultTest < Minitest::Test
       output_path:
     )
 
-    assert File.exist?(output_path)
+    assert_path_exists output_path
     assert_similar_images fixtures("callout_default.png"), output_path
   end
 
@@ -57,7 +59,7 @@ class DefaultTest < Minitest::Test
       output_path:
     )
 
-    assert File.exist?(output_path)
+    assert_path_exists output_path
     assert_similar_images fixtures("callout_default_title.png"), output_path
   end
 
@@ -87,7 +89,7 @@ class DefaultTest < Minitest::Test
       output_path:
     )
 
-    assert File.exist?(output_path)
+    assert_path_exists output_path
     assert_similar_images fixtures("callout_default_body.png"), output_path
   end
 end

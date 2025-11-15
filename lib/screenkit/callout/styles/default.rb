@@ -6,21 +6,14 @@ module ScreenKit
   class Callout
     module Styles
       class Default < Base
+        extend SchemaValidator
+
         attr_reader :background_color, :body, :body_style,
                     :output_path, :padding, :shadow_color, :title, :title_style,
                     :width
 
         def self.schema_path
           ScreenKit.root_dir.join("screenkit/schemas/callouts/default.json")
-        end
-
-        def self.validate!(attributes)
-          errors = JSON::Validator.fully_validate("file://#{schema_path}",
-                                                  attributes)
-
-          return if errors.empty?
-
-          raise ArgumentError, "Invalid callout configuration: #{errors.first}"
         end
 
         def initialize(**kwargs) #  rubocop:disable Lint/MissingSuper
@@ -44,13 +37,17 @@ module ScreenKit
         end
 
         def render(title:, body:, output_path:)
-          title_path, _, title_height = *render_text_image(text: title, style: title_style, width: text_width)
-          body_path, _, body_height = *render_text_image(text: body, style: body_style, width: text_width)
+          title_path, _, title_height =
+            *render_text_image(text: title,
+                               style: title_style, width: text_width)
+          body_path, _, body_height =
+            *render_text_image(text: body,
+                               style: body_style, width: text_width)
           text_gap = if title_path
-            (title_style.size * 0.5).round
-          else
-            0
-          end
+                       (title_style.size * 0.5).round
+                     else
+                       0
+                     end
 
           image_width = width
           image_height = padding[0] +

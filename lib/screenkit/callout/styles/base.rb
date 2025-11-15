@@ -4,11 +4,6 @@ module ScreenKit
   class Callout
     module Styles
       class Base
-        def initialize(*, **)
-          raise NotImplementedError,
-                "Subclasses must implement their own initializer"
-        end
-
         # Escape text for use in ImageMagick caption.
         private def escape_text(text)
           text.gsub("'", "\\\\'")

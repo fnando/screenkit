@@ -5,6 +5,8 @@ module ScreenKit
     # Raised when a style class cannot be found
     UndefinedStyleError = Class.new(StandardError)
 
+    extend SchemaValidator
+
     # The callout anchor position. Should be an array with two elements:
     #
     # - Vertical position: "top", "center", or "bottom"
@@ -29,15 +31,6 @@ module ScreenKit
 
     def self.schema_path
       ScreenKit.root_dir.join("screenkit/schemas/callout.json")
-    end
-
-    def self.validate!(attributes)
-      errors = JSON::Validator
-               .fully_validate("file://#{schema_path}", attributes)
-
-      return if errors.empty?
-
-      raise ArgumentError, "Invalid callout configuration: #{errors.first}"
     end
 
     def initialize(

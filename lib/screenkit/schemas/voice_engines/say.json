@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/voice_engines/say.json",
+  "title": "The Apple `say` voice engine options",
+  "type": "object",
+  "properties": {
+    "voice": {
+      "description": "The voice to use",
+      "oneOf": [{ "type": "null" }, { "type": "string" }]
+    },
+    "rate": {
+      "description": "The speaking rate (words per minute)",
+      "oneOf": [{ "type": "null" }, { "type": "number", "pattern": "/^\\d+$/" }]
+    }
+  }
+}

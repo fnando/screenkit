@@ -13,7 +13,7 @@ Dir["#{__dir__}/support/**/*.rb"].each do |file|
   require file
 end
 
-FileUtils.rm_rf(File.join(__dir__, "tmp"))
+FileUtils.rm_rf(File.join(Dir.pwd, "tmp"))
 
 module Minitest
   class Test
@@ -31,8 +31,8 @@ module Minitest
 
     def font_path(name)
       ScreenKit
-      .root_dir
-      .join("screenkit/generators/project/resources/fonts/opensans/#{name}")
+        .root_dir
+        .join("screenkit/generators/project/resources/fonts/opensans/#{name}")
     end
 
     def opensans_extra_bold_path
@@ -48,8 +48,10 @@ module Minitest
     end
 
     def assert_similar_images(expected_path, actual_path, threshold: 0.01)
-      expected_path = Pathname.new(expected_path).relative_path_from(Pathname.pwd)
-      actual_path = Pathname.new(actual_path).relative_path_from(Pathname.pwd)
+      expected_path = Pathname.new(expected_path)
+                              .relative_path_from(Pathname.pwd)
+      actual_path = Pathname.new(actual_path)
+                            .relative_path_from(Pathname.pwd)
 
       unless File.file?(expected_path)
         FileUtils.mkdir_p(File.dirname(expected_path))
@@ -73,24 +75,25 @@ module Minitest
       # Parse the distortion value (format is like "0.0123456 (RMSE)")
       distortion = result[/^[\d.]+/].to_f
 
-      assert distortion < threshold,
-             "Images differ too much. Distortion: #{distortion}, " \
-             "Threshold: #{threshold}\n" \
-             "Actual: #{actual_path}\n" \
-             "Expected: #{expected_path}"
-    rescue MiniMagick::Error => e
-      # Compare command writes to stderr even on success, capture actual error
-      if e.message.include?("RMSE")
-        # Parse distortion from error message
-        distortion = e.message[/\(([\d.]+)\)/, 1].to_f
-        assert distortion < threshold,
-               "Images differ too much. Distortion: #{distortion}, " \
-               "Threshold: #{threshold}\n" \
-               "Actual: #{actual_path}\n" \
-               "Expected: #{expected_path}"
-      else
-        raise
-      end
+      assert_operator distortion,
+                      :<,
+                      threshold,
+                      "Images differ too much. Distortion: #{distortion}, " \
+                      "Threshold: #{threshold}\n" \
+                      "Actual: #{actual_path}\n" \
+                      "Expected: #{expected_path}"
+    rescue MiniMagick::Error => error
+      raise unless error.message.include?("RMSE")
+
+      distortion = error.message[/\(([\d.]+)\)/, 1].to_f
+
+      assert_operator distortion,
+                      :<,
+                      threshold,
+                      "Images differ too much. Distortion: #{distortion}, " \
+                      "Threshold: #{threshold}\n" \
+                      "Actual: #{actual_path}\n" \
+                      "Expected: #{expected_path}"
     end
   end
 end

@@ -13,7 +13,7 @@ class ConfigTest < Minitest::Test
   end
 
   test "fails when loading invalid config" do
-    error = assert_raises(ScreenKit::InvalidConfigSchemaError) do
+    error = assert_raises(ArgumentError) do
       ScreenKit::Project::Config.load({})
     end
 
@@ -25,7 +25,7 @@ class ConfigTest < Minitest::Test
       ScreenKit::Project::Config.load_file("/invalid.yml")
     end
 
-    assert_match(/Config file not found: \/invalid/, error.message)
+    assert_match(%r{Config file not found: /invalid}, error.message)
   end
 
   test "processes path values as Pathname" do
