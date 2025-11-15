@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/background.json",
+  "title": "Background",
+  "anyOf": [
+    {
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "$ref": "color.json"
+    }
+  ]
+}

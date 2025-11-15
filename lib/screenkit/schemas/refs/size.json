@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/size.json",
+  "title": "Size",
+  "type": "object",
+  "required": ["width", "height"],
+  "properties": {
+    "width": {
+      "type": "number",
+      "description": "Width in pixels",
+      "minimum": 1
+    },
+    "height": {
+      "type": "number",
+      "description": "Height in pixels",
+      "minimum": 1
+    }
+  }
+}

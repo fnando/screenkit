@@ -18,6 +18,9 @@ module ScreenKit
       exit_code = status.exitstatus
 
       if exit_code&.nonzero?
+        $stderr << "#{stdout}\n" unless stdout.empty?
+        $stderr << "#{stderr}\n" unless stderr.empty?
+
         raise Error.new(
           "#{command.inspect} failed with exit=#{exit_code}",
           stdout:,

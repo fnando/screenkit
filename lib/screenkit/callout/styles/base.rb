@@ -27,9 +27,13 @@ module ScreenKit
         # @param text [String] The text to render.
         # @param style [TextStyle] The text style to apply.
         # @param width [Integer] The width of the text image.
-        # @return [String] The path to the generated text image.
+        # @return [Array] The path to the generated text image, and the actual
+        #                 `Tempfile` instance.
         private def create_text_image(text:, style:, width:)
-          path = Tempfile.create(["callout-text-", ".png"]).path
+          hash = SecureRandom.hex(10)
+          tmp_path = File.join(Dir.tmpdir, "callout-text-#{hash}.png")
+          FileUtils.mkdir_p(File.dirname(tmp_path))
+
           MiniMagick.convert do |image|
             image << "-size"
             image << "#{width}x"
@@ -42,9 +46,10 @@ module ScreenKit
             image << "-pointsize"
             image << style.size.to_s
             image << "caption:#{escape_text(text)}"
-            image << "PNG:#{path}"
+            image << "PNG:#{tmp_path}"
           end
-          path
+
+          tmp_path
         end
       end
     end

@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../schemas/project.json
+# yaml-language-server: $schema=../../lib/screenkit/schemas/project.json
 ---
 # ScreenKit project configuration file.
 schema: 1
@@ -61,8 +61,8 @@ scenes:
     # The title text to be displayed in the intro scene.
     title:
       x: 100
-      y: 200
-      font_path: resources/fonts/opensans/OpenSans-ExtraBold.ttf
+      y: 300
+      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
 
@@ -70,7 +70,7 @@ scenes:
     # Works best with a transparent PNG file in high resolution (at least 2x the
     # size it'll be displayed).
     logo:
-      path: resources/logo.png
+      path: lib/screenkit/generators/project/resources/images/logo.png
       x: 100
       y: 200
       width: 200
@@ -79,11 +79,11 @@ scenes:
     # The sound to be played along with the logo in the intro.
     # This must correspond to a sound file in the sounds directory, with any
     # audio extension (e.g. mp3, m4a, wav).
-    sound: resources/sounds/chime.mp3
+    sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
 
   outro:
     # The duration of the outro scene in seconds.
-    duration: 5.5
+    duration: 3.5
 
     # The fade-in duration in seconds.
     fade_in: 0.5
@@ -95,15 +95,14 @@ scenes:
     background: "#100f50"
 
     # The sound to be played along with the logo in the outro.
-    sound: resources/sounds/chime.mp3
+    sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
 
     # The logo to be displayed in the video outro.
     logo:
-      path: resources/images/logo.png
+      path: lib/screenkit/generators/project/resources/images/logo.png
       x: center
       y: center
-      width: 200
-      height: 34
+      width: 500
 
   segment:
     # The duration of the crossover transition between segments in seconds.
@@ -115,17 +114,17 @@ scenes:
 # text styles, animations, and sounds.
 callouts:
   info:
-    # yaml-language-server: $schema=../../schemas/callouts/default.json
+    # yaml-language-server: $schema=../../lib/screenkit/schemas/callouts/default.json
     background_color: "#ffff00"
     shadow_color: "#2242d3"
     title_style:
       color: "#000000"
       size: 40
-      font_path: resources/fonts/opensans/OpenSans-ExtraBold.ttf
+      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-ExtraBold.ttf
     body_style:
       color: "#000000"
       size: 32
-      font_path: resources/fonts/opensans/OpenSans-Semibold.ttf
+      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-Semibold.ttf
     anchor: [10, 20]
     margin: 20
     padding: 50

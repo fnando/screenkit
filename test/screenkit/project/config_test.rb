@@ -35,6 +35,7 @@ class ConfigTest < Minitest::Test
     config = ScreenKit::Project::Config.load_file(config_path)
 
     assert_instance_of Pathname, config.episode_dir
-    assert_instance_of Pathname, config.logo_path
+    assert_instance_of Pathname, config.sounds_dir
+    assert_instance_of Pathname, config.backtracks_dir
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "English"
 require "simplecov"
 SimpleCov.start
 
@@ -8,6 +9,8 @@ require "screen_kit"
 
 require "minitest/utils"
 require "minitest/autorun"
+
+require "securerandom"
 
 Dir["#{__dir__}/support/**/*.rb"].each do |file|
   require file
@@ -44,10 +47,13 @@ module Minitest
     end
 
     def create_tmp_path(ext)
+      ext = ext.to_s.gsub(/^\./, "")
       tmp_dir.join([SecureRandom.hex(10), ext].join("."))
     end
 
     def assert_similar_images(expected_path, actual_path, threshold: 0.01)
+      $original_stderr = $stderr # rubocop:disable Style/GlobalVars
+      $stderr = StringIO.new
       expected_path = Pathname.new(expected_path)
                               .relative_path_from(Pathname.pwd)
       actual_path = Pathname.new(actual_path)
@@ -94,6 +100,83 @@ module Minitest
                       "Threshold: #{threshold}\n" \
                       "Actual: #{actual_path}\n" \
                       "Expected: #{expected_path}"
+    ensure
+      $stderr = $original_stderr # rubocop:disable Style/GlobalVars
+    end
+
+    def assert_similar_videos(expected_path, actual_path, threshold: 0.01)
+      expected_path = Pathname.new(expected_path)
+      actual_path = Pathname.new(actual_path)
+
+      unless expected_path.file?
+        FileUtils.mkdir_p(expected_path.dirname)
+        FileUtils.copy(actual_path, expected_path)
+        return
+      end
+
+      frame_count = count_frames(actual_path)
+      middle_frame = frame_count / 2
+      last_frame = frame_count - 1
+
+      [0, middle_frame, last_frame].each do |frame|
+        actual_frame = extract_frame(actual_path, frame)
+        expected_frame = extract_frame(expected_path, frame)
+
+        assert_similar_images(expected_frame, actual_frame, threshold:)
+      end
+    end
+
+    def count_frames(path)
+      command = "ffprobe -v error -select_streams v:0 -count_frames " \
+                "-show_entries stream=nb_read_frames " \
+                "-of default=nokey=1:noprint_wrappers=1 #{path}"
+      `#{command}`.to_i
+    end
+
+    def extract_frame(video_path, frame)
+      video_name = video_path.basename(".*")
+      output_path = tmp_dir.join("frame-#{frame}-#{video_name}.png")
+
+      command = "ffmpeg -i #{video_path} -vf \"select=eq(n\\,#{frame})\" " \
+                "-vframes 1 -y #{output_path} 2>/dev/null"
+      `#{command}`
+
+      if $CHILD_STATUS.exitstatus.nonzero?
+        raise "Failed to extract frame #{frame} from #{video_path}"
+      end
+
+      output_path
+    end
+
+    def has_audio_stream?(path) #  rubocop:disable Naming/PredicatePrefix
+      command = "ffprobe -v error -select_streams a -show_entries " \
+                "stream=codec_type -of default=noprint_wrappers=1:nokey=1 " \
+                "#{path}"
+
+      audio_streams = `#{command}`.strip
+
+      !audio_streams.empty?
+    end
+
+    def assert_no_audio(path)
+      refute has_audio_stream?(path), "Expected video to have no audio track"
+    end
+
+    def assert_has_audio(path)
+      assert has_audio_stream?(path),
+             "Expected video to have audio track, but found none"
+    end
+
+    def assert_lufs(path, expected:, threshold: 0.1)
+      result =
+        `ffmpeg -i #{path} -af ebur128 -f null - 2>&1 | grep "I:" | tail -1`
+      lufs = result[/I:\s*(-?[\d.]+)/, 1]
+
+      refute_nil lufs, "Could not parse LUFS from ffmpeg output"
+
+      actual = lufs.to_f
+
+      assert_in_delta expected, actual, threshold
     end
   end
 end

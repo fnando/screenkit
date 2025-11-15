@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/position.json",
+  "title": "Position",
+  "type": "object",
+  "properties": {
+    "x": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "description": "X coordinate in pixels",
+          "minimum": 0,
+          "default": 0
+        },
+        {
+          "type": "string",
+          "enum": ["center"],
+          "description": "Center horizontally"
+        }
+      ]
+    },
+    "y": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "description": "Y coordinate in pixels",
+          "minimum": 0,
+          "default": 0
+        },
+        {
+          "type": "string",
+          "enum": ["center"],
+          "description": "Center vertically"
+        }
+      ]
+    }
+  }
+}

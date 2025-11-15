@@ -4,12 +4,13 @@ module ScreenKit
   module CoreExt
     refine String do
       def dasherize
-        dup
-          .unicode_normalize(:nfkd)
+        unicode_normalize(:nfkd)
+          .delete("'")
           .gsub(/[^\x00-\x7F]/, "")
           .gsub(/[^-\w]+/xim, "-")
+          .tr("_", "-")
           .gsub(/-+/xm, "-")
-          .gsub!(/^-?(.*?)-?$/, '\1')
+          .gsub(/^-?(.*?)-?$/, '\1')
           .downcase
       end
     end

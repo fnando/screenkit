@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/sound.json",
+  "title": "Logo",
+  "description": "Schema for sound",
+  "anyOf": [
+    {
+      "type": "boolean",
+      "enum": [false],
+      "description": "No sound"
+    },
+    {
+      "type": "string",
+      "format": "uri",
+      "description": "Path to the sound file"
+    },
+    {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "volume": {
+          "type": "number",
+          "description": "The sound volume level",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 1.0
+        },
+        "path": {
+          "type": "string",
+          "description": "Path to the sound file",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    }
+  ]
+}

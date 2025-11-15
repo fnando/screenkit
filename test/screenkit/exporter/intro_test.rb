@@ -1,0 +1,114 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+class IntroTest < Minitest::Test
+  test "exports intro segment with background color" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:background] = "#100f50"
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_with_bgcolor.mp4"), intro_path)
+    assert_has_audio(intro_path)
+    assert_lufs(intro_path, expected: -21.3)
+  end
+
+  test "exports intro segment with background image" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:background] =
+      fixtures("sean-sinclair-C_NJKfnTR5A-unsplash.jpg").to_s
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_with_bg_image.mp4"), intro_path)
+    assert_has_audio(intro_path)
+  end
+
+  test "exports intro segment logo vertically centered" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+    config[:logo][:y] = "center"
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_logo_vertical.mp4"), intro_path)
+    assert_has_audio(intro_path)
+  end
+
+  test "exports intro segment logo horizontally centered" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+    config[:logo][:x] = "center"
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_logo_horizontal.mp4"), intro_path)
+    assert_has_audio(intro_path)
+  end
+
+  test "exports intro segment text horizontally centered" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+    config[:title][:x] = "center"
+    config[:logo][:x] = "center"
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_text_horizontal.mp4"), intro_path)
+    assert_has_audio(intro_path)
+  end
+
+  test "exports intro segment with no sound" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+    config[:sound] = false
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_no_sound.mp4"), intro_path)
+    assert_no_audio(intro_path)
+  end
+
+  test "exports intro segment with custom volume" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Project::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:title][:text] = "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT"
+    config[:sound] = {path: config[:sound], volume: 0.2}
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_volume_20_percent.mp4"), intro_path)
+    assert_has_audio(intro_path)
+    assert_lufs(intro_path, expected: -34.6)
+  end
+end

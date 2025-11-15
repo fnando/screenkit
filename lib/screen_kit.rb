@@ -24,6 +24,8 @@ module ScreenKit
   require_relative "screenkit/cli/episode"
   require_relative "screenkit/cli/root"
   require_relative "screenkit/voice_engines/say"
+  require_relative "screenkit/exporter/intro"
+  require_relative "screenkit/exporter/outro"
 
   def self.root_dir
     @root_dir ||= Pathname.new(__dir__)
@@ -35,7 +37,15 @@ module ScreenKit
   # Raised when a file is not found.
   FileNotFoundError = Class.new(StandardError)
 
-  # Load all styles.
-  style_paths = Gem.find_files_from_load_path("screenkit/callout/styles/*.rb")
-  style_paths.each { require(it) }
+  require_files = lambda do |pattern|
+    Gem.find_files_from_load_path(pattern).each do |path|
+      next if path.include?("test")
+
+      require(path)
+    end
+  end
+
+  # Load all files that may be available as plugins.
+  require_files.call("screenkit/callout/styles/*.rb")
+  require_files.call("screenkit/callout/voice_engines/*.rb")
 end

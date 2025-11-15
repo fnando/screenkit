@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/intro.json",
+  "title": "ScreenKit Episode's Intro Configuration",
+  "properties": {
+    "duration": {
+      "type": "number",
+      "description": "Duration of the intro scene in seconds",
+      "minimum": 0
+    },
+    "fade_in": {
+      "type": "number",
+      "description": "Fade-in duration in seconds",
+      "minimum": 0
+    },
+    "fade_out": {
+      "type": "number",
+      "description": "Fade-out duration in seconds",
+      "minimum": 0
+    },
+    "title": {
+      "type": "object",
+      "description": "Title configuration",
+      "allOf": [{ "$ref": "text.json" }, { "$ref": "position.json" }],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Title text to display"
+        }
+      }
+    },
+    "background": { "$ref": "background.json" },
+    "logo": { "$ref": "logo.json" },
+    "sound": { "$ref": "sound.json" }
+  }
+}

@@ -9,12 +9,7 @@
     "backtracks_dir",
     "episode_dir",
     "output_dir",
-    "logo_path",
-    "sounds_dir",
-    "logo_sound",
-    "scenes",
-    "callouts",
-    "voice"
+    "sounds_dir"
   ],
   "properties": {
     "voice": {
@@ -27,44 +22,26 @@
     },
     "backtracks_dir": {
       "type": "string",
-      "description": "Directory containing background music files"
+      "description": "Directory containing background music files",
+      "format": "uri"
     },
     "episode_dir": {
       "type": "string",
-      "description": "Directory where episode source files are stored"
+      "description": "Directory where episode source files are stored. Supports placeholders like %{episode_number}, %{episode_slug} and %{date}.",
+      "format": "uri"
     },
     "output_dir": {
       "type": "string",
-      "description": "Directory where generated video files will be saved. Supports placeholders like %{episode_number} and %{episode_slug}"
-    },
-    "logo_path": {
-      "type": "string",
-      "description": "Path to the logo to be displayed in the video intro"
+      "description": "Directory where generated video files will be saved. Supports placeholders like %{episode_number}, %{episode_slug} and %{date}.",
+      "format": "uri"
     },
     "sounds_dir": {
       "type": "string",
-      "description": "Directory containing sound effect files"
-    },
-    "logo_sound": {
-      "type": "string",
-      "description": "Sound to be played with the logo in the intro (without extension)"
+      "description": "Directory containing sound effect files",
+      "format": "uri"
     },
     "scenes": {
-      "type": "object",
-      "description": "Scene configurations for different parts of the video",
-      "required": ["intro", "outro", "segment"],
-      "properties": {
-        "intro": {
-          "$ref": "#/$defs/introScene"
-        },
-        "outro": {
-          "$ref": "#/$defs/outroScene"
-        },
-        "segment": {
-          "$ref": "#/$defs/segmentScene"
-        }
-      },
-      "additionalProperties": false
+      "$ref": "refs/scenes.json"
     },
     "callouts": {
       "type": "object",
@@ -74,70 +51,5 @@
       }
     }
   },
-  "additionalProperties": false,
-  "$defs": {
-    "introScene": {
-      "type": "object",
-      "description": "Opening scene configuration",
-      "required": ["duration", "fade_in", "fade_out", "font_path"],
-      "properties": {
-        "duration": {
-          "type": "number",
-          "description": "Duration of the intro scene in seconds",
-          "minimum": 0
-        },
-        "fade_in": {
-          "type": "number",
-          "description": "Fade-in duration in seconds",
-          "minimum": 0
-        },
-        "fade_out": {
-          "type": "number",
-          "description": "Fade-out duration in seconds",
-          "minimum": 0
-        },
-        "font_path": {
-          "type": "string",
-          "description": "Font file path for text in the intro scene"
-        }
-      },
-      "additionalProperties": false
-    },
-    "outroScene": {
-      "type": "object",
-      "description": "Closing scene configuration",
-      "required": ["duration", "fade_in", "fade_out"],
-      "properties": {
-        "duration": {
-          "type": "number",
-          "description": "Duration of the outro scene in seconds",
-          "minimum": 0
-        },
-        "fade_in": {
-          "type": "number",
-          "description": "Fade-in duration in seconds",
-          "minimum": 0
-        },
-        "fade_out": {
-          "type": "number",
-          "description": "Fade-out duration in seconds",
-          "minimum": 0
-        }
-      },
-      "additionalProperties": false
-    },
-    "segmentScene": {
-      "type": "object",
-      "description": "Main content scene configuration",
-      "required": ["crossover_duration"],
-      "properties": {
-        "crossover_duration": {
-          "type": "number",
-          "description": "Duration of the crossover transition between segments in seconds",
-          "minimum": 0
-        }
-      },
-      "additionalProperties": false
-    }
-  }
+  "additionalProperties": false
 }

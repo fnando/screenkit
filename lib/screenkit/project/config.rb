@@ -5,14 +5,20 @@ module ScreenKit
     class Config
       extend SchemaValidator
 
-      # The directory where episode source files are stored
+      # The directory where episode source files are stored.
       attr_reader :episode_dir
 
-      # The path to the logo file
-      attr_reader :logo_path
+      # The directory where sound effect files are stored.
+      attr_reader :sounds_dir
+
+      # The directory where backtrack music files are stored.
+      attr_reader :backtracks_dir
 
       # Callout configurations
       attr_reader :callouts
+
+      # Scene configurations
+      attr_reader :scenes
 
       def self.schema_path
         @schema_path ||=

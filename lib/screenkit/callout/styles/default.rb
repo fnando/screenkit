@@ -43,8 +43,8 @@ module ScreenKit
           body_path, _, body_height =
             *render_text_image(text: body,
                                style: body_style, width: text_width)
-          text_gap = if title_path
-                       (title_style.size * 0.5).round
+          text_gap = if title_path && body_path
+                       (title_style.size * 0.2).round
                      else
                        0
                      end
