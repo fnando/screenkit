@@ -9,8 +9,8 @@ module ScreenKit
         extend SchemaValidator
 
         attr_reader :background_color, :body, :body_style,
-                    :output_path, :padding, :shadow_color, :title, :title_style,
-                    :width
+                    :output_path, :padding, :shadow_color, :shadow_offset,
+                    :title, :title_style, :width
 
         def self.schema_path
           ScreenKit.root_dir.join("screenkit/schemas/callouts/default.json")
@@ -20,7 +20,7 @@ module ScreenKit
           self.class.validate!(kwargs)
 
           # Set default values
-          @width = 600
+          kwargs = hi_res({width: 600, shadow_offset: 20}.merge(kwargs))
 
           kwargs.each do |key, value|
             value = case key
@@ -44,7 +44,7 @@ module ScreenKit
             *render_text_image(text: body,
                                style: body_style, width: text_width)
           text_gap = if title_path && body_path
-                       (title_style.size * 0.2).round
+                       (title_style.size * hi_res(0.2)).round
                      else
                        0
                      end
@@ -57,43 +57,43 @@ module ScreenKit
                          body_height +
                          shadow_offset
 
-          MiniMagick.convert do |convert|
+          MiniMagick.convert do |image|
             # Create transparent canvas
-            convert << "-size"
-            convert << "#{image_width}x#{image_height}"
-            convert << "xc:none"
+            image << "-size"
+            image << "#{image_width}x#{image_height}"
+            image << "xc:none"
 
             # Draw rectangle shadow
-            convert << "-fill"
-            convert << shadow_color
-            convert << "-draw"
-            convert << "rectangle 0,#{shadow_offset}," \
-                       "#{width - shadow_offset},#{image_height}"
+            image << "-fill"
+            image << shadow_color
+            image << "-draw"
+            image << "rectangle 0,#{shadow_offset}," \
+                     "#{width - shadow_offset},#{image_height}"
 
             # Draw rectangle background
-            convert << "-fill"
-            convert << background_color
-            convert << "-draw"
-            convert << "rectangle #{shadow_offset},0," \
-                       "#{image_width},#{image_height - shadow_offset}"
+            image << "-fill"
+            image << background_color
+            image << "-draw"
+            image << "rectangle #{shadow_offset},0," \
+                     "#{image_width},#{image_height - shadow_offset}"
 
             # Composite title
             if title_path
-              convert << title_path
-              convert << "-geometry"
-              convert << "+#{text_x}+#{padding[0]}"
-              convert << "-composite"
+              image << title_path
+              image << "-geometry"
+              image << "+#{text_x}+#{padding[0]}"
+              image << "-composite"
             end
 
             # Composite body
             if body_path
-              convert << body_path
-              convert << "-geometry"
-              convert << "+#{text_x}+#{padding[0] + title_height + text_gap}"
-              convert << "-composite"
+              image << body_path
+              image << "-geometry"
+              image << "+#{text_x}+#{padding[0] + title_height + text_gap}"
+              image << "-composite"
             end
 
-            convert << "PNG:#{output_path}"
+            image << "PNG:#{output_path}"
           end
 
           output_path
@@ -103,7 +103,6 @@ module ScreenKit
         end
 
         private def text_width = width - padding[1] - padding[3]
-        private def shadow_offset = 20
         private def text_x = shadow_offset + padding[0]
         private def title_y = padding[0]
         private def body_y = title_y + text_gap + title_style.size

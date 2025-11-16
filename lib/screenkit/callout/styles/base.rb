@@ -23,6 +23,22 @@ module ScreenKit
           [image.path, image.width, image.height]
         end
 
+        # Convert values to high resolution (2x).
+        # @param value [Object] The value to convert.
+        # @return [Object] The converted value.
+        private def hi_res(value)
+          case value
+          when Array
+            value.map { hi_res(it) }
+          when Hash
+            value.transform_values { hi_res(it) }
+          when Numeric
+            value * 2
+          else
+            value
+          end
+        end
+
         # Create a text image using MiniMagick.
         # @param text [String] The text to render.
         # @param style [TextStyle] The text style to apply.

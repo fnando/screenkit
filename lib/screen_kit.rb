@@ -24,6 +24,7 @@ module ScreenKit
   require_relative "screenkit/cli/episode"
   require_relative "screenkit/cli/root"
   require_relative "screenkit/voice_engines/say"
+  require_relative "screenkit/voice_engines/eleven_labs"
   require_relative "screenkit/exporter/intro"
   require_relative "screenkit/exporter/outro"
   require_relative "screenkit/exporter/demotape"

@@ -35,8 +35,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "aitch"
   spec.add_dependency "json-schema"
   spec.add_dependency "mini_magick"
+  spec.add_dependency "openssl"
   spec.add_dependency "thor"
   spec.add_dependency "yaml"
 

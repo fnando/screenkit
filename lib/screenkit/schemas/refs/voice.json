@@ -9,12 +9,37 @@
     },
     {
       "type": "object",
+      "$ref": "../voice_engines/say.json",
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["say"],
+          "description": "The TTS engine to use"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "$ref": "../voice_engines/elevenlabs.json",
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["elevenlabs"],
+          "description": "The TTS engine to use"
+        }
+      }
+    },
+    {
+      "type": "object",
       "required": ["engine"],
       "additionalProperties": true,
       "properties": {
         "engine": {
           "type": "string",
-          "description": "The TTS engine to use"
+          "description": "The TTS engine to use",
+          "not": {
+            "enum": ["say", "elevenlabs"]
+          }
         }
       }
     }

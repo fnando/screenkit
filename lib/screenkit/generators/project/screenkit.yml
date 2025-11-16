@@ -31,13 +31,18 @@ sounds_dir: resources/sounds
 
 # Voice configuration.
 # Right now, only ElevenLabs is supported.
+# voice:
+#   engine: elevenlabs
+#   voice_id: 56AoDkrOh6qfVPDXZ7Pt
+#   language_code: en
+#   voice_settings:
+#     speed: 0.9
+#     stability: 0.5
+#     similarity: 0.75
+#     style: 0.0
 voice:
-  engine: elevenlabs
-  id: 56AoDkrOh6qfVPDXZ7Pt
-  speed: 0.9
-  stability: 0.5
-  similarity: 0.75
-  exaggeration: 0.0
+  engine: say
+  rate: 200
 
 # Scene configurations define how different scenes in the video are rendered.
 # There are three types of scenes: intro, outro, and segment.
