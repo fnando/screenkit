@@ -26,6 +26,7 @@ module ScreenKit
   require_relative "screenkit/voice_engines/say"
   require_relative "screenkit/exporter/intro"
   require_relative "screenkit/exporter/outro"
+  require_relative "screenkit/exporter/demotape"
 
   def self.root_dir
     @root_dir ||= Pathname.new(__dir__)
