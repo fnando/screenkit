@@ -8,11 +8,13 @@ class ElevenLabsTest < Minitest::Test
     output_path = fixtures("elevenlabs.mp3")
     skip if output_path.file?
 
-    ScreenKit::VoiceEngines::ElevenLabs.generate_voiceover(
-      output_path:,
+    engine = ScreenKit::VoiceEngines::ElevenLabs.new(
       api_key:,
-      text: "Test",
       voice_id: "yhFUAoS32gPDJFQHbH68"
     )
+
+    engine.generate(output_path:, text: "Test")
+
+    assert output_path.exist?
   end
 end

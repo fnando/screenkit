@@ -36,10 +36,14 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "aitch"
+  spec.add_dependency "demotape"
+  spec.add_dependency "etc"
   spec.add_dependency "json-schema"
   spec.add_dependency "mini_magick"
   spec.add_dependency "openssl"
+  spec.add_dependency "securerandom"
   spec.add_dependency "thor"
+  spec.add_dependency "tty-spinner"
   spec.add_dependency "yaml"
 
   spec.add_development_dependency "demotape"

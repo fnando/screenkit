@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/animation.json",
+  "title": "Animation Type",
+  "type": "string",
+  "enum": ["slide", "fade"]
+}

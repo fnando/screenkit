@@ -1,14 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "https://github.com/fnando/screenkit/schemas/callouts/basic.json",
-  "title": "ScreenKit Basic Callout Configuration",
-  "description": "Schema for basic callout style configuration",
+  "title": "Basic Callout",
   "type": "object",
   "required": [
     "background_color",
     "body_style",
     "padding",
-    "shadow_color",
+    "shadow",
     "title_style"
   ],
   "properties": {
@@ -17,46 +16,29 @@
       "description": "The callout width"
     },
     "background_color": {
-      "type": "string",
-      "description": "Background color (hex format with optional alpha)",
-      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
-    },
-    "shadow_color": {
-      "description": "Shadow color (hex format with optional alpha)",
       "$ref": "../refs/color.json"
     },
+    "shadow": {
+      "oneOf": [
+        { "type": "boolean", "enum": [false] },
+        { "type": "string", "$ref": "../refs/color.json" },
+        {
+          "type": "object",
+          "properties": {
+            "color": { "$ref": "../refs/color.json" },
+            "offset": { "type": "integer" }
+          }
+        }
+      ]
+    },
     "title_style": {
-      "$ref": "#/$defs/textStyle"
+      "$ref": "../refs/text_style.json"
     },
     "body_style": {
-      "$ref": "#/$defs/textStyle"
+      "$ref": "../refs/text_style.json"
     },
     "padding": {
       "$ref": "../refs/spacing.json"
-    }
-  },
-  "additionalProperties": true,
-  "$defs": {
-    "textStyle": {
-      "type": "object",
-      "description": "Text styling configuration",
-      "required": ["color", "size", "font_path"],
-      "properties": {
-        "color": {
-          "description": "Text color (hex format with optional alpha)",
-          "$ref": "../refs/color.json"
-        },
-        "size": {
-          "type": "integer",
-          "description": "Font size in pixels",
-          "minimum": 1
-        },
-        "font_path": {
-          "type": "string",
-          "description": "Path to the font file"
-        }
-      },
-      "additionalProperties": false
     }
   }
 }

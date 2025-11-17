@@ -4,20 +4,23 @@ require "test_helper"
 
 module ScreenKit
   class CalloutTest < Minitest::Test
+    let(:source) do
+      resources_dir = ScreenKit.root_dir
+                               .join("screenkit/generators/project/resources")
+      ScreenKit::PathLookup.new(resources_dir.join("fonts"))
+    end
+    let(:font_path) { "opensans/OpenSans-ExtraBold.ttf" }
+
     test "fails with unresolved style" do
       error = assert_raises(ScreenKit::Callout::UndefinedStyleError) do
         Callout.new(
+          source:,
+          animation: "fade",
           margin: 10,
           style: "invalid",
-          anchor: %w[top center],
-          in_transition: {
-            sound: "chime", duration: 0.5,
-            animation: "fade_in"
-          },
-          out_transition: {
-            sound: "chime", duration: 0.5,
-            animation: "fade_out"
-          }
+          anchor: %w[center top],
+          in_transition: {sound: "chime", duration: 0.5},
+          out_transition: {sound: "chime", duration: 0.5}
         )
       end
 
@@ -26,21 +29,23 @@ module ScreenKit
 
     test "initializes with configuration" do
       callout = Callout.new(
+        source:,
+        animation: "fade",
         margin: 10,
         style: "default",
-        anchor: %w[top center],
-        in_transition: {sound: "chime", duration: 0.5, animation: "fade_in"},
-        out_transition: {sound: "chime", duration: 0.5, animation: "fade_out"},
+        anchor: %w[center top],
+        in_transition: {sound: "chime", duration: 0.5},
+        out_transition: {sound: "chime", duration: 0.5},
         icon_path: "icon.png",
         background_color: "#000000",
-        shadow_color: "#000000",
-        title_style: {color: "#ffffff", size: 32, font_path: "font.ttf"},
-        body_style: {color: "#ffffff55", size: 32, font_path: "font.ttf"},
+        shadow: "#000000",
+        title_style: {color: "#ffffff", size: 32, font_path:},
+        body_style: {color: "#ffffff55", size: 32, font_path:},
         padding: [0, 0]
       )
 
       assert_equal [10, 10, 10, 10], callout.margin
-      assert_equal %w[top center], callout.anchor
+      assert_equal %w[center top], callout.anchor
       assert_instance_of ScreenKit::Callout::Styles::Default, callout.style
       assert_instance_of ScreenKit::Transition, callout.in_transition
       assert_instance_of ScreenKit::Transition, callout.out_transition

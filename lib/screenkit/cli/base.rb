@@ -16,7 +16,7 @@ module ScreenKit
 
       no_commands do
         def config
-          @config ||= Project::Config.load_file(options.config)
+          @config ||= Config::Project.load_file(options.config)
         end
       end
     end

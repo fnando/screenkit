@@ -4,20 +4,41 @@ module ScreenKit
   class Callout
     module Styles
       class Base
+        def text_wrap(text, max_width:, font_size:)
+          words = text.to_s.split(/\s+/)
+          width_factor = 0.6
+
+          [].tap do |lines|
+            words.each do |word|
+              line = lines.pop.to_s
+              word_width = word.size * (font_size * width_factor)
+              line_width = line.size * (font_size * width_factor)
+
+              if line_width + word_width <= max_width
+                line = [(line unless line.empty?), word].compact.join(" ")
+                lines << line
+              else
+                lines << line
+                lines << word
+              end
+            end
+          end
+        end
+
         # Escape text for use in ImageMagick caption.
-        private def escape_text(text)
+        def escape_text(text)
           text.gsub("'", "\\\\'")
         end
 
-        private def remove_file(path)
+        def remove_file(path)
           File.unlink(path) if path && File.exist?(path)
         end
 
-        private def render_text_image(text:, style:, width:)
+        def render_text_image(text:, style:, width:, type:)
           return [nil, 0, 0] if text.to_s.empty?
 
           image = MiniMagick::Image.open(
-            create_text_image(text:, style:, width:)
+            create_text_image(text:, style:, width:, type:)
           )
 
           [image.path, image.width, image.height]
@@ -26,7 +47,7 @@ module ScreenKit
         # Convert values to high resolution (2x).
         # @param value [Object] The value to convert.
         # @return [Object] The converted value.
-        private def hi_res(value)
+        def hi_res(value)
           case value
           when Array
             value.map { hi_res(it) }
@@ -43,16 +64,20 @@ module ScreenKit
         # @param text [String] The text to render.
         # @param style [TextStyle] The text style to apply.
         # @param width [Integer] The width of the text image.
+        # @param type [String] The ImageMagick text type (e.g., "caption").
         # @return [Array] The path to the generated text image, and the actual
         #                 `Tempfile` instance.
-        private def create_text_image(text:, style:, width:)
+        def create_text_image(text:, style:, width:, type:)
           hash = SecureRandom.hex(10)
           tmp_path = File.join(Dir.tmpdir, "callout-text-#{hash}.png")
           FileUtils.mkdir_p(File.dirname(tmp_path))
 
           MiniMagick.convert do |image|
-            image << "-size"
-            image << "#{width}x"
+            unless type == "label"
+              image << "-size"
+              image << "#{width}x"
+            end
+
             image << "-background"
             image << "none"
             image << "-fill"
@@ -61,7 +86,7 @@ module ScreenKit
             image << style.font_path.to_s
             image << "-pointsize"
             image << style.size.to_s
-            image << "caption:#{escape_text(text)}"
+            image << "#{type}:#{escape_text(text)}"
             image << "PNG:#{tmp_path}"
           end
 

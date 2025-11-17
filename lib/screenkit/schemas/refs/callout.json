@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/callout.json",
+  "title": "Callout",
+  "type": "object",
+  "required": [
+    "in_transition",
+    "out_transition",
+    "anchor",
+    "margin",
+    "animation"
+  ],
+  "properties": {
+    "in_transition": { "$ref": "transition.json" },
+    "out_transition": { "$ref": "transition.json" },
+    "animation": { "$ref": "animation.json" },
+    "margin": { "$ref": "spacing.json" },
+    "style": {
+      "type": "string",
+      "description": "Callout style name (defaults to 'default')",
+      "default": "default"
+    },
+    "anchor": {
+      "type": "array",
+      "description": "Anchor position [horizontal, vertical]",
+      "items": [
+        {
+          "type": "string",
+          "enum": ["left", "center", "right"]
+        },
+        {
+          "type": "string",
+          "enum": ["top", "center", "bottom"]
+        }
+      ],
+      "additionalItems": false
+    }
+  }
+}

@@ -6,13 +6,32 @@ class SayTest < Minitest::Test
   test "generates voice using say" do
     skip "macOS only" unless RUBY_PLATFORM.include?("darwin")
 
-    output_path = fixtures("say.m4a")
+    output_path = create_tmp_path(:aiff)
 
-    ScreenKit::VoiceEngines::Say.generate_voiceover(
-      text: "Test",
-      output_path: output_path.to_s,
-      rate: 200
-    )
+    engine = ScreenKit::VoiceEngines::Say.new
+    engine.generate(text: "Test", output_path:)
+
+    assert output_path.exist?
+  end
+
+  test "generates using custom voice" do
+    skip "macOS only" unless RUBY_PLATFORM.include?("darwin")
+
+    output_path = create_tmp_path(:aiff)
+
+    engine = ScreenKit::VoiceEngines::Say.new(voice: "Alex")
+    engine.generate(text: "Test", output_path:)
+
+    assert output_path.exist?
+  end
+
+  test "generates using custom rate" do
+    skip "macOS only" unless RUBY_PLATFORM.include?("darwin")
+
+    output_path = create_tmp_path(:aiff)
+
+    engine = ScreenKit::VoiceEngines::Say.new(rate: 300)
+    engine.generate(text: "Test", output_path:)
 
     assert output_path.exist?
   end

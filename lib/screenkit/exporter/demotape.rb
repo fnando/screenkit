@@ -15,6 +15,8 @@ module ScreenKit
         run_command "demotape",
                     "run",
                     demotape_path,
+                    "--fps", 24,
+                    "--overwrite",
                     "--output-path", output_path
       end
     end

@@ -13,9 +13,13 @@ module ScreenKit
       # The outro scene configuration.
       attr_reader :config
 
-      def initialize(config:)
+      # The source path lookup instance.
+      attr_reader :source
+
+      def initialize(config:, source:)
         self.class.validate!(config)
         @config = config
+        @source = source
       end
 
       def logo_config
@@ -34,19 +38,20 @@ module ScreenKit
       end
 
       def logo_path
-        @logo_path ||= Pathname.new(logo_config.fetch(:path))
+        @logo_path ||= source.search(logo_config.fetch(:path))
       end
 
       def sound_path
         return unless sound_config
 
-        @sound_path ||= Pathname.new(sound_config.fetch(:path))
+        @sound_path ||= source.search(sound_config.fetch(:path))
       end
 
       def background_path
         return unless config[:background]
+        return if config[:background].to_s.start_with?("#")
 
-        @background_path ||= Pathname.new(config[:background])
+        @background_path ||= source.search(config[:background])
       end
 
       def export(path)
@@ -58,14 +63,8 @@ module ScreenKit
           "-sws_flags", "lanczos+accurate_rnd+full_chroma_int",
           "-filter_complex", filters,
           *maps,
-          "-c:v", "libx264",
-          "-pix_fmt", "yuv420p",
-          "-color_range", "jpeg"
-        ]
-
-        cmd += ["-c:a", "aac", "-ac", "1"] if sound_path
-
-        cmd += [
+          "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
+          "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-shortest",
           "-t", config[:duration],
           "-y",
@@ -89,7 +88,7 @@ module ScreenKit
         overlay_x = logo_x == "center" ? "(W-w)/2" : logo_x
         overlay_y = logo_y == "center" ? "(H-h)/2" : logo_y
 
-        if background_path&.file?
+        if background_path
           inputs = [
             "-loop", "1",
             "-t", duration,
@@ -111,10 +110,12 @@ module ScreenKit
             sound_volume = sound_config.fetch(:volume, 1.0)
             filters += ";[2:a]apad,atrim=end=#{duration},aresample=async=1," \
                        "volume=#{sound_volume}[a]"
+          else
+            # Generate silent audio track
+            filters += ";anullsrc=r=44100:cl=mono,atrim=end=#{duration}[a]"
           end
 
-          maps = ["-map", "[fade]"]
-          maps += ["-map", "[a]"] if sound_path
+          maps = ["-map", "[fade]", "-map", "[a]"]
 
           {inputs: inputs, filters: filters, maps: maps}
         else
@@ -137,10 +138,12 @@ module ScreenKit
             sound_volume = sound_config.fetch(:volume, 1.0)
             filters += ";[2:a]apad,atrim=end=#{duration}," \
                        "aresample=async=1,volume=#{sound_volume}[a]"
+          else
+            # Generate silent audio track
+            filters += ";anullsrc=r=44100:cl=mono,atrim=end=#{duration}[a]"
           end
 
-          maps = ["-map", "[fade]"]
-          maps += ["-map", "[a]"] if sound_path
+          maps = ["-map", "[fade]", "-map", "[a]"]
 
         end
 

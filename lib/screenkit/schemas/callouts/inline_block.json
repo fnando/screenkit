@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/callouts/inline_block.json",
+  "title": "Inline Block Callout",
+  "type": "object",
+  "required": ["background_color", "text_style"],
+  "properties": {
+    "width": {
+      "type": "number",
+      "description": "The callout width"
+    },
+    "text_style": {
+      "$ref": "../refs/text_style.json"
+    },
+    "padding": {
+      "$ref": "../refs/spacing.json"
+    }
+  }
+}

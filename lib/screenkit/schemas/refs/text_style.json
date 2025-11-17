@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/text_style.json",
+  "title": "Text Style",
+  "properties": {
+    "font_path": {
+      "type": "string",
+      "format": "uri"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "color": {
+      "$ref": "color.json"
+    }
+  }
+}

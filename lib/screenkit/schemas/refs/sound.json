@@ -1,9 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "https://github.com/fnando/screenkit/schemas/refs/sound.json",
-  "title": "Logo",
-  "description": "Schema for sound",
-  "anyOf": [
+  "title": "Sound",
+  "oneOf": [
     {
       "type": "boolean",
       "enum": [false],

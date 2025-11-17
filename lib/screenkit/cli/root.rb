@@ -39,7 +39,7 @@ module ScreenKit
         end
 
         output_path = options[:output]
-        output_path ||= Pathname.new(Tempfile.create(["callout-", ".png"]).path)
+        output_path ||= Pathname(Tempfile.create(["callout-", ".png"]).path)
 
         callout.render(
           output_path:,

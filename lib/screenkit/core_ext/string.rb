@@ -13,6 +13,16 @@ module ScreenKit
           .gsub(/^-?(.*?)-?$/, '\1')
           .downcase
       end
+
+      def camelize(first_letter = :upper)
+        split(/_|-/).map.with_index do |part, index|
+          if index.zero? && first_letter == :lower
+            part.downcase
+          else
+            part.capitalize
+          end
+        end.join
+      end
     end
   end
 end

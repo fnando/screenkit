@@ -4,50 +4,31 @@
   "title": "ScreenKit Project Configuration",
   "description": "Schema for ScreenKit project configuration file (screenkit.yml)",
   "type": "object",
-  "required": [
-    "schema",
-    "backtracks_dir",
-    "episode_dir",
-    "output_dir",
-    "sounds_dir"
-  ],
+  "required": ["schema", "resources_dir", "episode_dir", "output_dir"],
   "properties": {
-    "voice": {
-      "$ref": "refs/voice.json"
-    },
+    "resources_dir": { "$ref": "refs/directory.json" },
+    "backtrack": { "$ref": "refs/sound.json" },
+    "voice": { "$ref": "refs/voice.json" },
+    "scenes": { "$ref": "refs/scenes.json" },
     "schema": {
       "type": "integer",
       "description": "The schema version number",
       "enum": [1]
     },
-    "backtracks_dir": {
-      "type": "string",
-      "description": "Directory containing background music files",
-      "format": "uri"
-    },
     "episode_dir": {
       "type": "string",
       "description": "Directory where episode source files are stored. Supports placeholders like %{episode_number}, %{episode_slug} and %{date}.",
-      "format": "uri"
+      "$ref": "refs/directory.json"
     },
     "output_dir": {
       "type": "string",
       "description": "Directory where generated video files will be saved. Supports placeholders like %{episode_number}, %{episode_slug} and %{date}.",
       "format": "uri"
     },
-    "sounds_dir": {
-      "type": "string",
-      "description": "Directory containing sound effect files",
-      "format": "uri"
-    },
-    "scenes": {
-      "$ref": "refs/scenes.json"
-    },
     "callouts": {
       "type": "object",
-      "description": "Callout configurations for different types (info, warning, etc.)",
       "additionalProperties": {
-        "$ref": "callout.json"
+        "$ref": "refs/callout.json"
       }
     }
   },

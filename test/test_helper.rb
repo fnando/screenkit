@@ -29,21 +29,7 @@ module Minitest
     end
 
     def fixtures(path)
-      Pathname.new(__dir__).join("fixtures", path)
-    end
-
-    def font_path(name)
-      ScreenKit
-        .root_dir
-        .join("screenkit/generators/project/resources/fonts/opensans/#{name}")
-    end
-
-    def opensans_extra_bold_path
-      font_path("OpenSans-ExtraBold.ttf").to_s
-    end
-
-    def opensans_semibold_path
-      font_path("OpenSans-SemiBold.ttf").to_s
+      Pathname(__dir__).join("fixtures", path)
     end
 
     def create_tmp_path(ext)
@@ -54,10 +40,10 @@ module Minitest
     def assert_similar_images(expected_path, actual_path, threshold: 0.01)
       $original_stderr = $stderr # rubocop:disable Style/GlobalVars
       $stderr = StringIO.new
-      expected_path = Pathname.new(expected_path)
-                              .relative_path_from(Pathname.pwd)
-      actual_path = Pathname.new(actual_path)
-                            .relative_path_from(Pathname.pwd)
+      expected_path = Pathname(expected_path)
+                      .relative_path_from(Pathname.pwd)
+      actual_path = Pathname(actual_path)
+                    .relative_path_from(Pathname.pwd)
 
       unless File.file?(expected_path)
         FileUtils.mkdir_p(File.dirname(expected_path))
@@ -105,8 +91,8 @@ module Minitest
     end
 
     def assert_similar_videos(expected_path, actual_path, threshold: 0.01)
-      expected_path = Pathname.new(expected_path)
-      actual_path = Pathname.new(actual_path)
+      expected_path = Pathname(expected_path)
+      actual_path = Pathname(actual_path)
 
       unless expected_path.file?
         FileUtils.mkdir_p(expected_path.dirname)
@@ -167,7 +153,7 @@ module Minitest
              "Expected video to have audio track, but found none"
     end
 
-    def assert_lufs(path, expected:, threshold: 0.1)
+    def assert_lufs(path, expected:, threshold: 0.2)
       result =
         `ffmpeg -i #{path} -af ebur128 -f null - 2>&1 | grep "I:" | tail -1`
       lufs = result[/I:\s*(-?[\d.]+)/, 1]

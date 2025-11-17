@@ -11,4 +11,13 @@ class StringTest < Minitest::Test
 
     assert_equal expected, original.dasherize
   end
+
+  test "camelizes a string" do
+    original = "this-is-a-test_string"
+    expected_upper = "ThisIsATestString"
+    expected_lower = "thisIsATestString"
+
+    assert_equal expected_upper, original.camelize(:upper)
+    assert_equal expected_lower, original.camelize(:lower)
+  end
 end

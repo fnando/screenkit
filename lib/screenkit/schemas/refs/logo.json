@@ -2,7 +2,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "https://github.com/fnando/screenkit/schemas/refs/logo.json",
   "title": "Logo",
-  "description": "Schema for logo",
   "type": "object",
   "required": ["path"],
   "allOf": [

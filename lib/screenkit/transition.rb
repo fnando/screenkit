@@ -2,11 +2,10 @@
 
 module ScreenKit
   class Transition
-    attr_reader :duration, :animation, :sound
+    attr_reader :duration, :sound
 
-    def initialize(duration:, animation:, sound:)
+    def initialize(duration:, sound:)
       @duration = duration
-      @animation = animation
       @sound = sound
     end
   end

@@ -3,12 +3,14 @@
 module ScreenKit
   module Shell
     Error = Class.new(StandardError) do
-      attr_reader :stdout, :stderr
+      attr_reader :stdout, :stderr, :command, :args
 
-      def initialize(message, stdout:, stderr:)
+      def initialize(message, stdout:, stderr:, command:, args:)
         super(message)
         @stdout = stdout
         @stderr = stderr
+        @command = command
+        @args = args
       end
     end
 
@@ -24,7 +26,9 @@ module ScreenKit
         raise Error.new(
           "#{command.inspect} failed with exit=#{exit_code}",
           stdout:,
-          stderr:
+          stderr:,
+          command:,
+          args:
         )
       end
 

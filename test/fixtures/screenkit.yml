@@ -1,11 +1,8 @@
-# yaml-language-server: $schema=../../lib/screenkit/schemas/project.json
 ---
+# yaml-language-server: $schema=../../schemas/project.json
+
 # ScreenKit project configuration file.
 schema: 1
-
-# The backtracks directory contains background music files. The directory can
-# contain many audio tracks, but one will be randomly selected for each episode.
-backtracks_dir: backtracks
 
 # The episodes directory is where the source files for each episode are stored.
 # A new episode can be generated with `screenkit episode new`.
@@ -19,27 +16,69 @@ backtracks_dir: backtracks
 # `%<episode_number>03d` (e.g. `001`).
 episode_dir: episodes/%<episode_number>03d-%{episode_slug}
 
+# The resources directory contains additional resource files used in the video.
+# These can include images, sounds, fonts, etc.
+# When defining your configuration, you can just specify the partial path. For
+# instance, if you have an image at `resources/images/picture.png`, you can just
+# refer to it as `images/picture.png`.
+#
+# You can also specify absolute paths, like system font directories.
+#
+# To point to the episode directory, use the placeholder `%{episode_dir}`.
+resources_dir:
+  - .
+  - "%{episode_dir}"
+  - resources
+  - "%{episode_dir}/resources"
+  - resources/backtracks
+  - "%{episode_dir}/resources/backtracks"
+  - resources/sounds
+  - "%{episode_dir}/resources/sounds"
+  - resources/images
+  - "%{episode_dir}/resources/images"
+  - resources/fonts
+  - "%{episode_dir}/resources/fonts"
+  - resources
+  - "%{episode_dir}/resources"
+  - ~/Library/Fonts
+  - /Library/Fonts
+  - /System/Library/Fonts
+  - ~/.fonts
+  - ~/.local/share/fonts
+  - /usr/share/fonts
+  - /usr/local/share/fonts
+  - /opt/share/fonts
+
 # The output directory is where the generated video files will be saved.
 # You can change this to any directory you prefer.
 #
-# You can use the same placeholders as in `episode_dir`.
-output_dir: output/%<episode_number>03d-%{episode_slug}
+# To point to the episode directory's name, use the placeholder
+# `%{episode_dirname}`.
+output_dir: output/%{episode_dirname}
 
-# The sounds directory contains sound effect files used in the video.
-# These files are used for various sound effects like the intro logo sound.
-sounds_dir: resources/sounds
+# Set the backtrack file or directory.
+# When a directory is specified, a random backtrack will be chosen from the
+# directory.
+# When a file is specified, that specific backtrack will be used instead.
+#
+# The entry is searched by using the `resorces_dir` config.
+#
+# You can disable the backtrack by setting this to `false`.
+backtrack: backtracks/
 
 # Voice configuration.
-# Right now, only ElevenLabs is supported.
+# voice:
+#   engine: elevenlabs
+#   voice_id: 56AoDkrOh6qfVPDXZ7Pt
+#   language_code: en
+#   voice_settings:
+#     speed: 0.9
+#     stability: 0.5
+#     similarity: 0.75
+#     style: 0.0
 voice:
-  engine: elevenlabs
-  voice_id: 56AoDkrOh6qfVPDXZ7Pt
-  language_code: en
-  voice_settings:
-    speed: 0.9
-    stability: 0.5
-    similarity: 0.75
-    style: 0.0
+  engine: say
+  rate: 150
 
 # Scene configurations define how different scenes in the video are rendered.
 # There are three types of scenes: intro, outro, and segment.
@@ -64,7 +103,7 @@ scenes:
     title:
       x: 100
       y: 300
-      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-ExtraBold.ttf
+      font_path: opensans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
 
@@ -72,20 +111,19 @@ scenes:
     # Works best with a transparent PNG file in high resolution (at least 2x the
     # size it'll be displayed).
     logo:
-      path: lib/screenkit/generators/project/resources/images/logo.png
+      path: logo.png
       x: 100
       y: 200
-      width: 200
-      height: 34
+      width: 300
 
     # The sound to be played along with the logo in the intro.
     # This must correspond to a sound file in the sounds directory, with any
     # audio extension (e.g. mp3, m4a, wav).
-    sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
+    sound: false
 
   outro:
     # The duration of the outro scene in seconds.
-    duration: 3.5
+    duration: 5.5
 
     # The fade-in duration in seconds.
     fade_in: 0.5
@@ -97,18 +135,18 @@ scenes:
     background: "#100f50"
 
     # The sound to be played along with the logo in the outro.
-    sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
+    sound: chime.mp3
 
     # The logo to be displayed in the video outro.
     logo:
-      path: lib/screenkit/generators/project/resources/images/logo.png
+      path: logo.png
       x: center
       y: center
-      width: 500
+      width: 300
 
   segment:
     # The duration of the crossover transition between segments in seconds.
-    crossover_duration: 0.5
+    crossfade_duration: 0.5
 
 # Callout configurations define the appearance and behavior of callouts used
 # in the video. Callouts are visual elements that highlight important
@@ -116,28 +154,26 @@ scenes:
 # text styles, animations, and sounds.
 callouts:
   info:
-    # yaml-language-server: $schema=../../lib/screenkit/schemas/callouts/default.json
+    # yaml-language-server: $schema=../../schemas/callouts/default.json
     background_color: "#ffff00"
-    shadow_color: "#2242d3"
+    shadow: "#2242d3"
     title_style:
       color: "#000000"
       size: 40
-      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-ExtraBold.ttf
+      font_path: opensans/OpenSans-ExtraBold.ttf
     body_style:
       color: "#000000"
       size: 32
-      font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-Semibold.ttf
-    anchor: [10, 20]
-    margin: 20
+      font_path: opensans/OpenSans-Semibold.ttf
+    margin: 100
     padding: 50
-    anchor: [top, center]
+    anchor: [left, bottom]
+    animation: fade
     in_transition:
-      animation: slide_left
       duration: 0.4
-      sound: chime
+      sound: pop.mp3
     out_transition:
-      animation: fade_out
       duration: 0.3
       sound:
-        name: soft
+        path: pop.mp3
         volume: 0.7

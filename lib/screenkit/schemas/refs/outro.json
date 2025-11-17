@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "https://github.com/fnando/screenkit/schemas/refs/outro.json",
-  "title": "ScreenKit Episode's Outro Configuration",
+  "title": "Outro",
   "required": ["logo"],
   "properties": {
     "background": { "$ref": "background.json" },

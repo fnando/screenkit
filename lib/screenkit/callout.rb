@@ -9,10 +9,10 @@ module ScreenKit
 
     # The callout anchor position. Should be an array with two elements:
     #
-    # - Vertical position: "top", "center", or "bottom"
     # - Horizontal position: "left", "center", or "right"
+    # - Vertical position: "top", "center", or "bottom"
     #
-    # @return [Array<String>] e.g., `["top", "center"]`
+    # @return [Array<String>] e.g., `["left", "bottom"]`
     attr_reader :anchor
 
     # The callout margin around the edges. Can be either a number, or an array
@@ -26,14 +26,16 @@ module ScreenKit
     # @return [Array<Integer>, Integer] e.g., `20`, `[10, 20, 10, 20]`
     attr_reader :margin
 
-    attr_reader :in_transition, :out_transition, :style,
-                :style_props, :style_class
+    attr_accessor :in_transition, :out_transition, :style,
+                  :style_props, :style_class, :animation, :source
 
     def self.schema_path
-      ScreenKit.root_dir.join("screenkit/schemas/callout.json")
+      ScreenKit.root_dir.join("screenkit/schemas/refs/callout.json")
     end
 
     def initialize(
+      source:,
+      animation:,
       anchor:,
       in_transition:,
       out_transition:,
@@ -44,6 +46,7 @@ module ScreenKit
       style_name = style || "default"
 
       self.class.validate!(
+        animation:,
         style: style_name,
         anchor:,
         in_transition:,
@@ -51,16 +54,18 @@ module ScreenKit
         margin:
       )
 
+      @source = source
+      @animation = animation
       @style_class = resolve_style_class(style_name)
       @anchor = anchor
       @margin = (Array(margin) * 4).take(4)
       @in_transition = Transition.new(**in_transition)
       @out_transition = Transition.new(**out_transition)
-      @style = style_class.new(**style_props)
+      @style = style_class.new(source:, **style_props)
     end
 
-    def render(output_path:, title:, body:)
-      style.render(title:, body:, output_path:)
+    def render
+      style.render
     end
 
     def resolve_style_class(style)

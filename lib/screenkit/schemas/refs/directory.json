@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/project.json",
+  "title": "Directory",
+  "oneOf": [
+    {
+      "type": "string",
+      "description": "Directory containing background music files",
+      "format": "uri"
+    },
+    {
+      "type": "array",
+      "description": "List of directories containing background music files",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  ]
+}

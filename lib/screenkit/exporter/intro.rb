@@ -13,9 +13,17 @@ module ScreenKit
       # The intro scene configuration.
       attr_reader :config
 
-      def initialize(config:)
+      # The title text.
+      attr_reader :text
+
+      # The source path lookup instance.
+      attr_reader :source
+
+      def initialize(config:, text:, source:)
         self.class.validate!(config)
         @config = config
+        @text = text
+        @source = source
       end
 
       def logo_config
@@ -40,19 +48,25 @@ module ScreenKit
       def logo_path
         return unless logo_config
 
-        @logo_path ||= Pathname.new(logo_config.fetch(:path))
+        @logo_path ||= source.search(logo_config.fetch(:path))
       end
 
       def sound_path
         return unless sound_config
 
-        @sound_path ||= Pathname.new(sound_config.fetch(:path))
+        @sound_path ||= source.search(sound_config.fetch(:path))
       end
 
       def background_path
         return unless config[:background]
 
-        @background_path ||= Pathname.new(config[:background])
+        @background_path ||= Pathname(config[:background])
+      end
+
+      def font_path
+        return unless title_config&.[](:font_path)
+
+        @font_path ||= source.search(title_config[:font_path])
       end
 
       def export(path)
@@ -61,17 +75,10 @@ module ScreenKit
         cmd = [
           "ffmpeg",
           *inputs,
-          "-sws_flags", "lanczos+accurate_rnd+full_chroma_int",
           "-filter_complex", filters,
           *maps,
-          "-c:v", "libx264",
-          "-pix_fmt", "yuv420p",
-          "-color_range", "jpeg"
-        ]
-
-        cmd += ["-c:a", "aac", "-ac", "1"] if sound_path
-
-        cmd += [
+          "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
+          "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-shortest",
           "-t", config[:duration],
           "-y",
@@ -129,12 +136,10 @@ module ScreenKit
 
         # Title layer (if present)
         if title_config
-          title_text = title_config.fetch(:text, "")
           title_x = title_config.fetch(:x, "center")
           title_y = title_config.fetch(:y, "center")
           title_size = title_config.fetch(:size, 72)
           title_color = title_config.fetch(:color, "white")
-          title_font = title_config.fetch(:font_path, "")
 
           # Calculate max width based on x offset
           max_width = if title_x == "center"
@@ -148,7 +153,7 @@ module ScreenKit
           max_chars_per_line = (max_width / avg_char_width).floor
 
           # Auto-wrap text
-          text = wrap_text(title_text, max_chars_per_line)
+          wrapped_text = wrap_text(text, max_chars_per_line)
 
           # Convert position to drawtext coordinates
           drawtext_x = title_x == "center" ? "(w-text_w)/2" : title_x
@@ -158,10 +163,10 @@ module ScreenKit
           text_align = title_x == "center" ? ":text_align=center" : ""
 
           # Escape special characters in text
-          text = text.gsub("'", "'\\\\\\''").gsub(":", "\\:")
+          wrapped_text = wrapped_text.gsub("'", "'\\\\\\''").gsub(":", "\\:")
 
-          filters << "[#{current_layer}]drawtext=text='#{text}':" \
-                     "fontfile=#{title_font}:fontsize=#{title_size}:" \
+          filters << "[#{current_layer}]drawtext=text='#{wrapped_text}':" \
+                     "fontfile=#{font_path}:fontsize=#{title_size}:" \
                      "fontcolor=#{title_color}:x=#{drawtext_x}:" \
                      "y=#{drawtext_y}#{text_align}[with_title]"
           current_layer = "with_title"
@@ -174,16 +179,18 @@ module ScreenKit
                    "c=#{fade_color},fade=t=out:st=#{fade_out_start}:" \
                    "d=#{fade_out}:c=#{fade_color},setpts=PTS-STARTPTS[fade]"
 
-        # Audio (if present)
+        # Audio (always generate, silent if no sound configured)
         if sound_path
           inputs += ["-i", sound_path]
           sound_volume = sound_config.fetch(:volume, 1.0)
           filters << "[#{stream_index}:a]apad,atrim=end=#{duration}," \
                      "aresample=async=1,volume=#{sound_volume}[a]"
+        else
+          # Generate silent audio track
+          filters << "anullsrc=r=44100:cl=mono,atrim=end=#{duration}[a]"
         end
 
-        maps = ["-map", "[fade]"]
-        maps += ["-map", "[a]"] if sound_path
+        maps = ["-map", "[fade]", "-map", "[a]"]
 
         {inputs: inputs, filters: filters.join(";"), maps: maps}
       end

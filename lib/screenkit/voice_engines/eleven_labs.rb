@@ -10,15 +10,26 @@ module ScreenKit
                  .join("screenkit/schemas/voice_engines/elevenlabs.json")
       end
 
-      def self.generate_voiceover(output_path:, api_key:, **params)
-        validate!(params)
-        voice_id = params.delete(:voice_id)
+      # The Eleven Labs API key.
+      attr_reader :api_key
+
+      # Additional options for the Eleven Labs voice engine.
+      attr_reader :options
+
+      def initialize(api_key:, **options)
+        @api_key = api_key
+        @options = options
+      end
+
+      def generate(output_path:, text:)
+        self.class.validate!(options)
+        voice_id = options.delete(:voice_id)
 
         require "aitch"
 
         response = Aitch.post(
           url: "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}",
-          body: JSON.dump(params),
+          body: JSON.dump(options.merge(text:)),
           headers: {
             "content-type": "application/json",
             "user-agent": "ScreenKit/#{ScreenKit::VERSION}",

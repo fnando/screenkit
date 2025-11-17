@@ -3,7 +3,6 @@
   "$id": "https://github.com/fnando/screenkit/schemas/refs/scenes.json",
   "title": "Scenes",
   "type": "object",
-  "description": "Scene configurations for different parts of the video",
   "required": ["intro", "outro", "segment"],
   "properties": {
     "intro": {
@@ -15,9 +14,9 @@
     "segment": {
       "type": "object",
       "description": "Main content scene configuration",
-      "required": ["crossover_duration"],
+      "required": ["crossfade_duration"],
       "properties": {
-        "crossover_duration": {
+        "crossfade_duration": {
           "type": "number",
           "description": "Duration of the crossover transition between segments in seconds",
           "minimum": 0

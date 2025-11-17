@@ -5,11 +5,13 @@ module ScreenKit
     class TextStyle
       attr_reader :color, :size, :font_path
 
-      def initialize(**kwargs)
+      def initialize(source:, **kwargs)
+        @source = source
+
         kwargs.each do |key, value|
           value = case key.to_sym
                   when :font_path
-                    Pathname.new(value)
+                    @source.search(value)
                   else
                     value
                   end

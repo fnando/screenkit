@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/transition.json",
+  "type": "object",
+  "title": "Transition",
+  "required": ["duration", "sound"],
+  "properties": {
+    "sound": { "$ref": "sound.json" },
+    "duration": {
+      "type": "number",
+      "description": "Transition duration in seconds",
+      "minimum": 0
+    }
+  }
+}

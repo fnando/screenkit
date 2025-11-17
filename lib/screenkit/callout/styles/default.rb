@@ -9,23 +9,35 @@ module ScreenKit
         extend SchemaValidator
 
         attr_reader :background_color, :body, :body_style,
-                    :output_path, :padding, :shadow_color, :shadow_offset,
-                    :title, :title_style, :width
+                    :output_path, :padding, :shadow,
+                    :title, :title_style, :width, :source
 
         def self.schema_path
           ScreenKit.root_dir.join("screenkit/schemas/callouts/default.json")
         end
 
-        def initialize(**kwargs) #  rubocop:disable Lint/MissingSuper
+        def initialize(source:, **kwargs) #  rubocop:disable Lint/MissingSuper
           self.class.validate!(kwargs)
+          @source = source
 
           # Set default values
-          kwargs = hi_res({width: 600, shadow_offset: 20}.merge(kwargs))
+          kwargs[:shadow] = case kwargs[:shadow]
+                            when false
+                              {color: "#ffffffff", offset: 0}
+                            when Integer
+                              {color: "#00000080", offset: kwargs[:shadow]}
+                            when String
+                              {color: kwargs[:shadow], offset: 20}
+                            else
+                              kwargs[:shadow]
+                            end
+
+          kwargs = hi_res({width: 600}.merge(kwargs))
 
           kwargs.each do |key, value|
             value = case key
                     when :body_style, :title_style
-                      TextStyle.new(**value)
+                      TextStyle.new(source:, **value)
                     when :padding
                       (Array(value) * 4).take(4)
                     else
@@ -36,13 +48,17 @@ module ScreenKit
           end
         end
 
-        def render(title:, body:, output_path:)
+        def render
           title_path, _, title_height =
             *render_text_image(text: title,
-                               style: title_style, width: text_width)
+                               style: title_style,
+                               width: text_width,
+                               type: "caption")
           body_path, _, body_height =
             *render_text_image(text: body,
-                               style: body_style, width: text_width)
+                               style: body_style,
+                               width: text_width,
+                               type: "caption")
           text_gap = if title_path && body_path
                        (title_style.size * hi_res(0.2)).round
                      else
@@ -55,7 +71,7 @@ module ScreenKit
                          title_height +
                          text_gap +
                          body_height +
-                         shadow_offset
+                         shadow[:offset]
 
           MiniMagick.convert do |image|
             # Create transparent canvas
@@ -65,17 +81,17 @@ module ScreenKit
 
             # Draw rectangle shadow
             image << "-fill"
-            image << shadow_color
+            image << shadow[:color]
             image << "-draw"
-            image << "rectangle 0,#{shadow_offset}," \
-                     "#{width - shadow_offset},#{image_height}"
+            image << "rectangle 0,#{shadow[:offset]}," \
+                     "#{width - shadow[:offset]},#{image_height}"
 
             # Draw rectangle background
             image << "-fill"
             image << background_color
             image << "-draw"
-            image << "rectangle #{shadow_offset},0," \
-                     "#{image_width},#{image_height - shadow_offset}"
+            image << "rectangle #{shadow[:offset]},0," \
+                     "#{image_width},#{image_height - shadow[:offset]}"
 
             # Composite title
             if title_path
@@ -103,7 +119,7 @@ module ScreenKit
         end
 
         private def text_width = width - padding[1] - padding[3]
-        private def text_x = shadow_offset + padding[0]
+        private def text_x = shadow[:offset] + padding[0]
         private def title_y = padding[0]
         private def body_y = title_y + text_gap + title_style.size
       end

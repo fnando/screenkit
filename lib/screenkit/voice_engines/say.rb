@@ -3,23 +3,26 @@
 module ScreenKit
   module VoiceEngines
     class Say
-      extend Shell
+      include Shell
       extend SchemaValidator
 
       def self.schema_path
         ScreenKit.root_dir.join("screenkit/schemas/voice_engines/say.json")
       end
 
-      def self.generate_voiceover(text:, output_path:, **options)
-        validate!(options)
+      def initialize(**options)
+        @options = options
+      end
 
-        {voice: nil, rate: nil}.merge(options) => {voice:, rate:}
+      def generate(text:, output_path:)
+        self.class.validate!(@options)
+
+        {voice: nil, rate: nil}.merge(@options) => {voice:, rate:}
 
         run_command "say",
                     (["-v", voice] if voice),
                     (["-r", rate] if rate),
-                    "-o", output_path,
-                    "--file-format", "m4af",
+                    "-o", output_path.sub_ext(".aiff"),
                     text
       end
     end
