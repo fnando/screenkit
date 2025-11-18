@@ -229,20 +229,18 @@ module ScreenKit
 
         # Calculate total duration up to end of last segment
         total_duration = 0
-        all_videos[0..-2].each_with_index do |video_path, index|
+        all_videos[0..-2].each do |video_path|
           video_duration = duration(video_path)
           video_fps = fps(video_path)
           adjusted_duration = video_duration * (video_fps / target_fps)
 
-          if index.zero?
-            total_duration = adjusted_duration - crossfade_duration
-          else
-            total_duration += adjusted_duration - crossfade_duration
-          end
+          total_duration += adjusted_duration - crossfade_duration
         end
 
-        fade_out_duration = 1.0
-        fade_out_start = total_duration - fade_out_duration
+        fade_out_duration = 1.5
+        # Start fade out 75% before last segment ends, finish 25% into outro
+        fade_out_start = total_duration - (fade_out_duration * 0.75)
+        fade_out_end = total_duration + (fade_out_duration * 0.25)
 
         audio_filters << "[#{all_videos.size}:a]" \
                          "volume='if(lt(t,#{fade_in_start})," \
@@ -252,8 +250,8 @@ module ScreenKit
                          "#{backtrack_fade_volume})*(t-#{fade_in_start})/" \
                          "#{fade_in_duration},if(lt(t,#{fade_out_start})," \
                          "#{backtrack_fade_volume}," \
-                         "if(lt(t,#{total_duration})," \
-                         "#{backtrack_fade_volume}*(#{total_duration}-t)/" \
+                         "if(lt(t,#{fade_out_end})," \
+                         "#{backtrack_fade_volume}*(#{fade_out_end}-t)/" \
                          "#{fade_out_duration},0))))':eval=" \
                          "frame[backtrack_faded]"
 
