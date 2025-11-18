@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+module ScreenKit
+  module Exporter
+    class Video
+      include Shell
+      include Utils
+
+      # The path to the input video file.
+      attr_reader :input_path
+
+      def initialize(input_path:)
+        @input_path = input_path
+      end
+
+      def export(output_path)
+        fps = fps(input_path)
+
+        if (-0.02..0.02).cover?(24 - fps)
+          FileUtils.cp(input_path, output_path)
+          return
+        end
+
+        run_command "ffmpeg",
+                    "-i", input_path,
+                    "-r", "24",
+                    "-c:v", "libx264",
+                    "-y",
+                    output_path
+      end
+    end
+  end
+end

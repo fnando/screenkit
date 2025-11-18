@@ -20,6 +20,8 @@ module ScreenKit
       exit_code = status.exitstatus
 
       if exit_code&.nonzero?
+        output = [command, *args].join(" ")
+        $stderr << "Command failed: #{output}\n"
         $stderr << "#{stdout}\n" unless stdout.empty?
         $stderr << "#{stderr}\n" unless stderr.empty?
 

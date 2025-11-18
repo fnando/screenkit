@@ -46,6 +46,7 @@ module ScreenKit
   require_relative "screenkit/exporter/episode"
   require_relative "screenkit/exporter/segment"
   require_relative "screenkit/exporter/image"
+  require_relative "screenkit/exporter/video"
 
   def self.root_dir
     @root_dir ||= Pathname(__dir__)

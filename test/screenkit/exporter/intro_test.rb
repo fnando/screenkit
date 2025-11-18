@@ -8,6 +8,7 @@ class IntroTest < Minitest::Test
     resources_dir = ScreenKit.root_dir
                              .join("screenkit/generators/project/resources")
     ScreenKit::PathLookup.new(
+      Pathname.pwd.join("test/fixtures"),
       resources_dir,
       resources_dir.join("images"),
       resources_dir.join("sounds"),
@@ -49,7 +50,7 @@ class IntroTest < Minitest::Test
     config = ScreenKit::Config::Project.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:background] =
-      fixtures("sean-sinclair-C_NJKfnTR5A-unsplash.jpg").to_s
+      fixtures("sean-sinclair-C_NJKfnTR5A-unsplash.jpg").expand_path.to_s
 
     intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
     intro_path = create_tmp_path(:mp4)

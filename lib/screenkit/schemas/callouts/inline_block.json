@@ -5,6 +5,7 @@
   "type": "object",
   "required": ["background_color", "text_style"],
   "properties": {
+    "background_color": { "$ref": "../refs/color.json" },
     "width": {
       "type": "number",
       "description": "The callout width"

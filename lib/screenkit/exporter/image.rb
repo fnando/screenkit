@@ -17,6 +17,7 @@ module ScreenKit
           "-i", image_path,
           "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease," \
                  "pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black",
+          "-r", 24,
           "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
           "-y",
           output_path

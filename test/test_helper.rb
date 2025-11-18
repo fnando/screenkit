@@ -108,7 +108,19 @@ module Minitest
         actual_frame = extract_frame(actual_path, frame)
         expected_frame = extract_frame(expected_path, frame)
 
-        assert_similar_images(expected_frame, actual_frame, threshold:)
+        begin
+          assert_similar_images(expected_frame, actual_frame, threshold:)
+        rescue Minitest::Assertion => error
+          new_message = "#{error.message}\n\n" \
+                        "Expected video:#{expected_path}\n" \
+                        "Actual video: #{actual_path}"
+
+          error.singleton_class.instance_eval do
+            define_method :message do
+              new_message
+            end
+          end
+        end
       end
     end
 

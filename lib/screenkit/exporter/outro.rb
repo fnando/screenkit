@@ -68,6 +68,7 @@ module ScreenKit
           "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-shortest",
           "-t", config[:duration],
+          "-r", 24,
           "-y",
           path
         ]
@@ -151,9 +152,10 @@ module ScreenKit
                          :background, "black"
                        )
                      end
-        filters << "[#{current_layer}]fade=t=in:st=#{logo_delay}:d=#{fade_in}:" \
-                   "c=#{fade_color},fade=t=out:st=#{fade_out_start}:" \
-                   "d=#{fade_out}:c=#{fade_color},setpts=PTS-STARTPTS[fade]"
+        filters <<
+          "[#{current_layer}]fade=t=in:st=#{logo_delay}:d=#{fade_in}:" \
+          "c=#{fade_color},fade=t=out:st=#{fade_out_start}:" \
+          "d=#{fade_out}:c=#{fade_color},setpts=PTS-STARTPTS[fade]"
 
         # Audio (always generate, silent if no sound configured)
         if sound_path

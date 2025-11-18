@@ -4,7 +4,8 @@ module ScreenKit
   class AnimationFilters
     attr_reader :callout_index, :input_stream, :output_stream, :index,
                 :starts_at, :ends_at, :x, :y, :animation_duration,
-                :video_duration, :image_width, :image_height
+                :content_duration, :image_width, :image_height,
+                :callout_duration, :fade_out_start, :out_start
 
     def initialize(
       callout_index:,
@@ -16,7 +17,7 @@ module ScreenKit
       x:,
       y:,
       animation_duration:,
-      video_duration:,
+      content_duration:,
       image_width:,
       image_height:
     )
@@ -29,19 +30,17 @@ module ScreenKit
       @x = x
       @y = y
       @animation_duration = animation_duration
-      @video_duration = video_duration
+      @content_duration = content_duration
       @image_width = image_width
       @image_height = image_height
+
+      # Calculated values used by animation methods
+      @callout_duration = ends_at - starts_at
+      @fade_out_start = callout_duration - animation_duration
+      @out_start = ends_at - animation_duration
     end
 
     def fade
-      out_start = ends_at - animation_duration
-
-      # If ends_at would go past video duration, shorten it
-      adjusted_ends_at = ends_at > video_duration ? ends_at - 0.1 : ends_at
-
-      callout_duration = adjusted_ends_at - starts_at
-      fade_out_start = callout_duration - animation_duration
       filters = []
 
       # Scale callout and apply fade in and fade out
@@ -59,17 +58,14 @@ module ScreenKit
         "[callout#{index}_faded]setpts=PTS+#{starts_at}/TB" \
         "[callout#{index}_delayed]"
       filters <<
-        "[#{input_stream}][callout#{index}_delayed]overlay=x=#{x}:y=#{y}" \
+        "[#{input_stream}][callout#{index}_delayed]overlay=x=#{x}:y=#{y}:" \
+        "enable='between(t,#{starts_at},#{ends_at})'" \
         "[#{output_stream}]"
 
-      {
-        video: filters,
-        out_start: out_start
-      }
+      {video: filters, out_start:}
     end
 
     def slide
-      out_start = ends_at - animation_duration
       filters = []
 
       # Scale and split callout for blur effect
@@ -78,13 +74,20 @@ module ScreenKit
       filters << "[callout#{index}_base]split=3[callout#{index}_blur_in]" \
                  "[callout#{index}_sharp][callout#{index}_blur_out]"
 
-      # Create blurred versions for motion
+      # Create blurred versions for motion and delay them to the correct
+      # timeline position
       filters <<
-        "[callout#{index}_blur_in]boxblur=20:1[callout#{index}_blurred_in]"
+        "[callout#{index}_blur_in]boxblur=20:1,setpts=PTS+#{starts_at}/TB" \
+        "[callout#{index}_blurred_in]"
       filters <<
-        "[callout#{index}_blur_out]boxblur=20:1[callout#{index}_blurred_out]"
+        "[callout#{index}_sharp]setpts=PTS+#{starts_at}/TB" \
+        "[callout#{index}_sharp_delayed]"
+      filters <<
+        "[callout#{index}_blur_out]boxblur=20:1,setpts=PTS+#{starts_at}/TB" \
+        "[callout#{index}_blurred_out]"
 
       # Overlay blurred version during slide in
+      # Animation runs from 0 to animation_duration in callout's timeline
       filters <<
         "[#{input_stream}][callout#{index}_blurred_in]overlay=x=" \
         "'if(lt(t,#{starts_at + animation_duration}),-W+((t-#{starts_at})*" \
@@ -94,9 +97,9 @@ module ScreenKit
 
       # Overlay sharp version while visible
       filters <<
-        "[#{output_stream}_in][callout#{index}_sharp]overlay=x=#{x}:y=#{y}:" \
-        "enable='between(t,#{starts_at + animation_duration},#{out_start})'" \
-        "[#{output_stream}_hold]"
+        "[#{output_stream}_in][callout#{index}_sharp_delayed]overlay=x=#{x}:" \
+        "y=#{y}:enable='between(t,#{starts_at + animation_duration}," \
+        "#{out_start})'[#{output_stream}_hold]"
 
       # Overlay blurred version during slide out (to the left)
       filters <<

@@ -64,7 +64,7 @@ module ScreenKit
 
         case content_path.extname.downcase.gsub(/^\./, "")
         when *ContentType.video
-          FileUtils.cp(content_type, video_path)
+          Exporter::Image.new(input_path: content_path).export(video_path)
         when *ContentType.image
           Exporter::Image.new(image_path: content_path).export(video_path)
         when *ContentType.demotape
@@ -114,7 +114,11 @@ module ScreenKit
                                 source: episode.source)
 
           starts_at = callout[:starts_at]
-          ends_at = starts_at + callout[:duration]
+          max_duration = [content_duration - 0.2, 0].max
+          duration = callout[:duration]
+                     .clamp(0, max_duration)
+                     .round(half: :down)
+          ends_at = starts_at + duration
           callout_image_path = episode.output_dir.join("callouts",
                                                        "#{prefix}-#{index}.png")
           image_width, image_height = image_size(callout_image_path)
@@ -128,7 +132,7 @@ module ScreenKit
 
           inputs += [
             "-loop", "1",
-            "-t", callout.fetch(:duration),
+            "-t", duration,
             "-i", callout_image_path,
 
             # Add sound for transition in
@@ -143,7 +147,7 @@ module ScreenKit
           callout_index = 2 + (index * 3)
 
           animation_filters = AnimationFilters.new(
-            video_duration:,
+            content_duration:,
             callout_index:,
             input_stream:,
             output_stream:,
@@ -155,7 +159,7 @@ module ScreenKit
             animation_duration:,
             image_width:,
             image_height:
-          ).fade
+          ).send(callout_config[:animation])
 
           filters.concat(animation_filters[:video])
 
@@ -191,6 +195,8 @@ module ScreenKit
           filter_complex,
           "-map", "[v#{callouts.size}]",
           "-map", "[a]",
+          "-t", final_duration,
+          "-r", 24,
           "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
           "-y",

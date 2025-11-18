@@ -83,6 +83,7 @@ module ScreenKit
           "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-shortest",
           "-t", config[:duration],
+          "-r", 24,
           "-y",
           path
         ]
@@ -92,7 +93,7 @@ module ScreenKit
 
       private def ffmpeg_params
         duration = config[:duration]
-        fade_in = config.fetch(:fade_in, 0.5)
+        fade_in = config.fetch(:fade_in, 0.0)
         fade_out = config.fetch(:fade_out, 0.5)
         fade_out_start = duration - fade_out - 0.1
 
@@ -104,15 +105,27 @@ module ScreenKit
         # Background layer
         if background_path&.file?
           if video_file?(background_path)
+            # Ensure video is 24fps
+            extname = background_path.extname
+            optimized_path = background_path.sub_ext("_24fps#{extname}")
+
+            if (-0.02..0.02).cover?(fps(background_path))
+              optimized_path = background_path
+            end
+
+            unless optimized_path.file?
+              Video.new(input_path: background_path).export(optimized_path)
+            end
+
             # Video background
-            video_duration = duration(background_path)
+            video_duration = duration(optimized_path)
 
             # Calculate how many loops we need
             loops_needed = (duration / video_duration).ceil
 
             inputs += [
-              "-stream_loop", (loops_needed - 1).to_s, "-i",
-              background_path
+              "-stream_loop", (loops_needed - 1).to_s,
+              "-i", optimized_path
             ]
 
             # Scale, crop, then trim to exact duration needed

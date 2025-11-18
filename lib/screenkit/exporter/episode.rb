@@ -151,7 +151,7 @@ module ScreenKit
                            source.search(watermark.path)
                          else
                            ScreenKit.root_dir
-                                    .join("screenkit/resources/watermark.png")
+                                    .join("screenkit/resources/transparent.png")
                          end
 
         watermark_width, watermark_height = image_size(watermark_path)
@@ -193,15 +193,22 @@ module ScreenKit
           adjusted_duration = video_duration * (video_fps / target_fps)
           total_segments_duration += adjusted_duration - crossfade_duration
         end
-        outro_duration = duration(all_videos.last) * (fps(all_videos.last) / target_fps)
-        total_video_duration = intro_duration + total_segments_duration + outro_duration - (crossfade_duration * 2)
+        outro_duration =
+          duration(all_videos.last) * (fps(all_videos.last) / target_fps)
+        total_video_duration = intro_duration +
+                               total_segments_duration +
+                               outro_duration -
+                               (crossfade_duration * 2)
 
         watermark_start = intro_duration - crossfade_duration
         watermark_end = watermark_start + total_segments_duration
 
         # Build ffmpeg inputs
         inputs = all_videos.flat_map {|path| ["-i", path] }
-        inputs += ["-loop", "1", "-t", total_video_duration.to_s, "-i", watermark_path]
+        inputs += [
+          "-loop", "1", "-t", total_video_duration.to_s, "-i",
+          watermark_path
+        ]
         inputs += ["-i", backtrack.path]
 
         watermark_stream_index = all_videos.size
@@ -250,24 +257,31 @@ module ScreenKit
 
         # Apply watermark overlay - insert it before the outro xfade
         # Find the index of the outro tpad filter (last occurrence of tpad)
-        tpad_index = video_filters.rindex { |f| f.include?("tpad=stop_mode=clone") }
+        tpad_index = video_filters.rindex do |f|
+          f.include?("tpad=stop_mode=clone")
+        end
 
         if tpad_index
           last_segment_index = all_videos.size - 2
           last_xfade_label = "vx#{last_segment_index - 1}"
 
           # Insert watermark filters before the tpad
-          video_filters.insert(tpad_index,
+          video_filters.insert(
+            tpad_index,
             "[#{watermark_stream_index}:v]scale=iw*0.5:ih*0.5," \
-            "format=rgba,colorchannelmixer=aa=#{watermark.opacity}[watermark]")
-          video_filters.insert(tpad_index + 1,
+            "format=rgba,colorchannelmixer=aa=#{watermark.opacity}[watermark]"
+          )
+          video_filters.insert(
+            tpad_index + 1,
             "[#{last_xfade_label}][watermark]" \
             "overlay=#{watermark_x}:#{watermark_y}:" \
             "enable='between(t,#{watermark_start},#{watermark_end})'" \
-            "[#{last_xfade_label}_watermarked]")
+            "[#{last_xfade_label}_watermarked]"
+          )
 
           # Update the tpad filter to use watermarked input
-          video_filters[tpad_index + 2] = video_filters[tpad_index + 2]
+          video_filters[tpad_index + 2] =
+            video_filters[tpad_index + 2]
             .sub("[#{last_xfade_label}]", "[#{last_xfade_label}_watermarked]")
         end
 
@@ -334,10 +348,6 @@ module ScreenKit
           output_video_path
         ]
 
-        require "shellwords"
-        puts command.flatten.compact.map(&:to_s).map {
-          Shellwords.escape(it)
-        }.join(" ")
         run_command(*command)
 
         spinner.stop

@@ -91,6 +91,9 @@ module ScreenKit
           end
 
           tmp_path
+        rescue MiniMagick::Error => error
+          retry if error.message.include?("No such file or directory")
+          raise
         end
       end
     end
