@@ -9,6 +9,7 @@
     "backtrack": { "$ref": "refs/sound.json" },
     "scenes": { "$ref": "refs/scenes.json" },
     "tts": { "$ref": "refs/tts.json" },
+    "watermark": { "$ref": "refs/watermark.json" },
     "title": {
       "type": "string",
       "description": "The episode title",

@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/project.json",
+  "title": "Watermark",
+  "oneOf": [
+    { "type": "boolean", "enum": [false] },
+    { "type": "string", "format": "uri" },
+    {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "format": "uri" },
+        "anchor": { "$ref": "anchor.json" },
+        "position": { "$ref": "position.json" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  ]
+}

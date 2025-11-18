@@ -9,6 +9,7 @@
     "resources_dir": { "$ref": "refs/directory.json" },
     "backtrack": { "$ref": "refs/sound.json" },
     "tts": { "$ref": "refs/tts.json" },
+    "watermark": { "$ref": "refs/watermark.json" },
     "scenes": { "$ref": "refs/scenes.json" },
     "schema": {
       "type": "integer",

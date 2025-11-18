@@ -24,6 +24,9 @@ module ScreenKit
       # The backtrack music configuration.
       attr_reader :backtrack
 
+      # The watermark configuration.
+      attr_reader :watermark
+
       def self.schema_path
         @schema_path ||=
           ScreenKit.root_dir.join("screenkit/schemas/project.json")

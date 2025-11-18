@@ -21,19 +21,7 @@
       "default": "default"
     },
     "anchor": {
-      "type": "array",
-      "description": "Anchor position [horizontal, vertical]",
-      "items": [
-        {
-          "type": "string",
-          "enum": ["left", "center", "right"]
-        },
-        {
-          "type": "string",
-          "enum": ["top", "center", "bottom"]
-        }
-      ],
-      "additionalItems": false
+      "$ref": "anchor.json"
     }
   }
 }

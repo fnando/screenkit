@@ -145,6 +145,22 @@ module ScreenKit
         spinner.update("Merging segments into final episode…")
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         crossfade_duration = scenes.dig(:segment, :crossfade_duration) || 0.5
+        watermark = Watermark.new(config.watermark || project_config.watermark)
+
+        watermark_path = if watermark.path
+                           source.search(watermark.path)
+                         else
+                           ScreenKit.root_dir
+                                    .join("screenkit/resources/watermark.png")
+                         end
+
+        watermark_width, watermark_height = image_size(watermark_path)
+        watermark_x, watermark_y = calculate_position(
+          anchor: watermark.anchor,
+          margin: watermark.margin,
+          width: watermark_width,
+          height: watermark_height
+        )
 
         # Build input files list: intro, segments, outro
         all_videos = [
@@ -171,6 +187,19 @@ module ScreenKit
         offset = 0
         target_fps = 24.0
 
+        # Calculate watermark timing (intro duration to start of outro)
+        intro_duration =
+          duration(all_videos.first) * (fps(all_videos.first) / target_fps)
+        total_segments_duration = 0
+        all_videos[1..-2].each do |video_path|
+          video_duration = duration(video_path)
+          video_fps = fps(video_path)
+          adjusted_duration = video_duration * (video_fps / target_fps)
+          total_segments_duration += adjusted_duration - crossfade_duration
+        end
+        watermark_start = intro_duration - crossfade_duration
+        watermark_end = watermark_start + total_segments_duration
+
         all_videos.each_with_index do |video_path, index|
           # Get original video duration and fps
           video_duration = duration(video_path)
@@ -188,12 +217,12 @@ module ScreenKit
             audio_filters << "[#{index}:a]asetpts=PTS-STARTPTS[a#{index}]"
             offset = adjusted_duration - crossfade_duration
           elsif index == all_videos.size - 1
-            # Last video (outro) - xfade from previous
+            # Last video (outro) - xfade from previous (which has watermark)
             # Ensure the previous video is long enough for the xfade by padding
             # if needed
             pad_duration = offset + crossfade_duration
-            video_filters << "[#{prev_label}]tpad=stop_mode=clone:" \
-                             "stop_duration=#{pad_duration}" \
+            video_filters << "[#{prev_label}_watermarked]tpad=stop_mode=clone" \
+                             ":stop_duration=#{pad_duration}" \
                              "[#{prev_label}_padded]"
             video_filters << "[#{prev_label}_padded][v#{index}]" \
                              "xfade=transition=fade:" \
@@ -212,18 +241,31 @@ module ScreenKit
           end
         end
 
+        # Apply watermark overlay with timing (only during segments)
+        # The last xfade output before outro is vx#{last_segment_index - 1}
+        last_segment_index = all_videos.size - 2
+        last_xfade_label = "vx#{last_segment_index - 1}"
+
+        video_filters << "movie=#{watermark_path},scale=iw*0.5:ih*0.5," \
+                         "format=rgba,colorchannelmixer=aa=" \
+                         "#{watermark.opacity}[watermark]"
+        video_filters << "[#{last_xfade_label}][watermark]" \
+                         "overlay=#{watermark_x}:#{watermark_y}:" \
+                         "enable='between(t,#{watermark_start}," \
+                         "#{watermark_end})'" \
+                         "[#{last_xfade_label}_watermarked]"
+
         # Concatenate all audio tracks
         audio_inputs = Array.new(all_videos.size) {|i| "[a#{i}]" }.join
         audio_filters << "#{audio_inputs}amix=inputs=#{all_videos.size}:" \
                          "duration=longest:normalize=0[mixed]"
 
         # Apply volume fade to backtrack:
-        # 1. Starts at backtrack_full_volume during intro
-        # 2. Fades to backtrack_fade_volume over 1s, overlapping first segment by 25%
-        # 3. Fades out to 0 over 1s at the end of the last segment before outro
+        # 1. Start at backtrack_full_volume during intro
+        # 2. Fade to backtrack_fade_volume over 1s, overlap first segment by 25%
+        # 3. Fade out to 0 over 1s at the end of the last segment before outro
         intro_duration = duration(all_videos.first)
         fade_in_duration = 1.0
-        # Start fade 75% before intro ends, finish 25% into first segment
         fade_in_start = intro_duration - (fade_in_duration * 0.75)
         fade_in_end = intro_duration + (fade_in_duration * 0.25)
 
@@ -344,8 +386,8 @@ module ScreenKit
       end
 
       def cleanup_output_dir
-        FileUtils.rm_rf(output_dir.join("logs").children)
-        FileUtils.rm_rf(output_dir.join("voiceovers").children)
+        FileUtils.rm_rf(output_dir.glob("logs/*"))
+        FileUtils.rm_rf(output_dir.glob("voiceovers/*"))
         spinner.stop
       end
 

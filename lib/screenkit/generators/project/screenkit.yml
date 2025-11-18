@@ -66,6 +66,15 @@ output_dir: output/%{episode_dirname}
 # You can disable the backtrack by setting this to `false`.
 backtrack: backtracks/
 
+# Render a watermark.
+# This is useful for branding or copyright purposes.
+# The watermark is omitted from the intro and outro scenes.
+# To disable the watermark, use `watermark: false`.
+watermark:
+  path: "watermark.png"
+  anchor: [right, bottom]
+  margin: 100
+
 # TTS configuration.
 # To disable voiceover entirely, set `tts: false`.
 # tts:

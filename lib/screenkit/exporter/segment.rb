@@ -104,8 +104,6 @@ module ScreenKit
 
         audio_mix_inputs = ["[1:a]"]
         animation_duration = 0.2
-        video_width = 1920
-        video_height = 1080
 
         callouts.each_with_index do |callout, index|
           type = callout[:type].to_sym
@@ -115,36 +113,18 @@ module ScreenKit
           out_sound = Sound.new(input: callout_config[:out_transition][:sound],
                                 source: episode.source)
 
-          margin_top, margin_right, margin_bottom, margin_left =
-            (Array(callout_config[:margin] || 0) * 4).take(4)
           starts_at = callout[:starts_at]
-          anchor_x, anchor_y = *callout_config[:anchor]
           ends_at = starts_at + callout[:duration]
           callout_image_path = episode.output_dir.join("callouts",
                                                        "#{prefix}-#{index}.png")
-          image = MiniMagick::Image.open(callout_image_path)
-          image_width = image.width / 2
-          image_height = image.height / 2
-          y = case anchor_y
-              when "bottom"
-                video_height - image_height - margin_bottom
-              when "top"
-                margin_top
-              when "center"
-                (video_height / 2) - (image_height / 2)
-              else
-                anchor_y + margin_top
-              end
-          x = case anchor_x
-              when "left"
-                margin_left
-              when "right"
-                video_width - image_width - margin_right
-              when "center"
-                (video_height / 2) - (image_height / 2)
-              else
-                anchor_x + margin_left
-              end
+          image_width, image_height = image_size(callout_image_path)
+
+          x, y = calculate_position(
+            anchor: Anchor.new(callout_config[:anchor]),
+            margin: Spacing.new(callout_config[:margin] || 0),
+            width: image_width,
+            height: image_height
+          )
 
           inputs += [
             "-loop", "1",
