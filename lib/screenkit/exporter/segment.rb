@@ -48,9 +48,7 @@ module ScreenKit
       end
 
       def output_voiceover_path
-        episode.output_dir
-               .join("voiceovers")
-               .join("#{prefix}#{voiceover_path.extname}")
+        episode.output_dir.join("voiceovers").join("#{prefix}.flac")
       end
 
       def callouts
@@ -227,9 +225,14 @@ module ScreenKit
         normalize_voiceover
       end
 
-      # @todo normalize audio so all files have around the same LUFS
       def normalize_voiceover
-        FileUtils.cp(voiceover_path, output_voiceover_path)
+        run_command "ffmpeg-normalize",
+                    voiceover_path,
+                    "-f",
+                    "-o", output_voiceover_path,
+                    "-nt", "ebu",
+                    "-t", "-18",
+                    "-c:a", "flac", "-ac", "1", "-ar", "44100"
       end
 
       def create_voiceover

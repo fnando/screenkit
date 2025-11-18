@@ -71,6 +71,7 @@ module ScreenKit
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         prelude
+        cleanup_output_dir
         create_output_dir
         export_intro
         export_outro
@@ -336,13 +337,18 @@ module ScreenKit
       def create_output_dir
         FileUtils.mkdir_p([
           output_dir.join("segments").to_s,
-          output_dir.join("other").to_s,
           output_dir.join("scenes").to_s,
           output_dir.join("logs").to_s,
           output_dir.join("voiceovers").to_s,
           output_dir.join("callouts").to_s,
           output_dir.join("videos").to_s
         ])
+      end
+
+      def cleanup_output_dir
+        FileUtils.rm_rf(output_dir.join("logs").children)
+        FileUtils.rm_rf(output_dir.join("voiceovers").children)
+        spinner.stop
       end
 
       def output_dir
