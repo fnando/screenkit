@@ -8,7 +8,7 @@
   "properties": {
     "backtrack": { "$ref": "refs/sound.json" },
     "scenes": { "$ref": "refs/scenes.json" },
-    "voice": { "$ref": "refs/voice.json" },
+    "tts": { "$ref": "refs/tts.json" },
     "title": {
       "type": "string",
       "description": "The episode title",

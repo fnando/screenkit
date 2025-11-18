@@ -16,15 +16,15 @@ module ScreenKit
         directory "scripts", options.episode_dir.join("scripts")
         directory "content", options.episode_dir.join("content")
         empty_directory resources_dir
-        empty_directory voiceover_dir
+        empty_directory voiceovers_dir
         create_file resources_dir.join(".keep")
-        create_file voiceover_dir.join(".keep")
+        create_file voiceovers_dir.join(".keep")
       end
 
       no_commands do
         # Add helper methods here
         def resources_dir = options.episode_dir.join("resources")
-        def voiceover_dir = options.episode_dir.join("voiceover")
+        def voiceovers_dir = options.episode_dir.join("voiceovers")
       end
     end
   end

@@ -8,7 +8,7 @@ class SayTest < Minitest::Test
 
     output_path = create_tmp_path(:aiff)
 
-    engine = ScreenKit::VoiceEngines::Say.new
+    engine = ScreenKit::TTS::Say.new
     engine.generate(text: "Test", output_path:)
 
     assert output_path.exist?
@@ -19,7 +19,7 @@ class SayTest < Minitest::Test
 
     output_path = create_tmp_path(:aiff)
 
-    engine = ScreenKit::VoiceEngines::Say.new(voice: "Alex")
+    engine = ScreenKit::TTS::Say.new(voice: "Alex")
     engine.generate(text: "Test", output_path:)
 
     assert output_path.exist?
@@ -30,7 +30,7 @@ class SayTest < Minitest::Test
 
     output_path = create_tmp_path(:aiff)
 
-    engine = ScreenKit::VoiceEngines::Say.new(rate: 300)
+    engine = ScreenKit::TTS::Say.new(rate: 300)
     engine.generate(text: "Test", output_path:)
 
     assert output_path.exist?

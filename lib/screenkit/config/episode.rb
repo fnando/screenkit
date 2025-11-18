@@ -9,8 +9,8 @@ module ScreenKit
       # The title of the episode.
       attr_reader :title
 
-      # The episode's voice engine configuration.
-      attr_reader :voice
+      # The episode's TTS engine configuration.
+      attr_reader :tts
 
       # The episode's backtrack music configuration.
       attr_reader :backtrack
@@ -22,7 +22,6 @@ module ScreenKit
 
       def initialize(**)
         @scenes = {}
-        @voice = {}
 
         super
       end

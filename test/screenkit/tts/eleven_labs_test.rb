@@ -8,7 +8,7 @@ class ElevenLabsTest < Minitest::Test
     output_path = fixtures("elevenlabs.mp3")
     skip if output_path.file?
 
-    engine = ScreenKit::VoiceEngines::ElevenLabs.new(
+    engine = ScreenKit::TTS::ElevenLabs.new(
       api_key:,
       voice_id: "yhFUAoS32gPDJFQHbH68"
     )

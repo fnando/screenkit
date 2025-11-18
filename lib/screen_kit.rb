@@ -31,8 +31,8 @@ module ScreenKit
   require_relative "screenkit/cli/base"
   require_relative "screenkit/cli/episode"
   require_relative "screenkit/cli/root"
-  require_relative "screenkit/voice_engines/say"
-  require_relative "screenkit/voice_engines/eleven_labs"
+  require_relative "screenkit/tts/say"
+  require_relative "screenkit/tts/eleven_labs"
   require_relative "screenkit/animation_filters"
   require_relative "screenkit/path_lookup"
   require_relative "screenkit/sound"
@@ -67,5 +67,5 @@ module ScreenKit
 
   # Load all files that may be available as plugins.
   require_files.call("screenkit/callout/styles/*.rb")
-  require_files.call("screenkit/callout/voice_engines/*.rb")
+  require_files.call("screenkit/callout/tts/*.rb")
 end

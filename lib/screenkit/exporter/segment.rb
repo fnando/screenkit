@@ -40,9 +40,17 @@ module ScreenKit
       end
 
       def voiceover_path
-        dir = episode.output_dir.join("voiceovers")
+        return episode.mute_sound_path unless episode.tts?
+
+        dir = episode.root_dir.join("voiceovers")
         dir.glob("#{prefix}.{#{ContentType.audio.join(',')}}").first ||
           dir.join("#{prefix}.mp3")
+      end
+
+      def output_voiceover_path
+        episode.output_dir
+               .join("voiceovers")
+               .join("#{prefix}#{voiceover_path.extname}")
       end
 
       def callouts
@@ -54,6 +62,8 @@ module ScreenKit
       end
 
       def export_video
+        return if video_path.file? && !episode.options.overwrite
+
         case content_path.extname.downcase.gsub(/^\./, "")
         when *ContentType.video
           FileUtils.cp(content_type, video_path)
@@ -75,7 +85,7 @@ module ScreenKit
         video_duration = duration(video_path)
 
         # Get audio duration
-        audio_duration = duration(voiceover_path)
+        audio_duration = duration(output_voiceover_path)
 
         # Calculate the content duration and extend by crossfade duration
         content_duration = [video_duration, audio_duration].max
@@ -88,7 +98,7 @@ module ScreenKit
         video_pad_duration = final_duration - video_duration
 
         # The raw video and voiceover
-        inputs = ["-i", video_path, "-i", voiceover_path]
+        inputs = ["-i", video_path, "-i", output_voiceover_path]
 
         filters = [
           "[0:v]tpad=stop_mode=clone:stop_duration=#{video_pad_duration}[v0]"
@@ -213,9 +223,23 @@ module ScreenKit
       end
 
       def export_voiceover
-        return unless script_path.file?
+        create_voiceover
+        normalize_voiceover
+      end
 
-        episode.voice_engine.generate(
+      # @todo normalize audio so all files have around the same LUFS
+      def normalize_voiceover
+        FileUtils.cp(voiceover_path, output_voiceover_path)
+      end
+
+      def create_voiceover
+        return if voiceover_path&.file? && !episode.options.overwrite
+        return unless script_path.file?
+        return unless episode.tts?
+
+        FileUtils.mkdir_p(voiceover_path.dirname)
+
+        episode.tts_engine.generate(
           text: script_path.read,
           output_path: voiceover_path
         )

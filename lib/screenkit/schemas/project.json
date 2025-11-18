@@ -8,7 +8,7 @@
   "properties": {
     "resources_dir": { "$ref": "refs/directory.json" },
     "backtrack": { "$ref": "refs/sound.json" },
-    "voice": { "$ref": "refs/voice.json" },
+    "tts": { "$ref": "refs/tts.json" },
     "scenes": { "$ref": "refs/scenes.json" },
     "schema": {
       "type": "integer",

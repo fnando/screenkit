@@ -2,12 +2,12 @@
 
 module ScreenKit
   module VoiceEngines
-    class ElevenLabs
+    class TTS
       extend SchemaValidator
 
       def self.schema_path
         ScreenKit.root_dir
-                 .join("screenkit/schemas/voice_engines/elevenlabs.json")
+                 .join("screenkit/schemas/tts/elevenlabs.json")
       end
 
       # The Eleven Labs API key.

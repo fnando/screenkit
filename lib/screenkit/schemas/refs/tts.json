@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/voice.json",
-  "title": "The synthesized voice",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/tts.json",
+  "title": "The TTS engine used for voiceover",
   "oneOf": [
     {
       "type": "boolean",
@@ -9,7 +9,7 @@
     },
     {
       "type": "object",
-      "$ref": "../voice_engines/say.json",
+      "$ref": "../tts/say.json",
       "properties": {
         "engine": {
           "type": "string",
@@ -20,7 +20,7 @@
     },
     {
       "type": "object",
-      "$ref": "../voice_engines/elevenlabs.json",
+      "$ref": "../tts/elevenlabs.json",
       "properties": {
         "engine": {
           "type": "string",

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module ScreenKit
-  module VoiceEngines
+  module TTS
     class Say
       include Shell
       extend SchemaValidator
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/voice_engines/say.json")
+        ScreenKit.root_dir.join("screenkit/schemas/tts/say.json")
       end
 
       def initialize(**options)

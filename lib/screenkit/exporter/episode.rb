@@ -33,14 +33,18 @@ module ScreenKit
         @mutex = Mutex.new
       end
 
-      def voice_options
-        config.voice.merge(project_config.voice)
+      def tts?
+        config.tts || project_config.tts
       end
 
-      def voice_engine
-        @voice_engine ||= VoiceEngines.const_get(
-          voice_options[:engine].camelize
-        ).new(**voice_options.except(:engine))
+      def tts_options
+        (config.tts || {}).merge(project_config.tts || {})
+      end
+
+      def tts_engine
+        @tts_engine ||= TTS.const_get(
+          tts_options[:engine].camelize
+        ).new(**tts_options.except(:engine))
       end
 
       # Logs a message to the shell with a specific category.
@@ -51,8 +55,8 @@ module ScreenKit
       # placeholders.
       # @param ** [Hash{Symbol => Object}] Additional keyword arguments to
       # format the message.
-      def log(category, message, **)
-        shell.say_status(category, format(message.to_s, **), :magenta)
+      def log(category, message, color: :magenta, **)
+        shell.say_status(category, format(message.to_s, **), color)
       end
 
       def log_elapsed(message, elapsed)
@@ -149,7 +153,11 @@ module ScreenKit
         ]
 
         backtrack_adjustment = 1.0 / backtrack.volume
-        backtrack_fade_volume = 0.2 * backtrack_adjustment
+        backtrack_fade_volume = if tts?
+                                  0.15 * backtrack_adjustment
+                                else
+                                  1.0
+                                end
         backtrack_full_volume = backtrack.volume
 
         # Build ffmpeg inputs
@@ -210,12 +218,13 @@ module ScreenKit
 
         # Apply volume fade to backtrack:
         # 1. Starts at backtrack_full_volume during intro
-        # 2. Fades to backtrack_fade_volume over 0.5s after intro ends
-        # 3. Fades out to 0 over 0.5s at the end of the last segment before
-        #    outro
+        # 2. Fades to backtrack_fade_volume over 1s, overlapping first segment by 25%
+        # 3. Fades out to 0 over 1s at the end of the last segment before outro
         intro_duration = duration(all_videos.first)
-        fade_in_duration = 0.5
-        fade_in_end = intro_duration + fade_in_duration
+        fade_in_duration = 1.0
+        # Start fade 75% before intro ends, finish 25% into first segment
+        fade_in_start = intro_duration - (fade_in_duration * 0.75)
+        fade_in_end = intro_duration + (fade_in_duration * 0.25)
 
         # Calculate total duration up to end of last segment
         total_duration = 0
@@ -235,11 +244,11 @@ module ScreenKit
         fade_out_start = total_duration - fade_out_duration
 
         audio_filters << "[#{all_videos.size}:a]" \
-                         "volume='if(lt(t,#{intro_duration})," \
+                         "volume='if(lt(t,#{fade_in_start})," \
                          "#{backtrack_full_volume},if(lt(t,#{fade_in_end})," \
                          "#{backtrack_full_volume}-" \
                          "(#{backtrack_full_volume}-" \
-                         "#{backtrack_fade_volume})*(t-#{intro_duration})/" \
+                         "#{backtrack_fade_volume})*(t-#{fade_in_start})/" \
                          "#{fade_in_duration},if(lt(t,#{fade_out_start})," \
                          "#{backtrack_fade_volume}," \
                          "if(lt(t,#{total_duration})," \
@@ -294,6 +303,14 @@ module ScreenKit
           "Episode root dir: %{dir}",
           dir: shell.set_color(relative_path(root_dir), :blue)
         )
+
+        unless tts?
+          log(
+            :info,
+            shell.set_color("Voiceover is currently disabled", :red),
+            color: :red
+          )
+        end
 
         filtered_count = filtered_segments.count
         count = segments.count

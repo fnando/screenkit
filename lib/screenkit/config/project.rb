@@ -18,8 +18,8 @@ module ScreenKit
       # Scene configurations
       attr_reader :scenes
 
-      # Voice configuration
-      attr_reader :voice
+      # TTS configuration
+      attr_reader :tts
 
       # The backtrack music configuration.
       attr_reader :backtrack
