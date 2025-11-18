@@ -177,17 +177,13 @@ module ScreenKit
                                 end
         backtrack_full_volume = backtrack.volume
 
-        # Build ffmpeg inputs
-        inputs = all_videos.flat_map {|path| ["-i", path] }
-        inputs += ["-i", backtrack.path]
-
         # Build xfade filter chain for video with crossfades
         video_filters = []
         audio_filters = []
         offset = 0
         target_fps = 24.0
 
-        # Calculate watermark timing (intro duration to start of outro)
+        # Calculate total video duration and watermark timing
         intro_duration =
           duration(all_videos.first) * (fps(all_videos.first) / target_fps)
         total_segments_duration = 0
@@ -197,8 +193,19 @@ module ScreenKit
           adjusted_duration = video_duration * (video_fps / target_fps)
           total_segments_duration += adjusted_duration - crossfade_duration
         end
+        outro_duration = duration(all_videos.last) * (fps(all_videos.last) / target_fps)
+        total_video_duration = intro_duration + total_segments_duration + outro_duration - (crossfade_duration * 2)
+
         watermark_start = intro_duration - crossfade_duration
         watermark_end = watermark_start + total_segments_duration
+
+        # Build ffmpeg inputs
+        inputs = all_videos.flat_map {|path| ["-i", path] }
+        inputs += ["-loop", "1", "-t", total_video_duration.to_s, "-i", watermark_path]
+        inputs += ["-i", backtrack.path]
+
+        watermark_stream_index = all_videos.size
+        backtrack_stream_index = all_videos.size + 1
 
         all_videos.each_with_index do |video_path, index|
           # Get original video duration and fps
@@ -217,11 +224,11 @@ module ScreenKit
             audio_filters << "[#{index}:a]asetpts=PTS-STARTPTS[a#{index}]"
             offset = adjusted_duration - crossfade_duration
           elsif index == all_videos.size - 1
-            # Last video (outro) - xfade from previous (which has watermark)
+            # Last video (outro) - xfade from previous
             # Ensure the previous video is long enough for the xfade by padding
             # if needed
             pad_duration = offset + crossfade_duration
-            video_filters << "[#{prev_label}_watermarked]tpad=stop_mode=clone" \
+            video_filters << "[#{prev_label}]tpad=stop_mode=clone" \
                              ":stop_duration=#{pad_duration}" \
                              "[#{prev_label}_padded]"
             video_filters << "[#{prev_label}_padded][v#{index}]" \
@@ -241,19 +248,28 @@ module ScreenKit
           end
         end
 
-        # Apply watermark overlay with timing (only during segments)
-        # The last xfade output before outro is vx#{last_segment_index - 1}
-        last_segment_index = all_videos.size - 2
-        last_xfade_label = "vx#{last_segment_index - 1}"
+        # Apply watermark overlay - insert it before the outro xfade
+        # Find the index of the outro tpad filter (last occurrence of tpad)
+        tpad_index = video_filters.rindex { |f| f.include?("tpad=stop_mode=clone") }
 
-        video_filters << "movie=#{watermark_path},scale=iw*0.5:ih*0.5," \
-                         "format=rgba,colorchannelmixer=aa=" \
-                         "#{watermark.opacity}[watermark]"
-        video_filters << "[#{last_xfade_label}][watermark]" \
-                         "overlay=#{watermark_x}:#{watermark_y}:" \
-                         "enable='between(t,#{watermark_start}," \
-                         "#{watermark_end})'" \
-                         "[#{last_xfade_label}_watermarked]"
+        if tpad_index
+          last_segment_index = all_videos.size - 2
+          last_xfade_label = "vx#{last_segment_index - 1}"
+
+          # Insert watermark filters before the tpad
+          video_filters.insert(tpad_index,
+            "[#{watermark_stream_index}:v]scale=iw*0.5:ih*0.5," \
+            "format=rgba,colorchannelmixer=aa=#{watermark.opacity}[watermark]")
+          video_filters.insert(tpad_index + 1,
+            "[#{last_xfade_label}][watermark]" \
+            "overlay=#{watermark_x}:#{watermark_y}:" \
+            "enable='between(t,#{watermark_start},#{watermark_end})'" \
+            "[#{last_xfade_label}_watermarked]")
+
+          # Update the tpad filter to use watermarked input
+          video_filters[tpad_index + 2] = video_filters[tpad_index + 2]
+            .sub("[#{last_xfade_label}]", "[#{last_xfade_label}_watermarked]")
+        end
 
         # Concatenate all audio tracks
         audio_inputs = Array.new(all_videos.size) {|i| "[a#{i}]" }.join
@@ -284,7 +300,7 @@ module ScreenKit
         fade_out_start = total_duration - (fade_out_duration * 0.75)
         fade_out_end = total_duration + (fade_out_duration * 0.25)
 
-        audio_filters << "[#{all_videos.size}:a]" \
+        audio_filters << "[#{backtrack_stream_index}:a]" \
                          "volume='if(lt(t,#{fade_in_start})," \
                          "#{backtrack_full_volume},if(lt(t,#{fade_in_end})," \
                          "#{backtrack_full_volume}-" \
@@ -318,6 +334,10 @@ module ScreenKit
           output_video_path
         ]
 
+        require "shellwords"
+        puts command.flatten.compact.map(&:to_s).map {
+          Shellwords.escape(it)
+        }.join(" ")
         run_command(*command)
 
         spinner.stop

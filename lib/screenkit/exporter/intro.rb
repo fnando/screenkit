@@ -4,6 +4,7 @@ module ScreenKit
   module Exporter
     class Intro
       include Shell
+      include Utils
       extend SchemaValidator
 
       def self.schema_path
@@ -59,8 +60,9 @@ module ScreenKit
 
       def background_path
         return unless config[:background]
+        return if config[:background].start_with?("#")
 
-        @background_path ||= Pathname(config[:background])
+        @background_path ||= source.search(config[:background])
       end
 
       def font_path
@@ -90,7 +92,6 @@ module ScreenKit
 
       private def ffmpeg_params
         duration = config[:duration]
-        background = config.fetch(:background, "black")
         fade_in = config.fetch(:fade_in, 0.5)
         fade_out = config.fetch(:fade_out, 0.5)
         fade_out_start = duration - fade_out - 0.1
@@ -102,11 +103,32 @@ module ScreenKit
 
         # Background layer
         if background_path&.file?
-          inputs += ["-loop", "1", "-t", duration, "-i", background_path]
-          filters << "[#{stream_index}:v]scale=1920:1080:" \
-                     "force_original_aspect_ratio=increase:flags=lanczos," \
-                     "crop=1920:1080,setpts=PTS-STARTPTS[bg]"
+          if video_file?(background_path)
+            # Video background
+            video_duration = duration(background_path)
+
+            # Calculate how many loops we need
+            loops_needed = (duration / video_duration).ceil
+
+            inputs += [
+              "-stream_loop", (loops_needed - 1).to_s, "-i",
+              background_path
+            ]
+
+            # Scale, crop, then trim to exact duration needed
+            filters << "[#{stream_index}:v]scale=1920:1080:" \
+                       "force_original_aspect_ratio=increase:flags=lanczos," \
+                       "crop=1920:1080," \
+                       "trim=end=#{duration}," \
+                       "setpts=PTS-STARTPTS[bg]"
+          else
+            inputs += ["-loop", "1", "-t", duration, "-i", background_path]
+            filters << "[#{stream_index}:v]scale=1920:1080:" \
+                       "force_original_aspect_ratio=increase:flags=lanczos," \
+                       "crop=1920:1080,setpts=PTS-STARTPTS[bg]"
+          end
         else
+          background = config.fetch(:background, "black")
           inputs += [
             "-f", "lavfi", "-i",
             "color=c=#{background}:s=1920x1080:d=#{duration}"
@@ -192,7 +214,7 @@ module ScreenKit
 
         maps = ["-map", "[fade]", "-map", "[a]"]
 
-        {inputs: inputs, filters: filters.join(";"), maps: maps}
+        {inputs:, filters: filters.join(";"), maps:}
       end
 
       def wrap_text(text, max_chars_per_line)

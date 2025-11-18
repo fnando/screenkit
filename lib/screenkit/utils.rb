@@ -5,7 +5,14 @@ module ScreenKit
     def fps(path)
       cmd = "ffprobe -v error -select_streams v:0 -show_entries " \
             "stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1"
-      `#{cmd} #{path}`.strip.to_f
+      rate = `#{cmd} #{path}`.strip
+
+      if rate.include?("/")
+        numerator, denominator = rate.split("/").map(&:to_f)
+        numerator / denominator
+      else
+        rate.to_f
+      end
     end
 
     def duration(path)
@@ -38,6 +45,10 @@ module ScreenKit
       factor = hi_res ? 2 : 1
       image = MiniMagick::Image.open(path.to_s)
       [image.width / factor, image.height / factor]
+    end
+
+    def video_file?(path)
+      ContentType.video.include?(File.extname(path).downcase.delete_prefix("."))
     end
 
     def calculate_position(
