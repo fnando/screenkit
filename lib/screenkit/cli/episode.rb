@@ -52,12 +52,18 @@ module ScreenKit
              type: :boolean,
              default: true,
              desc: "Display the ScreenKit banner"
+      option :require,
+             type: :array,
+             default: [],
+             desc: "Additional Ruby files to require"
       def export
         puts Banner.banner if options.banner
 
         episode_config = Config::Episode.load_file(
           File.join(options.dir, "config.yml")
         )
+
+        options.require.each { require(it) }
 
         exporter = ScreenKit::Exporter::Episode.new(
           project_config: config,
