@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "thor"
+require "thor/completion"
 require "yaml"
 require "json-schema"
 require "mini_magick"

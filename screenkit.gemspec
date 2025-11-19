@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "openssl"
   spec.add_dependency "securerandom"
   spec.add_dependency "thor"
+  spec.add_dependency "thor-completion"
   spec.add_dependency "tty-spinner"
   spec.add_dependency "yaml"
 

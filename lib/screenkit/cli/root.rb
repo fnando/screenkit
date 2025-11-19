@@ -3,7 +3,7 @@
 module ScreenKit
   module CLI
     class Root < Base
-      desc "episode SUBCOMMAND", desc: "Episode commands"
+      desc "episode SUBCOMMAND", "Episode commands"
       subcommand "episode", CLI::Episode
 
       desc "new PATH", "Create a new project"
@@ -48,6 +48,21 @@ module ScreenKit
         )
 
         puts output_path
+      end
+
+      desc "completion", "Generate shell completion script"
+      option :shell,
+             type: :string,
+             required: true,
+             enum: %w[bash zsh powershell fish]
+      def completion
+        puts Thor::Completion.generate(
+          name: "screenkit",
+          description: "Terminal to screencast, simplified",
+          version: VERSION,
+          cli: self.class,
+          shell: options.shell
+        )
       end
 
       no_commands do
