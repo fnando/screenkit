@@ -26,11 +26,15 @@ module ScreenKit
       # A mutex for thread-safe operations.
       attr_reader :mutex
 
+      # The logfile for logging export details.
+      attr_reader :logfile
+
       def initialize(project_config:, config:, options:)
         @project_config = project_config
         @config = config
         @options = options
         @mutex = Mutex.new
+        @logfile = Logfile.new(output_dir.join("logs"))
       end
 
       def tts?
@@ -70,8 +74,8 @@ module ScreenKit
       def export
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
-        prelude
         cleanup_output_dir
+        prelude
         create_output_dir
         export_intro
         export_outro
@@ -97,6 +101,7 @@ module ScreenKit
           list: callouts,
           message: "Exporting callouts (%{progress}/%{count})"
         ).run do |item, index|
+          log_path = logfile.create(item[:prefix], :callout, index)
           type = item[:callouts].fetch(:type).to_sym
           callout_style = project_config
                           .callouts
@@ -104,8 +109,11 @@ module ScreenKit
                           .merge(item[:callouts].except(:starts_at, :duration))
           callout_path = output_dir
                          .join("callouts", "#{item[:prefix]}-#{index}.png")
-          Callout.new(source:, **callout_style, output_path: callout_path)
-                 .render
+          Callout.new(
+            source:, **callout_style,
+            output_path: callout_path,
+            log_path:
+          ).render
         end
 
         log_elapsed("Created callouts in %{elapsed}", elapsed)
@@ -115,7 +123,8 @@ module ScreenKit
         elapsed = ParallelProcessor.new(
           spinner:,
           list: filtered_segments,
-          message: "Exporting voiceovers (%{progress}/%{count})"
+          message: "Exporting voiceovers (%{progress}/%{count})",
+          log_path: logfile.create("%{prefix}", :voiceover)
         ).run(&:export_voiceover)
 
         log_elapsed("Generated voiceover in %{elapsed}", elapsed)
@@ -125,7 +134,8 @@ module ScreenKit
         elapsed = ParallelProcessor.new(
           spinner:,
           list: filtered_segments,
-          message: "Exporting videos (%{progress}/%{count})"
+          message: "Exporting videos (%{progress}/%{count})",
+          log_path: logfile.create("%{prefix}", "export-video")
         ).run(&:export_video)
 
         log_elapsed("Exported videos in %{elapsed}", elapsed)
@@ -135,7 +145,8 @@ module ScreenKit
         elapsed = ParallelProcessor.new(
           spinner:,
           list: filtered_segments,
-          message: "Merging audio and video (%{progress}/%{count})"
+          message: "Merging audio and video (%{progress}/%{count})",
+          log_path: logfile.create("%{prefix}")
         ).run(&:merge_audio_and_video)
 
         log_elapsed("Created segments in %{elapsed}", elapsed)
@@ -348,7 +359,7 @@ module ScreenKit
           output_video_path
         ]
 
-        run_command(*command)
+        run_command(*command, log_path: logfile.create("final-video"))
 
         spinner.stop
 
@@ -364,6 +375,15 @@ module ScreenKit
 
       # Logs initial information about the episode export process.
       def prelude
+        logfile.json_log(
+          :config,
+          options.merge(
+            pwd: Dir.pwd,
+            episode_config: config.to_h,
+            project_config: project_config.to_h
+          )
+        )
+
         log(
           :info,
           "Project root dir: %{dir}",
@@ -443,9 +463,11 @@ module ScreenKit
           spinner.update("Exporting intro…")
 
           intro_config = scenes.fetch(:intro)
+          log_path = logfile.create(:intro)
 
-          Intro.new(config: intro_config, text: config.title, source:)
-               .export(intro_path)
+          Intro
+            .new(config: intro_config, text: config.title, source:, log_path:)
+            .export(intro_path)
 
           spinner.stop
         end
@@ -457,8 +479,9 @@ module ScreenKit
         time, _ = elapsed do
           spinner.update("Exporting outro…")
 
+          log_path = logfile.create(:outro)
           outro_config = scenes.fetch(:outro)
-          Outro.new(config: outro_config, source:).export(outro_path)
+          Outro.new(config: outro_config, source:, log_path:).export(outro_path)
           spinner.stop
         end
 

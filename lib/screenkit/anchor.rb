@@ -11,5 +11,9 @@ module ScreenKit
     def initialize(value)
       @horizontal, @vertical = (Array(value) * 2).take(2)
     end
+
+    def as_json(*)
+      [horizontal, vertical]
+    end
   end
 end

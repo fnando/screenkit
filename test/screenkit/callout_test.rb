@@ -44,8 +44,8 @@ module ScreenKit
         padding: [0, 0]
       )
 
-      assert_equal [10, 10, 10, 10], callout.margin
-      assert_equal %w[center top], callout.anchor
+      assert_equal [10, 10, 10, 10], callout.margin.as_json
+      assert_equal %w[center top], callout.anchor.as_json
       assert_instance_of ScreenKit::Callout::Styles::Default, callout.style
       assert_instance_of ScreenKit::Transition, callout.in_transition
       assert_instance_of ScreenKit::Transition, callout.out_transition

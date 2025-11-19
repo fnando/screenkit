@@ -5,10 +5,11 @@ module ScreenKit
     class Image
       include Shell
 
-      attr_reader :image_path
+      attr_reader :image_path, :log_path
 
-      def initialize(image_path:)
+      def initialize(image_path:, log_path: nil)
         @image_path = image_path
+        @log_path = log_path
       end
 
       def export(output_path)
@@ -23,7 +24,7 @@ module ScreenKit
           output_path
         ]
 
-        run_command(*cmd)
+        run_command(*cmd, log_path:)
       end
     end
   end

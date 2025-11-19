@@ -8,5 +8,9 @@ module ScreenKit
       @duration = duration
       @sound = sound
     end
+
+    def as_json(*)
+      {duration:, sound:}
+    end
   end
 end

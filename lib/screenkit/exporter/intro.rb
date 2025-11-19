@@ -20,11 +20,15 @@ module ScreenKit
       # The source path lookup instance.
       attr_reader :source
 
-      def initialize(config:, text:, source:)
+      # The log path.
+      attr_reader :log_path
+
+      def initialize(config:, text:, source:, log_path: nil)
         self.class.validate!(config)
         @config = config
         @text = text
         @source = source
+        @log_path = log_path
       end
 
       def logo_config
@@ -88,7 +92,7 @@ module ScreenKit
           path
         ]
 
-        run_command(*cmd)
+        run_command(*cmd, log_path:)
       end
 
       private def ffmpeg_params

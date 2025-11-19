@@ -14,7 +14,7 @@ module ScreenKit
         @options = options
       end
 
-      def generate(text:, output_path:)
+      def generate(text:, output_path:, log_path: nil)
         self.class.validate!(@options)
 
         {voice: nil, rate: nil}.merge(@options) => {voice:, rate:}
@@ -23,7 +23,8 @@ module ScreenKit
                     (["-v", voice] if voice),
                     (["-r", rate] if rate),
                     "-o", output_path.sub_ext(".aiff"),
-                    text
+                    text,
+                    log_path:
       end
     end
   end

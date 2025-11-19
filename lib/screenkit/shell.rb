@@ -14,7 +14,7 @@ module ScreenKit
       end
     end
 
-    def run_command(command, *args)
+    def run_command(command, *args, log_path: nil)
       args = args.flatten.compact.map(&:to_s)
       stdout, stderr, status = Open3.capture3(command, *args)
       exit_code = status.exitstatus
@@ -35,6 +35,24 @@ module ScreenKit
       end
 
       [stdout, stderr]
+    ensure
+      if log_path
+        header = ->(text) { ("=" * 10) + " #{text} " + ("=" * 10) }
+
+        File.open(log_path, "w") do |f|
+          f << "#{header.call('COMMAND')}\n\n"
+          f << "#{[command, *args].join(' ')}\n\n"
+
+          f << "#{header.call('EXIT CODE')}\n\n"
+          f << "#{exit_code}\n\n"
+
+          f << "#{header.call('STDOUT')}\n\n"
+          f << "#{stdout}\n\n"
+
+          f << "#{header.call('STDERR')}\n\n"
+          f << "#{stderr}\n"
+        end
+      end
     end
   end
 end

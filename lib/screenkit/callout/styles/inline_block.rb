@@ -32,7 +32,7 @@ module ScreenKit
           kwargs.each do |key, value|
             value = case key
                     when :padding
-                      (Array(value) * 4).take(4)
+                      Spacing.new(value)
                     when :text_style
                       TextStyle.new(source:, **value)
                     else
@@ -43,9 +43,20 @@ module ScreenKit
           end
         end
 
+        def as_json(*)
+          {
+            background_color:,
+            text_style: text_style.as_json,
+            output_path:,
+            padding: padding.as_json,
+            text:,
+            width:
+          }
+        end
+
         def render
-          padding_x = padding[0] + padding[2]
-          padding_y = padding[1] + padding[3]
+          padding_x = padding.horizontal
+          padding_y = padding.vertical
           content_width = width - padding_x
           lines = if text.include?("\n")
                     text.lines.map(&:strip)
@@ -91,7 +102,7 @@ module ScreenKit
               # Composite line text
               image << path
               image << "-geometry"
-              image << "+#{padding[0]}+#{offset_y + padding[1]}"
+              image << "+#{padding.top}+#{offset_y + padding.left}"
               image << "-composite"
               offset_y += padding_y + height
             end
@@ -100,6 +111,9 @@ module ScreenKit
           end
 
           output_path
+        rescue MiniMagick::Error => error
+          retry if error.message.include?("No such file or directory")
+          raise
         ensure
           line_images&.each {|(path)| remove_file(path) }
         end

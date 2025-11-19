@@ -7,5 +7,17 @@ module ScreenKit
     def initialize(value)
       @top, @right, @bottom, @left = (Array(value) * 4).take(4)
     end
+
+    def horizontal
+      right + left
+    end
+
+    def vertical
+      top + bottom
+    end
+
+    def as_json(*)
+      [top, right, bottom, left]
+    end
   end
 end

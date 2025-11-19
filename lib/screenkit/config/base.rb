@@ -30,6 +30,22 @@ module ScreenKit
       def process(_key, value)
         value
       end
+
+      def to_h
+        instance_variables.each_with_object({}) do |var, hash|
+          key = var.to_s.delete_prefix("@").to_sym
+          value = instance_variable_get(var)
+
+          hash[key] =
+            if value.respond_to?(:as_json)
+              value.as_json
+            elsif value.is_a?(Array)
+              value.map {|v| v.respond_to?(:as_json) ? v.as_json : v }
+            else
+              value
+            end
+        end
+      end
     end
   end
 end

@@ -59,16 +59,24 @@ module ScreenKit
                       end
       end
 
-      def export_video
+      def export_video(log_path:)
         return if video_path.file? && !episode.options.overwrite
+
+        log_path = format(log_path.to_s, prefix:) if log_path
 
         case content_path.extname.downcase.gsub(/^\./, "")
         when *ContentType.video
-          Exporter::Image.new(input_path: content_path).export(video_path)
+          Exporter::Video
+            .new(input_path: content_path, log_path:)
+            .export(video_path)
         when *ContentType.image
-          Exporter::Image.new(image_path: content_path).export(video_path)
+          Exporter::Image
+            .new(image_path: content_path, log_path:)
+            .export(video_path)
         when *ContentType.demotape
-          Exporter::Demotape.new(demotape_path: content_path).export(video_path)
+          Exporter::Demotape
+            .new(demotape_path: content_path, log_path:)
+            .export(video_path)
         else
           raise "Unsupported content type: #{content_path.extname}"
         end
@@ -78,7 +86,7 @@ module ScreenKit
         episode.scenes.fetch(:segment).fetch(:crossfade_duration, 0.5)
       end
 
-      def merge_audio_and_video
+      def merge_audio_and_video(log_path:)
         # Get video duration
         video_duration = duration(video_path)
 
@@ -203,25 +211,28 @@ module ScreenKit
           segment_path
         ]
 
-        run_command(*cmd)
+        run_command(*cmd, log_path: create_log_path(log_path, __method__))
       end
 
-      def export_voiceover
-        create_voiceover
-        normalize_voiceover
+      def export_voiceover(log_path:)
+        create_voiceover(log_path: create_log_path(log_path))
+        normalize_voiceover(
+          log_path: create_log_path(log_path, :normalize)
+        )
       end
 
-      def normalize_voiceover
+      def normalize_voiceover(log_path:)
         run_command "ffmpeg-normalize",
                     voiceover_path,
                     "-f",
                     "-o", output_voiceover_path,
                     "-nt", "ebu",
                     "-t", "-18",
-                    "-c:a", "flac", "-ac", "1", "-ar", "44100"
+                    "-c:a", "flac", "-ac", "1", "-ar", "44100",
+                    log_path:
       end
 
-      def create_voiceover
+      def create_voiceover(log_path:)
         return if voiceover_path&.file? && !episode.options.overwrite
         return unless script_path.file?
         return unless episode.tts?
@@ -230,8 +241,17 @@ module ScreenKit
 
         episode.tts_engine.generate(
           text: script_path.read,
-          output_path: voiceover_path
+          output_path: voiceover_path,
+          log_path:
         )
+      end
+
+      def create_log_path(path, tag = nil)
+        return path unless path
+
+        path = path.sub_ext("-#{tag.to_s.tr('_', '-')}.txt") if tag
+
+        format(path.to_s, prefix:) if path
       end
     end
   end

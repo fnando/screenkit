@@ -21,15 +21,22 @@ module ScreenKit
         @options = options
       end
 
-      def generate(output_path:, text:)
+      def generate(output_path:, text:, log_path: nil)
         self.class.validate!(options)
         voice_id = options.delete(:voice_id)
+
+        if log_path
+          File.open(log_path, "w") do |f|
+            f << JSON.pretty_generate(options.merge(text:))
+          end
+        end
 
         require "aitch"
 
         response = Aitch.post(
           url: "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}",
           body: JSON.dump(options.merge(text:)),
+          options: {expect: 200},
           headers: {
             "content-type": "application/json",
             "user-agent": "ScreenKit/#{ScreenKit::VERSION}",

@@ -2,6 +2,8 @@
 
 module ScreenKit
   class Callout
+    using CoreExt
+
     # Raised when a style class cannot be found
     UndefinedStyleError = Class.new(StandardError)
 
@@ -27,7 +29,7 @@ module ScreenKit
     attr_reader :margin
 
     attr_accessor :in_transition, :out_transition, :style,
-                  :style_props, :style_class, :animation, :source
+                  :style_props, :style_class, :animation, :source, :log_path
 
     def self.schema_path
       ScreenKit.root_dir.join("screenkit/schemas/refs/callout.json")
@@ -41,6 +43,7 @@ module ScreenKit
       out_transition:,
       margin:,
       style: "default",
+      log_path: nil,
       **style_props
     )
       style_name = style || "default"
@@ -54,17 +57,31 @@ module ScreenKit
         margin:
       )
 
+      @log_path = log_path
       @source = source
       @animation = animation
       @style_class = resolve_style_class(style_name)
-      @anchor = anchor
-      @margin = (Array(margin) * 4).take(4)
+      @anchor = Anchor.new(anchor)
+      @margin = Spacing.new(margin)
       @in_transition = Transition.new(**in_transition)
       @out_transition = Transition.new(**out_transition)
       @style = style_class.new(source:, **style_props)
     end
 
     def render
+      if log_path
+        File.open(log_path, "w") do |f|
+          f << JSON.pretty_generate(
+            animation:,
+            anchor:,
+            margin:,
+            in_transition:,
+            out_transition:,
+            style:
+          )
+        end
+      end
+
       style.render
     end
 

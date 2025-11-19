@@ -35,6 +35,10 @@ module ScreenKit
           1.0
         end
       end
+
+      def as_json(*)
+        {color:, size:, font_path:, rgb_color:, opacity:}
+      end
     end
   end
 end

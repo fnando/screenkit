@@ -39,13 +39,27 @@ module ScreenKit
                     when :body_style, :title_style
                       TextStyle.new(source:, **value)
                     when :padding
-                      (Array(value) * 4).take(4)
+                      Spacing.new(value)
                     else
                       value
                     end
 
             instance_variable_set(:"@#{key}", value)
           end
+        end
+
+        def as_json(*)
+          {
+            background_color:,
+            body:,
+            body_style: body_style.as_json,
+            output_path:,
+            padding: padding.as_json,
+            shadow:,
+            title:,
+            title_style: title_style.as_json,
+            width:
+          }
         end
 
         def render
@@ -66,8 +80,7 @@ module ScreenKit
                      end
 
           image_width = width
-          image_height = padding[0] +
-                         padding[2] +
+          image_height = padding.vertical +
                          title_height +
                          text_gap +
                          body_height +
@@ -97,7 +110,7 @@ module ScreenKit
             if title_path
               image << title_path
               image << "-geometry"
-              image << "+#{text_x}+#{padding[0]}"
+              image << "+#{text_x}+#{padding.left}"
               image << "-composite"
             end
 
@@ -105,7 +118,7 @@ module ScreenKit
             if body_path
               image << body_path
               image << "-geometry"
-              image << "+#{text_x}+#{padding[0] + title_height + text_gap}"
+              image << "+#{text_x}+#{padding.left + title_height + text_gap}"
               image << "-composite"
             end
 
@@ -118,9 +131,9 @@ module ScreenKit
           remove_file(body_path)
         end
 
-        private def text_width = width - padding[1] - padding[3]
-        private def text_x = shadow[:offset] + padding[0]
-        private def title_y = padding[0]
+        private def text_width = width - padding.horizontal
+        private def text_x = shadow[:offset] + padding.left
+        private def title_y = padding.top
         private def body_y = title_y + text_gap + title_style.size
       end
     end
