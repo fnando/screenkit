@@ -48,7 +48,13 @@ module ScreenKit
       option :output_dir,
              type: :string,
              desc: "Path to save the exported video files"
+      option :banner,
+             type: :boolean,
+             default: true,
+             desc: "Display the ScreenKit banner"
       def export
+        puts Banner.banner if options.banner
+
         episode_config = Config::Episode.load_file(
           File.join(options.dir, "config.yml")
         )

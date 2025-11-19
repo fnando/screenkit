@@ -15,6 +15,7 @@ module ScreenKit
   require_relative "screenkit/core_ext/json"
   require_relative "screenkit/content_type"
   require_relative "screenkit/anchor"
+  require_relative "screenkit/banner"
   require_relative "screenkit/spacing"
   require_relative "screenkit/watermark"
   require_relative "screenkit/spinner"

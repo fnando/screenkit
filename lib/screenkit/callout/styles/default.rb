@@ -126,6 +126,9 @@ module ScreenKit
           end
 
           output_path
+        rescue MiniMagick::Error => error
+          retry if error.message.include?("No such file or directory")
+          raise
         ensure
           remove_file(title_path)
           remove_file(body_path)
