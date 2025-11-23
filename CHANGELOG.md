@@ -11,6 +11,13 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## Unreleased
+
+- [Added] Add file copy callout style, to copy files to the final output path.
+- [Changed] Copy only two OpenSans font files.
+- [Changed] Rename the default callout to `shadow_block`.
+- [Fixed] Changed all JSON Schema files to use a consistent url.
+
 ## v0.0.1
 
 - [Added] Allow configuring Demo Tape using episode or project configuration.

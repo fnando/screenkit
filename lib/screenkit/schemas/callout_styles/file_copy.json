@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/callout_styles/file_copy.json",
+  "title": "File Copy Callout",
+  "type": "object",
+  "required": ["file_path"],
+  "properties": { "file_path": { "type": "string", "format": "uri" } }
+}

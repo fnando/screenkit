@@ -396,14 +396,15 @@ during the video.
 
 ScreenKit provides two built-in callout styles:
 
-#### Default Style
+#### Shadow Block Style
 
-The default style displays a title and body in a box with optional shadow.
+The shadow block style displays a title and body in a box with optional shadow.
 
 ```yaml
 callout_styles:
-  info:
-    style: default                    # Optional: defaults to "default"
+  shadow_block:                       # This key can be anything.
+    style: shadow_block               # The callout style name (will resolve to
+                                      # a ruby class).
     background_color: "#ffff00"       # Background color (hex)
 
     # Shadow
@@ -448,7 +449,7 @@ callout_styles:
 
 ```yaml
 callouts:
-  - type: info
+  - type: shadow_block
     title: "ScreenKit"
     body: "Visit https://github.com/fnando/screenkit"
     starts_at: 3
@@ -463,26 +464,23 @@ snippets, commands, or short inline text.
 
 ```yaml
 callouts_styles:
-  code:
-    style: inline_block
+  code: # This key can be anything.
+    style: inline_block # Will resolve to a ruby class.
     background_color: "#000000" # Background color (hex)
 
-    # Text Style (single style for all text)
     text_style:
       color: "#ffffff"
       size: 40
       font_path: open-sans/OpenSans-ExtraBold.ttf
 
     # Layout
-    padding: 20 # Padding around text (pixels)
-    margin: 100 # Margin from edge (pixels)
-    anchor: [left, center] # Position anchor point
-    width: 600 # Maximum width (pixels)
+    padding: 20
+    margin: 100
+    anchor: [left, center]
+    width: 600
 
-    # Animation
-    animation: fade # "fade" or "slide"
+    animation: fade
 
-    # Transitions
     in_transition:
       duration: 0.4
       sound: false
@@ -512,14 +510,41 @@ callouts:
     duration: 6
 ```
 
-**Key differences from default style:**
+#### File Copy Style
 
-- Uses `text` instead of `title` and `body`
-- Only one `text_style` (no separate title/body styles)
-- No `shadow` option
-- Each line gets its own background rectangle
-- Text can include manual line breaks (`\n`)
-- Auto-wraps based on `width` if no line breaks present
+This is not a callout style per se. Instead, you can copy a file to the final
+output directory during episode export. Useful for adding custom assets that may
+be produced outside of ScreenKit.
+
+```yaml
+callouts_styles:
+  file_copy: # This key can be anything.
+    style: file_copy
+
+    # Layout
+    padding: 20
+    margin: 100
+    anchor: [left, center]
+    width: 600
+
+    animation: fade
+
+    in_transition:
+      duration: 0.4
+      sound: false
+
+    out_transition:
+      duration: 0.3
+      sound: false
+```
+
+**Usage in episode:**
+
+```yaml
+callouts:
+  - type: file_copy
+    file_path: images/social_card.png
+```
 
 ### Anchor Positions
 
