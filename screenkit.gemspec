@@ -47,7 +47,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "tty-spinner"
   spec.add_dependency "yaml"
 
-  spec.add_development_dependency "demotape"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "minitest-utils"
   spec.add_development_dependency "rake"
