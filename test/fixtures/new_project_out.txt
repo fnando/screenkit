@@ -3,42 +3,8 @@
       create  resources
       create  resources/backtracks/default.aac
       create  resources/fonts/open-sans/OFL.txt
-      create  resources/fonts/open-sans/OpenSans-Bold.ttf
-      create  resources/fonts/open-sans/OpenSans-BoldItalic.ttf
       create  resources/fonts/open-sans/OpenSans-ExtraBold.ttf
-      create  resources/fonts/open-sans/OpenSans-ExtraBoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans-Italic.ttf
-      create  resources/fonts/open-sans/OpenSans-Light.ttf
-      create  resources/fonts/open-sans/OpenSans-LightItalic.ttf
-      create  resources/fonts/open-sans/OpenSans-Medium.ttf
-      create  resources/fonts/open-sans/OpenSans-MediumItalic.ttf
-      create  resources/fonts/open-sans/OpenSans-Regular.ttf
       create  resources/fonts/open-sans/OpenSans-SemiBold.ttf
-      create  resources/fonts/open-sans/OpenSans-SemiBoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-Bold.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-BoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-ExtraBold.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-ExtraBoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-Italic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-Light.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-LightItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-Medium.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-MediumItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-Regular.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-SemiBold.ttf
-      create  resources/fonts/open-sans/OpenSans_Condensed-SemiBoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-Bold.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-BoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-ExtraBold.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-ExtraBoldItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-Italic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-Light.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-LightItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-Medium.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-MediumItalic.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-Regular.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-SemiBold.ttf
-      create  resources/fonts/open-sans/OpenSans_SemiCondensed-SemiBoldItalic.ttf
       create  resources/fonts/open-sans/README.txt
       create  resources/images/logo.png
       create  resources/images/watermark.png
