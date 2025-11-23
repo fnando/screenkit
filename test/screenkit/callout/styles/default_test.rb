@@ -11,8 +11,8 @@ class DefaultTest < Minitest::Test
       "/Library/Fonts"
     )
   end
-  let(:title_font) { "opensans/OpenSans-ExtraBold.ttf" }
-  let(:body_font) { "opensans/OpenSans-SemiBold.ttf" }
+  let(:title_font) { "open-sans/OpenSans-ExtraBold.ttf" }
+  let(:body_font) { "open-sans/OpenSans-SemiBold.ttf" }
 
   test "generates callout image" do
     output_path = create_tmp_path(:png)

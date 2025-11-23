@@ -8,7 +8,7 @@ class InlineBlockTest < Minitest::Test
                              .join("screenkit/generators/project/resources")
     ScreenKit::PathLookup.new(resources_dir.join("fonts"))
   end
-  let(:font) { "opensans/OpenSans-ExtraBold.ttf" }
+  let(:font) { "open-sans/OpenSans-ExtraBold.ttf" }
 
   test "generates callout image" do
     output_path = create_tmp_path(:png)

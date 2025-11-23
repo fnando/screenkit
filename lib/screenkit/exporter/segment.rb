@@ -75,15 +75,20 @@ module ScreenKit
             .export(video_path)
         when *ContentType.demotape
           Exporter::Demotape
-            .new(demotape_path: content_path, log_path:)
-            .export(video_path)
+            .new(
+              demotape_path: content_path,
+              log_path:,
+              options: episode.demotape_options
+            ).export(video_path)
         else
           raise "Unsupported content type: #{content_path.extname}"
         end
       end
 
       def crossfade_duration
-        episode.scenes.fetch(:segment).fetch(:crossfade_duration, 0.5)
+        Duration.parse(
+          episode.scenes.fetch(:segment).fetch(:crossfade_duration, 0.5)
+        )
       end
 
       def merge_audio_and_video(log_path:)
@@ -123,9 +128,9 @@ module ScreenKit
 
           starts_at = callout[:starts_at]
           max_duration = [content_duration - 0.2, 0].max
-          duration = callout[:duration]
-                     .clamp(0, max_duration)
-                     .round(half: :down)
+          duration = Duration.parse(callout[:duration])
+                             .clamp(0, max_duration)
+                             .round(half: :down)
           ends_at = starts_at + duration
           callout_image_path = episode.output_dir.join("callouts",
                                                        "#{prefix}-#{index}.png")

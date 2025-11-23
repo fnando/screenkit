@@ -8,10 +8,27 @@ class DemotapeTest < Minitest::Test
     output_path = create_tmp_path(:mp4)
 
     demotape_exporter =
-      ScreenKit::Exporter::Demotape.new(demotape_path: demotape_path)
+      ScreenKit::Exporter::Demotape.new(demotape_path:)
 
     demotape_exporter.export(output_path)
 
     assert_path_exists output_path
+    assert_similar_videos(fixtures("demotape.mp4"), output_path)
+  end
+
+  test "exports a demotape correctly with custom config" do
+    demotape_path = fixtures("hello.tape")
+    output_path = create_tmp_path(:mp4)
+
+    demotape_exporter =
+      ScreenKit::Exporter::Demotape.new(
+        demotape_path:,
+        options: {font_size: 50}
+      )
+
+    demotape_exporter.export(output_path)
+
+    assert_path_exists output_path
+    assert_similar_videos(fixtures("demotape_custom_config.mp4"), output_path)
   end
 end

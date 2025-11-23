@@ -71,7 +71,7 @@ module ScreenKit
           "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
           "-c:a", "flac", "-ac", "1", "-ar", "44100",
           "-shortest",
-          "-t", config[:duration],
+          "-t", Duration.parse(config[:duration]),
           "-r", 24,
           "-y",
           path
@@ -81,11 +81,11 @@ module ScreenKit
       end
 
       private def ffmpeg_params
-        duration = config[:duration]
+        duration = Duration.parse(config[:duration])
         logo_delay = 0.5
-        fade_in = config.fetch(:fade_in, 0.5)
-        fade_out = config.fetch(:fade_out, 0.5)
-        fade_out_start = duration - fade_out - 0.1
+        fade_in = Duration.parse(config.fetch(:fade_in, 0.5))
+        fade_out = Duration.parse(config.fetch(:fade_out, 0.5))
+        fade_out_start = duration - fade_out - 0.2
 
         # Build filter chain
         inputs = []

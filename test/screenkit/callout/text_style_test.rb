@@ -11,7 +11,7 @@ module ScreenKit
         ScreenKit::PathLookup.new(resources_dir.join("fonts"))
       end
 
-      let(:font_path) { "opensans/OpenSans-ExtraBold.ttf" }
+      let(:font_path) { "open-sans/OpenSans-ExtraBold.ttf" }
 
       test "extracts RGB color from hex" do
         style = TextStyle.new(

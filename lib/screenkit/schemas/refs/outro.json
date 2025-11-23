@@ -7,20 +7,8 @@
     "background": { "$ref": "background.json" },
     "logo": { "$ref": "logo.json" },
     "sound": { "$ref": "sound.json" },
-    "duration": {
-      "type": "number",
-      "description": "Duration of the intro scene in seconds",
-      "minimum": 0
-    },
-    "fade_in": {
-      "type": "number",
-      "description": "Fade-in duration in seconds",
-      "minimum": 0
-    },
-    "fade_out": {
-      "type": "number",
-      "description": "Fade-out duration in seconds",
-      "minimum": 0
-    }
+    "duration": { "$ref": "duration.json" },
+    "fade_in": { "$ref": "duration.json" },
+    "fade_out": { "$ref": "duration.json" }
   }
 }

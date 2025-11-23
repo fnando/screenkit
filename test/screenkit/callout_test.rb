@@ -9,7 +9,7 @@ module ScreenKit
                                .join("screenkit/generators/project/resources")
       ScreenKit::PathLookup.new(resources_dir.join("fonts"))
     end
-    let(:font_path) { "opensans/OpenSans-ExtraBold.ttf" }
+    let(:font_path) { "open-sans/OpenSans-ExtraBold.ttf" }
 
     test "fails with unresolved style" do
       error = assert_raises(ScreenKit::Callout::UndefinedStyleError) do

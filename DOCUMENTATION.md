@@ -223,13 +223,13 @@ callouts:
     title_style:
       color: "#000000"
       size: 40
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
 
     # Body styling
     body_style:
       color: "#000000"
       size: 32
-      font_path: opensans/OpenSans-Semibold.ttf
+      font_path: open-sans/OpenSans-Semibold.ttf
 
     # Positioning
     anchor: [left, bottom] # [horizontal, vertical]
@@ -338,7 +338,7 @@ scenes:
     title:
       x: 100           # X position (pixels or "center")
       y: 300           # Y position (pixels or "center")
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
       size: 144        # Font size
       color: "#ffffff"
 
@@ -418,12 +418,12 @@ callouts:
     title_style:
       color: "#000000"
       size: 40
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
 
     body_style:
       color: "#000000"
       size: 32
-      font_path: opensans/OpenSans-Semibold.ttf
+      font_path: open-sans/OpenSans-Semibold.ttf
 
     # Layout
     padding: 50                       # Internal padding (pixels)
@@ -472,7 +472,7 @@ callouts:
     text_style:
       color: "#ffffff"
       size: 40
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
 
     # Layout
     padding: 20 # Padding around text (pixels)
@@ -766,7 +766,7 @@ Resources are searched in order from `resources_dir`:
 Reference resources by partial path:
 
 ```yaml
-font_path: opensans/OpenSans-Bold.ttf # Found in resources/fonts/
+font_path: open-sans/OpenSans-Bold.ttf # Found in resources/fonts/
 ```
 
 ### Placeholders

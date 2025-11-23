@@ -31,7 +31,8 @@
       "additionalProperties": {
         "$ref": "refs/callout.json"
       }
-    }
+    },
+    "demotape": { "$ref": "refs/demotape.json" }
   },
   "additionalProperties": false
 }

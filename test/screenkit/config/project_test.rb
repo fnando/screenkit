@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class ConfigTest < Minitest::Test
+class ProjectTest < Minitest::Test
   test "validates project config" do
     config_path = Pathname
                   .pwd

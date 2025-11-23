@@ -104,7 +104,7 @@ scenes:
     title:
       x: 100
       y: 300
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
 
@@ -161,11 +161,11 @@ callouts:
     title_style:
       color: "#000000"
       size: 40
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
     body_style:
       color: "#000000"
       size: 32
-      font_path: opensans/OpenSans-Semibold.ttf
+      font_path: open-sans/OpenSans-Semibold.ttf
     margin: 100
     padding: 50
     anchor: [left, bottom]

@@ -9,9 +9,11 @@ require "pathname"
 require "tty-spinner"
 require "etc"
 require "securerandom"
+require "demo_tape/duration"
 
 module ScreenKit
   require_relative "screenkit/version"
+  require_relative "screenkit/duration"
   require_relative "screenkit/core_ext/string"
   require_relative "screenkit/core_ext/json"
   require_relative "screenkit/content_type"

@@ -16,6 +16,7 @@
       "minLength": 1,
       "pattern": "\\S"
     },
+    "demotape": { "$ref": "refs/demotape.json" },
     "callouts": {
       "type": "array",
       "description": "List of callouts to be used in the episode",
@@ -42,19 +43,7 @@
               }
             ]
           },
-          "duration": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Callout duration time (e.g. 5s)",
-                "pattern": "/^\\d+(s|m|h)$/"
-              },
-              {
-                "type": "number",
-                "description": "Callout duration time in seconds (e.g. 5)"
-              }
-            ]
-          },
+          "duration": { "$ref": "refs/duration.json" },
           "width": {
             "oneOf": [
               {

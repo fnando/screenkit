@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://github.com/fnando/screenkit/schemas/refs/demotape.json",
+  "title": "Demo Tape settings (https://github.com/fnando/demotape)",
+  "type": "object",
+  "properties": {
+    "typing_speed": { "$ref": "duration.json" },
+    "variable_typing": { "type": "number" },
+    "shell": {
+      "type": "string",
+      "enum": ["bash", "zsh", "fish"]
+    },
+    "no_rc": {
+      "type": "boolean"
+    },
+    "rc_file": {
+      "type": "string",
+      "format": "uri"
+    },
+    "theme": {
+      "oneOf": [
+        { "$ref": "demotape_themes.json" },
+        { "type": "string", "pattern": "^[./]|^[a-zA-Z]:" }
+      ]
+    },
+    "font_size": { "type": "integer" },
+    "font_family": { "type": "string" },
+    "line_height": { "type": "number" },
+    "cursor_blink": { "type": "boolean" },
+    "cursor_width": { "type": "number" },
+    "cursor_style": { "type": "string", "enum": ["block", "underline", "bar"] },
+    "letter_spacing": { "type": "number" },
+    "padding": { "type": "number", "minLength": 1, "maxLength": 4 },
+    "margin": { "type": "number", "minLength": 1, "maxLength": 4 },
+    "margin_fill": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        { "type": "string", "pattern": "^[./]|^[a-zA-Z]:" }
+      ]
+    },
+    "border_radius": { "type": "integer" },
+    "run_enter_delay": { "$ref": "duration.json" },
+    "run_sleep": { "$ref": "duration.json" }
+  }
+}

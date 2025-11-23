@@ -98,13 +98,13 @@ tts:
 scenes:
   intro:
     # The duration of the intro scene in seconds.
-    duration: 5.5
+    duration: 5.5s
 
     # The fade-in duration in seconds.
-    fade_in: 0
+    fade_in: 0s
 
     # The fade-out duration in seconds.
-    fade_out: 0.5
+    fade_out: 0.5s
 
     # The background color/image of the intro scene.
     background: "#100f50"
@@ -113,7 +113,7 @@ scenes:
     title:
       x: 100
       y: 300
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
 
@@ -133,13 +133,13 @@ scenes:
 
   outro:
     # The duration of the outro scene in seconds.
-    duration: 5.5
+    duration: 5.5s
 
     # The fade-in duration in seconds.
-    fade_in: 0.5
+    fade_in: 0.5s
 
     # The fade-out duration in seconds.
-    fade_out: 0.5
+    fade_out: 0.5s
 
     # The background color/image of the outro scene.
     background: "#100f50"
@@ -156,7 +156,72 @@ scenes:
 
   segment:
     # The duration of the crossover transition between segments in seconds.
-    crossfade_duration: 0.5
+    crossfade_duration: 0.5s
+
+# Configure [demotape](https://github.com/fnando/demotape).
+demotape:
+  # Global speed for typing
+  typing_speed: 50ms
+
+  # Whether to add variability to typing speed
+  variable_typing: 0.25
+
+  # Shell to use for the terminal session
+  shell: zsh
+
+  # Path to a shell rc file to source on startup
+  # rc_file:
+
+  # Do not load the default rc file
+  no_rc: false
+
+  # A built-in theme name or a path to a custom theme JSON file
+  theme: default_dark
+
+  # Font size for the terminal session
+  font_size: 32
+
+  # Font family for the terminal session
+  font_family: "'JetBrainsMono Nerd Font Propo', monospace"
+
+  # Line height for the terminal session
+  line_height: 1.2
+
+  # Whether the cursor blinks
+  cursor_blink: true
+
+  # The width of the cursor when in 'bar' style
+  cursor_width: 2
+
+  # The style of the cursor when the terminal is focused.
+  cursor_style: block
+
+  # Letter spacing for the terminal session
+  letter_spacing: 0
+
+  # Padding around the terminal content. It can be 1, 2, or 4 numbers.
+  padding: 50
+
+  # Loop the GIF infinitely
+  loop: true
+
+  # Delay time (in seconds) before restarting the GIF animation
+  loop_delay: 0
+
+  # Margin around the terminal content. It can be 1, 2, or 4 numbers.
+  margin: 0
+
+  # Color or image to use for the margin around the terminal content
+  margin_fill: "#000000"
+
+  # Border radius for the terminal canvas
+  border_radius: 0
+
+  # Delay (in seconds) before pressing Enter
+  run_enter_delay: 1s
+
+  # Delay (in seconds) after running each command
+  run_sleep: 3s
 
 # Callout configurations define the appearance and behavior of callouts used
 # in the video. Callouts are visual elements that highlight important
@@ -170,20 +235,20 @@ callouts:
     title_style:
       color: "#000000"
       size: 40
-      font_path: opensans/OpenSans-ExtraBold.ttf
+      font_path: open-sans/OpenSans-ExtraBold.ttf
     body_style:
       color: "#000000"
       size: 32
-      font_path: opensans/OpenSans-Semibold.ttf
+      font_path: open-sans/OpenSans-Semibold.ttf
     margin: 100
     padding: 50
     anchor: [left, bottom]
     animation: fade
     in_transition:
-      duration: 0.4
+      duration: 0.4s
       sound: pop.mp3
     out_transition:
-      duration: 0.3
+      duration: 0.3s
       sound:
         path: pop.mp3
         volume: 0.7

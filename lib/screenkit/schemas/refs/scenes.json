@@ -16,11 +16,7 @@
       "description": "Main content scene configuration",
       "required": ["crossfade_duration"],
       "properties": {
-        "crossfade_duration": {
-          "type": "number",
-          "description": "Duration of the crossover transition between segments in seconds",
-          "minimum": 0
-        }
+        "crossfade_duration": { "$ref": "duration.json" }
       }
     }
   }

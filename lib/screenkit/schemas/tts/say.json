@@ -10,7 +10,7 @@
     },
     "rate": {
       "description": "The speaking rate (words per minute)",
-      "oneOf": [{ "type": "null" }, { "type": "number", "pattern": "/^\\d+$/" }]
+      "oneOf": [{ "type": "null" }, { "type": "integer" }]
     }
   }
 }

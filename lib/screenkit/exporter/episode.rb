@@ -45,6 +45,10 @@ module ScreenKit
         (config.tts || {}).merge(project_config.tts || {})
       end
 
+      def demotape_options
+        (config.demotape || {}).merge(project_config.demotape || {})
+      end
+
       def tts_engine
         @tts_engine ||= TTS.const_get(
           tts_options[:engine].camelize
@@ -155,7 +159,9 @@ module ScreenKit
       def merge_segments
         spinner.update("Merging segments into final episode…")
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        crossfade_duration = scenes.dig(:segment, :crossfade_duration) || 0.5
+        crossfade_duration = Duration.parse(
+          scenes.dig(:segment, :crossfade_duration) || 0.5
+        )
         watermark = Watermark.new(config.watermark || project_config.watermark)
 
         watermark_path = if watermark.path
