@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/intro.json",
+  "$id": "https://screenkit.dev/schemas/refs/intro.json",
   "title": "Intro",
   "properties": {
     "duration": { "$ref": "duration.json" },

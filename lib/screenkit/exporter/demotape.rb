@@ -5,6 +5,10 @@ module ScreenKit
     class Demotape
       include Shell
 
+      DURATION_ATTRIBUTES = %w[
+        typing_speed loop_delay run_enter_delay run_sleep
+      ].freeze
+
       attr_reader :demotape_path, :log_path, :options
 
       def initialize(demotape_path:, options: {}, log_path: nil)
@@ -28,6 +32,10 @@ module ScreenKit
 
       def options_to_args(options)
         (options || {}).flat_map do |key, value|
+          if DURATION_ATTRIBUTES.include?(key.to_s)
+            value = Duration.parse(value)
+          end
+
           [key.to_s.tr("_", "-").prepend("--"), value]
         end
       end

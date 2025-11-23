@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/project.json",
+  "$id": "https://screenkit.dev/schemas/refs/project.json",
   "title": "Directory",
   "oneOf": [
     {

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/tts/elevenlabs.json",
+  "$id": "https://screenkit.dev/schemas/tts/elevenlabs.json",
   "title": "The ElevenLabs voice engine options",
   "type": "object",
   "required": ["voice_id"],

@@ -718,9 +718,9 @@ episodes/001-episode-name/
     └── fonts/
 ```
 
-### VHS Tape Files
+### Demo Tape Files
 
-ScreenKit uses [VHS](https://github.com/charmbracelet/vhs) tape files for
+ScreenKit uses [Demo Tape](https://github.com/fnando/demotape) tape files for
 terminal recordings:
 
 ```tape
@@ -879,7 +879,8 @@ When exporting an episode, ScreenKit:
 
 1. **Validates** project and episode configurations
 2. **Generates voiceovers** from script files (if TTS enabled)
-3. **Renders terminal recordings** from tape files using VHS
+3. **Renders terminal recordings** from tape files using
+   [Demo Tape](https://github.com/fnando/demotape)
 4. **Combines segments** with crossfade transitions
 5. **Adds intro/outro** scenes
 6. **Overlays callouts** with animations
@@ -917,7 +918,7 @@ be processed).
 ### Visuals
 
 - Use consistent branding across callouts
-- Test callout timing with `screenkit callout` command
+- Test callout formats with `screenkit callout` command
 - PNG images with transparency work best for logos and watermarks
 
 ### Organization
@@ -953,7 +954,7 @@ bundle exec screenkit ...
 
 **TTS not working:**
 
-- For ElevenLabs: Set `--voice-api-key` or `ELEVENLABS_API_KEY` env variable
+- For ElevenLabs: Set `--voice-api-key`
 - For macOS `say`: Verify voice name with `say -v ?`
 
 ---

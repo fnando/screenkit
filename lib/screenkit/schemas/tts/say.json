@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/tts/say.json",
+  "$id": "https://screenkit.dev/schemas/tts/say.json",
   "title": "The Apple `say` voice engine options",
   "type": "object",
   "properties": {

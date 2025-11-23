@@ -1,20 +1,29 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/callouts/inline_block.json",
-  "title": "Inline Block Callout",
+  "$id": "https://screenkit.dev/schemas/callouts/inline_block.json",
+  "title": "Callout — Inline Block",
   "type": "object",
-  "required": ["background_color", "text_style"],
+  "required": ["type", "text", "duration", "starts_at"],
   "properties": {
-    "background_color": { "$ref": "../refs/color.json" },
-    "width": {
-      "type": "number",
-      "description": "The callout width"
+    "type": {
+      "type": "string",
+      "enum": ["inline_block"],
+      "description": "The callout type"
     },
-    "text_style": {
-      "$ref": "../refs/text_style.json"
+    "text": {
+      "type": "string",
+      "description": "The callout text"
     },
-    "padding": {
-      "$ref": "../refs/spacing.json"
+    "duration": { "$ref": "../refs/duration.json" },
+    "starts_at": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(\\d{1,2}:)?(\\d{1,2}):(\\d{1,2})$",
+          "description": "A pattern like 00:00:00"
+        },
+        { "type": "integer", "description": "The position in seconds" }
+      ]
     }
   }
 }

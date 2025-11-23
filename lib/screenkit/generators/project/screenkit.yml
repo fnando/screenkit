@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=../../schemas/project.json
+# yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
 
 # ScreenKit project configuration file.
 schema: 1
@@ -227,9 +227,9 @@ demotape:
 # in the video. Callouts are visual elements that highlight important
 # information. Each callout type can have its own settings for icon, background,
 # text styles, animations, and sounds.
-callouts:
-  info:
-    # yaml-language-server: $schema=../../schemas/callouts/default.json
+callout_styles:
+  default:
+    # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/default.json
     background_color: "#ffff00"
     shadow: "#2242d3"
     title_style:
@@ -252,3 +252,16 @@ callouts:
       sound:
         path: pop.mp3
         volume: 0.7
+
+  inline_block:
+    # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/inline_block.json
+    style: inline_block
+    anchor: [left, bottom]
+    margin: 100
+    animation: fade
+    in_transition:
+      duration: 0.4s
+      sound: pop.mp3
+    out_transition:
+      duration: 0.4s
+      sound: pop.mp3

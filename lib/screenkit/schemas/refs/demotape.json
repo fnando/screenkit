@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/demotape.json",
+  "$id": "https://screenkit.dev/schemas/refs/demotape.json",
   "title": "Demo Tape settings (https://github.com/fnando/demotape)",
   "type": "object",
   "properties": {

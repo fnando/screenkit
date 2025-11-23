@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/color.json",
+  "$id": "https://screenkit.dev/schemas/refs/color.json",
   "title": "Color type with optional alpha channel",
   "type": "string",
   "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"

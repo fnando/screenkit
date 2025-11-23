@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/demotape_themes.json",
+  "$id": "https://screenkit.dev/schemas/refs/demotape_themes.json",
   "title": "Demo Tape themes",
   "type": "string",
   "enum": [

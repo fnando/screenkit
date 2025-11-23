@@ -153,8 +153,8 @@ scenes:
 # in the video. Callouts are visual elements that highlight important
 # information. Each callout type can have its own settings for icon, background,
 # text styles, animations, and sounds.
-callouts:
-  info:
+callout_styles:
+  default:
     # yaml-language-server: $schema=../../schemas/callouts/default.json
     background_color: "#ffff00"
     shadow: "#2242d3"

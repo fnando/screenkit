@@ -1,44 +1,38 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/callouts/basic.json",
-  "title": "Basic Callout",
+  "$id": "https://screenkit.dev/schemas/callouts/default.json",
+  "title": "Callout — Default",
   "type": "object",
-  "required": [
-    "background_color",
-    "body_style",
-    "padding",
-    "shadow",
-    "title_style"
-  ],
+  "required": ["type", "duration", "starts_at"],
   "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["default"],
+      "description": "The callout type"
+    },
+    "title": {
+      "type": "string",
+      "description": "The callout text"
+    },
+    "body": {
+      "type": "string",
+      "description": "The callout body text"
+    },
     "width": {
       "type": "number",
-      "description": "The callout width"
+      "description": "The callout width",
+      "minimum": 0
     },
-    "background_color": {
-      "$ref": "../refs/color.json"
-    },
-    "shadow": {
+    "duration": { "$ref": "../refs/duration.json" },
+    "starts_at": {
       "oneOf": [
-        { "type": "boolean", "enum": [false] },
-        { "type": "string", "$ref": "../refs/color.json" },
         {
-          "type": "object",
-          "properties": {
-            "color": { "$ref": "../refs/color.json" },
-            "offset": { "type": "integer" }
-          }
-        }
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+          "description": "A pattern like 00:00:00"
+        },
+        { "type": "integer", "description": "The position in seconds" }
       ]
-    },
-    "title_style": {
-      "$ref": "../refs/text_style.json"
-    },
-    "body_style": {
-      "$ref": "../refs/text_style.json"
-    },
-    "padding": {
-      "$ref": "../refs/spacing.json"
     }
   }
 }

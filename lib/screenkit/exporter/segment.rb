@@ -126,7 +126,7 @@ module ScreenKit
           out_sound = Sound.new(input: callout_config[:out_transition][:sound],
                                 source: episode.source)
 
-          starts_at = callout[:starts_at]
+          starts_at = TimeFormatter.parse(callout[:starts_at])
           max_duration = [content_duration - 0.2, 0].max
           duration = Duration.parse(callout[:duration])
                              .clamp(0, max_duration)

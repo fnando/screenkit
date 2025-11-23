@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/duration.json",
+  "$id": "https://screenkit.dev/schemas/refs/duration.json",
   "title": "Duration",
   "oneOf": [
     { "type": "string", "pattern": "^\\d+(\\.\\d+)?(ms|s|m|h)?$" },

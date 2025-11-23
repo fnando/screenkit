@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/transition.json",
+  "$id": "https://screenkit.dev/schemas/refs/transition.json",
   "type": "object",
   "title": "Transition",
   "required": ["duration", "sound"],

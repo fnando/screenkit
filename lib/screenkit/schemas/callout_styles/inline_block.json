@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/callout_styles/inline_block.json",
+  "title": "Inline Block Callout",
+  "type": "object",
+  "required": ["background_color", "text_style"],
+  "properties": {
+    "background_color": { "$ref": "../refs/color.json" },
+    "width": {
+      "type": "number",
+      "description": "The callout width"
+    },
+    "text_style": {
+      "$ref": "../refs/text_style.json"
+    },
+    "padding": {
+      "$ref": "../refs/spacing.json"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/callout.json",
-  "title": "Callout",
+  "$id": "https://screenkit.dev/schemas/refs/callout_style.json",
+  "title": "Callout Style",
   "type": "object",
   "required": [
     "in_transition",
@@ -20,8 +20,6 @@
       "description": "Callout style name (defaults to 'default')",
       "default": "default"
     },
-    "anchor": {
-      "$ref": "anchor.json"
-    }
+    "anchor": { "$ref": "anchor.json" }
   }
 }

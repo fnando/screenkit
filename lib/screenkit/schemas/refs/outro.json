@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/refs/outro.json",
+  "$id": "https://screenkit.dev/schemas/refs/outro.json",
   "title": "Outro",
   "required": ["logo"],
   "properties": {

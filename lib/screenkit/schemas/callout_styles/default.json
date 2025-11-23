@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/callout_styles/default.json",
+  "title": "Basic Callout",
+  "type": "object",
+  "required": [
+    "background_color",
+    "body_style",
+    "padding",
+    "shadow",
+    "title_style"
+  ],
+  "properties": {
+    "width": {
+      "type": "number",
+      "description": "The callout width"
+    },
+    "background_color": {
+      "$ref": "../refs/color.json"
+    },
+    "shadow": {
+      "oneOf": [
+        { "type": "boolean", "enum": [false] },
+        { "type": "string", "$ref": "../refs/color.json" },
+        {
+          "type": "object",
+          "properties": {
+            "color": { "$ref": "../refs/color.json" },
+            "offset": { "type": "integer" }
+          }
+        }
+      ]
+    },
+    "title_style": {
+      "$ref": "../refs/text_style.json"
+    },
+    "body_style": {
+      "$ref": "../refs/text_style.json"
+    },
+    "padding": {
+      "$ref": "../refs/spacing.json"
+    }
+  }
+}

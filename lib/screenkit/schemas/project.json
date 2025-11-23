@@ -1,8 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/fnando/screenkit/schemas/project.json",
-  "title": "ScreenKit Project Configuration",
-  "description": "Schema for ScreenKit project configuration file (screenkit.yml)",
+  "$id": "https://screenkit.dev/schemas/project.json",
+  "title": "ScreenKit Project Configuration (screenkit.yml)",
   "type": "object",
   "required": ["schema", "resources_dir", "episode_dir", "output_dir"],
   "properties": {
@@ -26,10 +25,10 @@
       "description": "Directory where generated video files will be saved. Supports placeholders like %{episode_number}, %{episode_slug} and %{date}.",
       "format": "uri"
     },
-    "callouts": {
+    "callout_styles": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "refs/callout.json"
+        "$ref": "refs/callout_style.json"
       }
     },
     "demotape": { "$ref": "refs/demotape.json" }

@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://screenkit.dev/schemas/callouts/default.json
+---
+type: default
+title: ScreenKit
+body: https://github.com/fnando/screenkit
+duration: 5s
+starts_at: 00:00:02
+width: 800
+
+# yaml-language-server: $schema=https://screenkit.dev/schemas/callouts/inline_block.json
+---
+type: inline_block
+text: gem install screenkit
+duration: 5s
+starts_at: 00:00:02
+width: 800
