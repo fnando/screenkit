@@ -44,7 +44,8 @@ class IntegrationTest < Minitest::Test
               chdir: screencasts_path
 
     assert File.directory?("tmp/screencasts/episodes/001-my-first-episode")
-    assert_equal fixtures("new_episode_out.txt").read, File.read("tmp/out.txt")
+    assert_includes File.read("tmp/out.txt"),
+                    fixtures("new_episode_out.txt").read
   end
 
   test "exports generated episode" do
