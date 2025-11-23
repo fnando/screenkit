@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://screenkit.dev/schemas/callout_styles/default.json",
-  "title": "Basic Callout",
+  "$id": "https://screenkit.dev/schemas/callout_styles/shadow_block.json",
+  "title": "Shadow Block Callout",
   "type": "object",
   "required": [
     "background_color",

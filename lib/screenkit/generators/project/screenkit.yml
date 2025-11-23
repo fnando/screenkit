@@ -228,8 +228,9 @@ demotape:
 # information. Each callout type can have its own settings for icon, background,
 # text styles, animations, and sounds.
 callout_styles:
-  default:
+  shadow_block:
     # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/default.json
+    style: shadow_block
     background_color: "#ffff00"
     shadow: "#2242d3"
     title_style:

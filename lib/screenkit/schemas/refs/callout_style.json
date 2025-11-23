@@ -8,7 +8,8 @@
     "out_transition",
     "anchor",
     "margin",
-    "animation"
+    "animation",
+    "style"
   ],
   "properties": {
     "in_transition": { "$ref": "transition.json" },
@@ -17,8 +18,7 @@
     "margin": { "$ref": "spacing.json" },
     "style": {
       "type": "string",
-      "description": "Callout style name (defaults to 'default')",
-      "default": "default"
+      "description": "Callout style name"
     },
     "anchor": { "$ref": "anchor.json" }
   }

@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class DefaultTest < Minitest::Test
+class ShadowBlockTest < Minitest::Test
   let(:source) do
     resources_dir = ScreenKit.root_dir
                              .join("screenkit/generators/project/resources")
@@ -16,7 +16,7 @@ class DefaultTest < Minitest::Test
 
   test "generates callout image" do
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: "#2242d3",
@@ -39,7 +39,7 @@ class DefaultTest < Minitest::Test
     skip unless RUBY_PLATFORM.include?("darwin")
 
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: "#2242d3",
@@ -69,7 +69,7 @@ class DefaultTest < Minitest::Test
 
   test "generates callout image with just the title" do
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: "#2242d3",
@@ -90,7 +90,7 @@ class DefaultTest < Minitest::Test
 
   test "generates callout image with just the body" do
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: "#2242d3",
@@ -111,7 +111,7 @@ class DefaultTest < Minitest::Test
 
   test "generates callout image with lengthy callout" do
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: "#2242d3",
@@ -137,7 +137,7 @@ class DefaultTest < Minitest::Test
 
   test "generates callout image with no shadow" do
     output_path = create_tmp_path(:png)
-    style = ScreenKit::Callout::Styles::Default.new(
+    style = ScreenKit::Callout::Styles::ShadowBlock.new(
       source:,
       background_color: "#ffff00",
       shadow: false,

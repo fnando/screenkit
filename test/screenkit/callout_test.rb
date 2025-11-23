@@ -32,7 +32,7 @@ module ScreenKit
         source:,
         animation: "fade",
         margin: 10,
-        style: "default",
+        style: "shadow_block",
         anchor: %w[center top],
         in_transition: {sound: "chime", duration: 0.5},
         out_transition: {sound: "chime", duration: 0.5},
@@ -46,7 +46,7 @@ module ScreenKit
 
       assert_equal [10, 10, 10, 10], callout.margin.as_json
       assert_equal %w[center top], callout.anchor.as_json
-      assert_instance_of ScreenKit::Callout::Styles::Default, callout.style
+      assert_instance_of ScreenKit::Callout::Styles::ShadowBlock, callout.style
       assert_instance_of ScreenKit::Transition, callout.in_transition
       assert_instance_of ScreenKit::Transition, callout.out_transition
     end

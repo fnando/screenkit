@@ -5,7 +5,7 @@ require "mini_magick"
 module ScreenKit
   class Callout
     module Styles
-      class Default < Base
+      class ShadowBlock < Base
         extend SchemaValidator
 
         attr_reader :background_color, :body, :body_style,
@@ -13,7 +13,8 @@ module ScreenKit
                     :title, :title_style, :width, :source
 
         def self.schema_path
-          ScreenKit.root_dir.join("screenkit/schemas/callouts/default.json")
+          ScreenKit.root_dir
+                   .join("screenkit/schemas/callout_styles/shadow_block.json")
         end
 
         def initialize(source:, **kwargs) #  rubocop:disable Lint/MissingSuper

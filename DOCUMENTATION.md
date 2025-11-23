@@ -215,7 +215,7 @@ Define reusable callout styles:
 
 ```yaml
 callouts:
-  default:
+  shadow_block:
     background_color: "#ffff00"
     shadow: "#2242d3" # Color string or false
 
@@ -311,7 +311,6 @@ callouts:
 
 - **Seconds**: `starts_at: 90` (90 seconds)
 - **HH:MM:SS**: `starts_at: "00:01:30"` (1 minute 30 seconds)
-- **Duration**: Always in seconds or time units (`5s`, `2m`, `1h`)
 
 ---
 
@@ -402,7 +401,7 @@ ScreenKit provides two built-in callout styles:
 The default style displays a title and body in a box with optional shadow.
 
 ```yaml
-callouts:
+callout_styles:
   info:
     style: default                    # Optional: defaults to "default"
     background_color: "#ffff00"       # Background color (hex)
@@ -463,7 +462,7 @@ similar to syntax highlighting or code comments. Perfect for displaying code
 snippets, commands, or short inline text.
 
 ```yaml
-callouts:
+callouts_styles:
   code:
     style: inline_block
     background_color: "#000000" # Background color (hex)
@@ -700,8 +699,12 @@ out_transition:
 ```
 episodes/001-episode-name/
 ├── config.yml              # Episode configuration
+├── callouts/               # Callout definitions
+│   ├── 001.yml             # Callouts that will appear on segment 001
+│   ├── 002.yml
+│   └── ...
 ├── content/                # Terminal recordings
-│   ├── 001.tape           # VHS tape files
+│   ├── 001.tape            # Demo Tape files
 │   ├── 002.tape
 │   └── ...
 ├── scripts/                # Voiceover scripts

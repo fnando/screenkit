@@ -1,13 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://screenkit.dev/schemas/callouts/default.json",
-  "title": "Callout — Default",
+  "$id": "https://screenkit.dev/schemas/callouts/shadow_block.json",
+  "title": "Callout — Shadow Block",
   "type": "object",
   "required": ["type", "duration", "starts_at"],
+  "anyOf": [{ "required": ["title"] }, { "required": ["body"] }],
   "properties": {
     "type": {
       "type": "string",
-      "enum": ["default"],
+      "enum": ["shadow_block"],
       "description": "The callout type"
     },
     "title": {
