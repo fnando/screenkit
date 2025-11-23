@@ -12,6 +12,8 @@ require "minitest/autorun"
 
 require "securerandom"
 
+ENV["MT_RUN_SLOW_TESTS"] ||= ENV["CI"] if ENV["CI"]
+
 Dir["#{__dir__}/support/**/*.rb"].each do |file|
   require file
 end

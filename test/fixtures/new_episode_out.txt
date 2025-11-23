@@ -1,0 +1,9 @@
+      create  episodes/001-my-first-episode/config.yml
+      create  episodes/001-my-first-episode/scripts
+      create  episodes/001-my-first-episode/scripts/001.txt
+      create  episodes/001-my-first-episode/content
+      create  episodes/001-my-first-episode/content/001.tape
+      create  episodes/001-my-first-episode/resources
+      create  episodes/001-my-first-episode/voiceovers
+      create  episodes/001-my-first-episode/resources/.keep
+      create  episodes/001-my-first-episode/voiceovers/.keep
