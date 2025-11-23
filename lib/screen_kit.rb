@@ -54,6 +54,18 @@ module ScreenKit
   require_relative "screenkit/exporter/image"
   require_relative "screenkit/exporter/video"
 
+  require_files = lambda do |pattern|
+    Gem.find_files_from_load_path(pattern).each do |path|
+      next if path.include?("test")
+
+      require(path)
+    end
+  end
+
+  # Load all files that may be available as plugins.
+  require_files.call("screenkit/callout/styles/*.rb")
+  require_files.call("screenkit/callout/tts/*.rb")
+
   def self.root_dir
     @root_dir ||= Pathname(__dir__)
   end
@@ -66,16 +78,4 @@ module ScreenKit
 
   # Raised when a file entry is not found in the lookup.
   FileEntryNotFoundError = Class.new(StandardError)
-
-  require_files = lambda do |pattern|
-    Gem.find_files_from_load_path(pattern).each do |path|
-      next if path.include?("test")
-
-      require(path)
-    end
-  end
-
-  # Load all files that may be available as plugins.
-  require_files.call("screenkit/callout/styles/*.rb")
-  require_files.call("screenkit/callout/tts/*.rb")
 end

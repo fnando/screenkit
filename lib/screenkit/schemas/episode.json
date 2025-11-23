@@ -16,46 +16,10 @@
       "pattern": "\\S"
     },
     "demotape": { "$ref": "refs/demotape.json" },
-    "callouts": {
-      "type": "array",
-      "description": "List of callouts to be used in the episode",
-      "items": {
-        "type": "object",
-        "required": ["type", "starts_at", "duration"],
-        "additionalProperties": true,
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Callout type identifier",
-            "minLength": 1,
-            "pattern": "\\S"
-          },
-          "starts_at": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Callout start time in HH:MM:SS format (e.g. 00:01:30)"
-              },
-              {
-                "type": "number",
-                "description": "Callout start time in seconds (e.g. 90)"
-              }
-            ]
-          },
-          "duration": { "$ref": "refs/duration.json" },
-          "width": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Callout width in percentage (e.g. 50%)"
-              },
-              {
-                "type": "number",
-                "description": "Callout width in pixels (e.g. 300)"
-              }
-            ]
-          }
-        }
+    "callout_styles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "refs/callout_style.json"
       }
     }
   }

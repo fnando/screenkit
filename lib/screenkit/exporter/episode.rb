@@ -97,7 +97,7 @@ module ScreenKit
 
       def export_callouts
         callouts = filtered_segments.flat_map do |segment|
-          segment.callouts.map { {prefix: segment.prefix, callouts: it} }
+          segment.callouts.map { {prefix: segment.prefix, callout: it} }
         end
 
         elapsed = ParallelProcessor.new(
@@ -106,15 +106,16 @@ module ScreenKit
           message: "Exporting callouts (%{progress}/%{count})"
         ).run do |item, index|
           log_path = logfile.create(item[:prefix], :callout, index)
-          type = item[:callouts].fetch(:type).to_sym
-          callout_style = project_config
-                          .callouts
+          type = item[:callout].fetch(:type).to_sym
+
+          callout_style = callout_styles
                           .fetch(type)
-                          .merge(item[:callouts].except(:starts_at, :duration))
+                          .merge(item[:callout])
           callout_path = output_dir
                          .join("callouts", "#{item[:prefix]}-#{index}.png")
           Callout.new(
-            source:, **callout_style,
+            source:,
+            **callout_style,
             output_path: callout_path,
             log_path:
           ).render
@@ -526,6 +527,10 @@ module ScreenKit
           path = Pathname.pwd.join(path) unless path.absolute?
           path
         end
+      end
+
+      def callout_styles
+        (project_config.callout_styles || {}).merge(config.callout_styles || {})
       end
 
       def output_video_path

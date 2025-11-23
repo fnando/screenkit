@@ -120,7 +120,7 @@ module ScreenKit
 
         callouts.each_with_index do |callout, index|
           type = callout[:type].to_sym
-          callout_config = episode.project_config.callouts[type]
+          callout_config = episode.callout_styles[type]
           in_sound = Sound.new(input: callout_config[:in_transition][:sound],
                                source: episode.source)
           out_sound = Sound.new(input: callout_config[:out_transition][:sound],

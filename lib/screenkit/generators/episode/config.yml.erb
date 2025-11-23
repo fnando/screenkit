@@ -10,7 +10,7 @@ title: "CREATING SCREENCASTS WITH SCREENKIT"
 #
 # The project's configuration can define the callout structure, while the
 # episode configuration can define the content and timing.
-callouts:
+callouts_styles:
   - type: info
     title: "ScreenKit"
     body: "Visit https://github.com/fnando/screenkit to learn more."
@@ -45,7 +45,7 @@ callouts:
 #     title:
 #       x: 100
 #       y: 300
-#       font_path: lib/screenkit/generators/project/resources/fonts/opensans/OpenSans-ExtraBold.ttf
+#       font_path: open-sans/OpenSans-ExtraBold.ttf
 #       size: 144
 #       color: "#ffffff"
 #
@@ -53,7 +53,7 @@ callouts:
 #     # Works best with a transparent PNG file in high resolution (at least 2x the
 #     # size it'll be displayed).
 #     logo:
-#       path: lib/screenkit/generators/project/resources/images/logo.png
+#       path: images/logo.png
 #       x: 100
 #       y: 200
 #       width: 200
@@ -62,7 +62,7 @@ callouts:
 #     # The sound to be played along with the logo in the intro.
 #     # This must correspond to a sound file in the sounds directory, with any
 #     # audio extension (e.g. mp3, m4a, wav).
-#     sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
+#     sound: sounds/chime.mp3
 #
 #   outro:
 #     # The duration of the outro scene in seconds.
@@ -78,11 +78,11 @@ callouts:
 #     background: "#100f50"
 #
 #     # The sound to be played along with the logo in the outro.
-#     sound: lib/screenkit/generators/project/resources/sounds/chime.mp3
+#     sound: sounds/chime.mp3
 #
 #     # The logo to be displayed in the video outro.
 #     logo:
-#       path: lib/screenkit/generators/project/resources/images/logo.png
+#       path: images/logo.png
 #       x: center
 #       y: center
 #       width: 500
@@ -95,7 +95,7 @@ callouts:
 # When present, this will have higher precedence over the project's
 # configuration, so you can have different intro/outro segments for each
 # episode.
-# voice:
+# tts:
 #   engine: elevenlabs
 #   voice_id: 56AoDkrOh6qfVPDXZ7Pt
 #   language_code: en

@@ -21,6 +21,9 @@ module ScreenKit
       # The demotape configuration.
       attr_reader :demotape
 
+      # The callout styles configuration.
+      attr_reader :callout_styles
+
       def self.schema_path
         @schema_path ||=
           ScreenKit.root_dir.join("screenkit/schemas/episode.json")

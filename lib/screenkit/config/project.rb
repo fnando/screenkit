@@ -12,8 +12,8 @@ module ScreenKit
       # The output directory for exported files.
       attr_reader :output_dir
 
-      # Callout configurations
-      attr_reader :callouts
+      # Callout styles
+      attr_reader :callout_styles
 
       # Scene configurations
       attr_reader :scenes
