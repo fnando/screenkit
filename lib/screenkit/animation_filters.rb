@@ -110,5 +110,21 @@ module ScreenKit
 
       {video: filters, out_start:}
     end
+
+    def video
+      filters = []
+
+      # For video callouts:
+      # Add transparent padding at start to delay, then overlay
+      filters <<
+        "[#{callout_index}:v]tpad=start_duration=#{starts_at}:" \
+        "color=black@0.0[callout#{index}_delayed]"
+
+      filters <<
+        "[#{input_stream}][callout#{index}_delayed]overlay=x=#{x}:y=#{y}:" \
+        "eof_action=pass[#{output_stream}]"
+
+      {video: filters, out_start:}
+    end
   end
 end

@@ -2,6 +2,12 @@
 
 module ScreenKit
   module Utils
+    def has_audio?(path)
+      cmd = "ffprobe -v error -select_streams a:0 -show_entries " \
+            "stream=codec_type -of default=noprint_wrappers=1:nokey=1"
+      `#{cmd} #{path}`.strip == "audio"
+    end
+
     def fps(path)
       cmd = "ffprobe -v error -select_streams v:0 -show_entries " \
             "stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1"

@@ -117,79 +117,19 @@ module ScreenKit
 
         audio_mix_inputs = ["[1:a]"]
         animation_duration = 0.2
+        current_input_index = 2 # Start after video (0) and voiceover (1)
 
         callouts.each_with_index do |callout, index|
-          type = callout[:type].to_sym
-          callout_config = episode.callout_styles[type]
-          in_sound = Sound.new(input: callout_config[:in_transition][:sound],
-                               source: episode.source)
-          out_sound = Sound.new(input: callout_config[:out_transition][:sound],
-                                source: episode.source)
-
-          starts_at = TimeFormatter.parse(callout[:starts_at])
-          max_duration = [content_duration - 0.2, 0].max
-          duration = Duration.parse(callout[:duration])
-                             .clamp(0, max_duration)
-                             .round(half: :down)
-          ends_at = starts_at + duration
-          callout_image_path = episode.output_dir.join("callouts",
-                                                       "#{prefix}-#{index}.png")
-          image_width, image_height = image_size(callout_image_path)
-
-          x, y = calculate_position(
-            anchor: Anchor.new(callout_config[:anchor]),
-            margin: Spacing.new(callout_config[:margin] || 0),
-            width: image_width,
-            height: image_height
-          )
-
-          inputs += [
-            "-loop", "1",
-            "-t", duration,
-            "-i", callout_image_path,
-
-            # Add sound for transition in
-            "-i", in_sound.path,
-
-            # Add sound for transition out
-            "-i", out_sound.path
-          ]
-
-          input_stream = "v#{index}"
-          output_stream = "v#{index + 1}"
-          callout_index = 2 + (index * 3)
-
-          animation_filters = AnimationFilters.new(
-            content_duration:,
-            callout_index:,
-            input_stream:,
-            output_stream:,
+          current_input_index = process_callout(
+            callout:,
             index:,
-            starts_at:,
-            ends_at:,
-            x:,
-            y:,
+            content_duration:,
             animation_duration:,
-            image_width:,
-            image_height:
-          ).send(callout_config[:animation])
-
-          filters.concat(animation_filters[:video])
-
-          # Delay and mix callout sounds
-          in_index = callout_index + 1
-          out_index = callout_index + 2
-
-          filters << "[#{in_index}:a]volume=#{in_sound.volume}," \
-                     "adelay=#{(starts_at * 1000).to_i}|" \
-                     "#{(starts_at * 1000).to_i}[in_#{index}]"
-          filters << "[#{out_index}:a]volume=#{out_sound.volume}," \
-                     "adelay=#{(animation_filters[:out_start] * 1000).to_i}|" \
-                     "#{(animation_filters[:out_start] * 1000).to_i}" \
-                     "[out_#{index}]"
-
-          audio_mix_inputs << "[in_#{index}]"
-          audio_mix_inputs << "[out_#{index}]"
+            inputs:,
+            filters:,
+            audio_mix_inputs:,
+            current_input_index:
+          )
         end
 
         # Mix all audio streams (voiceover + all sounds)
@@ -257,6 +197,257 @@ module ScreenKit
         path = path.sub_ext("-#{tag.to_s.tr('_', '-')}.txt") if tag
 
         format(path.to_s, prefix:) if path
+      end
+
+      def process_callout(
+        callout:,
+        index:,
+        content_duration:,
+        animation_duration:,
+        inputs:,
+        filters:,
+        audio_mix_inputs:,
+        current_input_index:
+      )
+        type = callout[:type].to_sym
+        callout_config = episode.callout_styles[type]
+        in_sound = Sound.new(input: callout_config[:in_transition][:sound],
+                             source: episode.source)
+        out_sound = Sound.new(input: callout_config[:out_transition][:sound],
+                              source: episode.source)
+
+        starts_at = TimeFormatter.parse(callout[:starts_at])
+        max_duration = [content_duration - 0.2, 0].max
+        duration = Duration.parse(callout[:duration])
+                           .clamp(0, max_duration)
+                           .round(half: :down)
+        ends_at = starts_at + duration
+        callout_duration = ends_at - starts_at
+
+        callout_path = find_callout_path(index)
+        video_callout = video_callout?(callout_path)
+        has_video_audio = has_audio?(callout_path)
+
+        callout_width, callout_height = image_size(callout_path)
+        x, y = calculate_callout_position(
+          video_callout:,
+          callout_config:,
+          callout_width:,
+          callout_height:
+        )
+
+        callout_index, current_input_index = add_callout_inputs(
+          inputs:,
+          current_input_index:,
+          callout_path:,
+          video_callout:,
+          has_video_audio:,
+          duration:
+        )
+
+        in_sound_index, out_sound_index, current_input_index =
+          add_transition_sound_inputs(
+            inputs:,
+            current_input_index:,
+            video_callout:,
+            in_sound:,
+            out_sound:
+          )
+
+        animation_filters = add_video_filters(
+          filters:,
+          index:,
+          callout_index:,
+          callout_config:,
+          video_callout:,
+          content_duration:,
+          starts_at:,
+          ends_at:,
+          x:,
+          y:,
+          animation_duration:,
+          callout_width:,
+          callout_height:
+        )
+
+        add_audio_filters(
+          filters:,
+          audio_mix_inputs:,
+          index:,
+          callout_index:,
+          video_callout:,
+          has_video_audio:,
+          starts_at:,
+          callout_duration:,
+          in_sound:,
+          out_sound:,
+          in_sound_index:,
+          out_sound_index:,
+          animation_filters:
+        )
+
+        current_input_index
+      end
+
+      def find_callout_path(index)
+        callout_path = episode.output_dir.join("callouts").glob(
+          "#{prefix}-#{index}.{png,#{ContentType.video.join(',')}}"
+        ).first
+
+        raise "Callout file not found for #{prefix}-#{index}" unless callout_path
+
+        callout_path
+      end
+
+      def video_callout?(callout_path)
+        ContentType.video.include?(callout_path.extname.delete_prefix("."))
+      end
+
+      def calculate_callout_position(
+        video_callout:,
+        callout_config:,
+        callout_width:,
+        callout_height:
+      )
+        # For video callouts, ignore anchor/margin and position at 0,0
+        # (assumes videos are already properly sized and positioned)
+        if video_callout
+          [0, 0]
+        else
+          calculate_position(
+            anchor: Anchor.new(callout_config[:anchor]),
+            margin: Spacing.new(callout_config[:margin] || 0),
+            width: callout_width,
+            height: callout_height
+          )
+        end
+      end
+
+      def add_callout_inputs(
+        inputs:,
+        current_input_index:,
+        callout_path:,
+        video_callout:,
+        has_video_audio:,
+        duration:
+      )
+        callout_index = current_input_index
+
+        if video_callout
+          # Don't use -t for videos, let them play naturally
+          inputs << "-i" << callout_path
+          current_input_index += 1
+
+          # Add mute audio if video has no audio
+          unless has_video_audio
+            inputs << "-t" << duration << "-i" << episode.mute_sound_path
+            current_input_index += 1
+          end
+        else
+          inputs << "-loop" << "1" << "-t" << duration << "-i" << callout_path
+          current_input_index += 1
+        end
+
+        [callout_index, current_input_index]
+      end
+
+      def add_transition_sound_inputs(
+        inputs:,
+        current_input_index:,
+        video_callout:,
+        in_sound:,
+        out_sound:
+      )
+        # Add transition sounds (only for non-video callouts)
+        return [nil, nil, current_input_index] if video_callout
+
+        in_sound_index = current_input_index
+        inputs << "-i" << in_sound.path
+        current_input_index += 1
+
+        out_sound_index = current_input_index
+        inputs << "-i" << out_sound.path
+        current_input_index += 1
+
+        [in_sound_index, out_sound_index, current_input_index]
+      end
+
+      def add_video_filters(
+        filters:,
+        index:,
+        callout_index:,
+        callout_config:,
+        video_callout:,
+        content_duration:,
+        starts_at:,
+        ends_at:,
+        x:,
+        y:,
+        animation_duration:,
+        callout_width:,
+        callout_height:
+      )
+        input_stream = "v#{index}"
+        output_stream = "v#{index + 1}"
+        animation_method = video_callout ? :video : callout_config[:animation]
+
+        animation_filters = AnimationFilters.new(
+          content_duration:,
+          callout_index:,
+          input_stream:,
+          output_stream:,
+          index:,
+          starts_at:,
+          ends_at:,
+          x:,
+          y:,
+          animation_duration:,
+          image_width: callout_width,
+          image_height: callout_height
+        ).send(animation_method)
+
+        filters.concat(animation_filters[:video])
+
+        animation_filters
+      end
+
+      def add_audio_filters(
+        filters:,
+        audio_mix_inputs:,
+        index:,
+        callout_index:,
+        video_callout:,
+        has_video_audio:,
+        starts_at:,
+        callout_duration:,
+        in_sound:,
+        out_sound:,
+        in_sound_index:,
+        out_sound_index:,
+        animation_filters:
+      )
+        # Mix video audio if present
+        if video_callout && has_video_audio
+          filters <<
+            "[#{callout_index}:a]atrim=end=#{callout_duration}," \
+            "asetpts=PTS-STARTPTS,adelay=#{(starts_at * 1000).to_i}|" \
+            "#{(starts_at * 1000).to_i}[video_audio_#{index}]"
+          audio_mix_inputs << "[video_audio_#{index}]"
+        end
+
+        # For non-video callouts, add transition sounds
+        return if video_callout
+
+        filters << "[#{in_sound_index}:a]volume=#{in_sound.volume}," \
+                   "adelay=#{(starts_at * 1000).to_i}|" \
+                   "#{(starts_at * 1000).to_i}[in_#{index}]"
+        filters << "[#{out_sound_index}:a]volume=#{out_sound.volume}," \
+                   "adelay=#{(animation_filters[:out_start] * 1000).to_i}|" \
+                   "#{(animation_filters[:out_start] * 1000).to_i}" \
+                   "[out_#{index}]"
+
+        audio_mix_inputs << "[in_#{index}]"
+        audio_mix_inputs << "[out_#{index}]"
       end
     end
   end

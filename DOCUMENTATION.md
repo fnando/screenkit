@@ -445,7 +445,7 @@ callout_styles:
         volume: 0.7                   # Volume (0.0 to 1.0)
 ```
 
-**Usage in episode:**
+##### Usage in episode
 
 ```yaml
 callouts:
@@ -490,7 +490,7 @@ callouts_styles:
       sound: false
 ```
 
-**Usage in episode:**
+##### Usage in episode
 
 ```yaml
 callouts:
@@ -538,13 +538,26 @@ callouts_styles:
       sound: false
 ```
 
-**Usage in episode:**
+##### Usage in episode
 
 ```yaml
 callouts:
   - type: file_copy
     file_path: images/social_card.png
 ```
+
+```yaml
+callouts:
+  - type: file_copy
+    file_path: videos/social_card.mov
+```
+
+> [!NOTE]
+>
+> When copying a video file, the video will be used as an overlay, without
+> resizing or repositioning. That means your overlay needs to be exactly
+> 1920x1080 and 24 FPS. If the video has sound, it will be kept on the final
+> output.
 
 ### Anchor Positions
 
