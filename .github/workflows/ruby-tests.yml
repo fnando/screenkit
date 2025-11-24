@@ -40,7 +40,7 @@ jobs:
         run: |
           # Install ImageMagick and zsh
           sudo apt-get update
-          sudo apt-get install -y imagemagick zsh
+          sudo apt-get install -y imagemagick zsh espeak
 
           # Download and install FFmpeg 8
           wget --quiet https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
