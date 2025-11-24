@@ -39,7 +39,74 @@ gem "screenkit"
 ### Docker
 
 ```bash
-docker run --shm-size=2g -v $PWD:/source --rm -it docker.io/fnando/screenkit
+$ docker run \
+    --platform=linux/amd64 \
+    --shm-size=2g \
+    -v $PWD:/source \
+    --rm -it \
+    docker.io/fnando/screenkit new --skip-bundler example
+      create  Gemfile
+      create  screenkit.yml
+      create  resources
+      create  resources/backtracks/default.aac
+      create  resources/fonts/open-sans/OFL.txt
+      create  resources/fonts/open-sans/OpenSans-ExtraBold.ttf
+      create  resources/fonts/open-sans/OpenSans-SemiBold.ttf
+      create  resources/fonts/open-sans/README.txt
+      create  resources/images/logo.png
+      create  resources/images/watermark.png
+      create  resources/sounds/chime.mp3
+      create  resources/sounds/pop.mp3
+      create  resources/sounds/whoosh.mp3
+
+$ cd example
+
+$ docker run \
+    --platform=linux/amd64 \
+    --shm-size=2g \
+    -v $PWD:/source \
+    --rm -it \
+    docker.io/fnando/screenkit episode new --title 'Hello, world!'
+      create  episodes/001-hello-world/config.yml
+      create  episodes/001-hello-world/scripts
+      create  episodes/001-hello-world/scripts/001.txt
+      create  episodes/001-hello-world/content
+      create  episodes/001-hello-world/content/001.tape
+      create  episodes/001-hello-world/resources
+      create  episodes/001-hello-world/voiceovers
+      create  episodes/001-hello-world/resources/.keep
+      create  episodes/001-hello-world/voiceovers/.keep
+
+$ docker run \
+    --platform=linux/amd64 \
+    --shm-size=2g \
+    -v $PWD:/source \
+    --rm -it \
+    docker.io/fnando/screenkit episode export --dir episodes/001-hello-world
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  Terminal to screencast, simplified                                      ┃═╗
+┃  ███████╗ ██████╗██████╗ ███████╗███████╗███╗   ██╗██╗  ██╗██╗████████╗  ┃ ║
+┃  ██╔════╝██╔════╝██╔══██╗██╔════╝██╔════╝████╗  ██║██║ ██╔╝██║╚══██╔══╝  ┃ ║
+┃  ███████╗██║     ██████╔╝█████╗  █████╗  ██╔██╗ ██║█████╔╝ ██║   ██║     ┃ ║
+┃  ╚════██║██║     ██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║██╔═██╗ ██║   ██║     ┃ ║
+┃  ███████║╚██████╗██║  ██║███████╗███████╗██║ ╚████║██║  ██╗██║   ██║     ┃ ║
+┃  ╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝   ╚═╝     ┃ ║
+┃                                                               v0.0.5     ┃ ║
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+
+        info  Project root dir: .
+        info  Episode root dir: episodes/001-hello-world
+        info  Matching all 1 segments
+        info  Exported intro in 2.39s
+        info  Exported outro in 2.11s
+        info  Generated voiceover in 0.89s
+        info  Exported videos in 0.00s
+        info  Created callouts in 0.00s
+        info  Created segments in 2.55s
+        info  Merged videos in 8.31s
+        info  Exported video to output/001-hello-world/001-hello-world.mp4
+        info  Exported episode in 16.29s
 ```
 
 Notice that Chrome requires a lot of memory, so you need `--shm-size=2g` (or
