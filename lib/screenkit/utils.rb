@@ -2,7 +2,7 @@
 
 module ScreenKit
   module Utils
-    def has_audio?(path)
+    def has_audio?(path) #  rubocop:disable Naming/PredicatePrefix
       cmd = "ffprobe -v error -select_streams a:0 -show_entries " \
             "stream=codec_type -of default=noprint_wrappers=1:nokey=1"
       `#{cmd} #{path}`.strip == "audio"

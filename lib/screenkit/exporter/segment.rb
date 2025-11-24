@@ -294,9 +294,9 @@ module ScreenKit
           "#{prefix}-#{index}.{png,#{ContentType.video.join(',')}}"
         ).first
 
-        raise "Callout file not found for #{prefix}-#{index}" unless callout_path
+        return callout_path if callout_path
 
-        callout_path
+        raise "Callout file not found for #{prefix}-#{index}"
       end
 
       def video_callout?(callout_path)
