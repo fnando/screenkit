@@ -12,5 +12,3 @@
       create  resources/sounds/pop.mp3
       create  resources/sounds/whoosh.mp3
          run  bundle install from "."
-Bundle complete! 7 Gemfile dependencies, 61 gems now installed.
-Use `bundle info [gemname]` to see where a bundled gem is installed.

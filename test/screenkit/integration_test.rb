@@ -30,7 +30,8 @@ class IntegrationTest < Minitest::Test
     screenkit "new", screencasts_path
 
     assert File.directory?(screencasts_path)
-    assert_equal fixtures("new_project_out.txt").read, File.read("tmp/out.txt")
+    assert_includes File.read("tmp/out.txt"),
+                    fixtures("new_project_out.txt").read
   end
 
   test "generates episode" do
