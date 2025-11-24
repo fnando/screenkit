@@ -5,6 +5,10 @@ module ScreenKit
     class Project < Thor::Group
       include Thor::Actions
 
+      def self.exit_on_failure?
+        true
+      end
+
       attr_accessor :options
 
       def self.source_root

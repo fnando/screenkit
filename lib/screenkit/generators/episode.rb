@@ -7,6 +7,10 @@ module ScreenKit
 
       attr_accessor :options
 
+      def self.exit_on_failure?
+        true
+      end
+
       def self.source_root
         File.join(__dir__, "episode")
       end
