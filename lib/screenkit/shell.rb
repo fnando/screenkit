@@ -14,6 +14,12 @@ module ScreenKit
       end
     end
 
+    # Checks if a command exists in the system's PATH.
+    # Right now we're completely ignoring Windows (unless it's running on WSL).
+    def command_exist?(command)
+      !`which #{command}`.strip.empty?
+    end
+
     def run_command(command, *args, log_path: nil)
       args = args.flatten.compact.map(&:to_s)
       stdout, stderr, status = Open3.capture3(command, *args)

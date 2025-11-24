@@ -40,7 +40,7 @@ module ScreenKit
       end
 
       def voiceover_path
-        return episode.mute_sound_path unless episode.tts?
+        return episode.mute_sound_path unless episode.tts_available?
 
         dir = episode.root_dir.join("voiceovers")
         dir.glob("#{prefix}.{#{ContentType.audio.join(',')}}").first ||
@@ -240,7 +240,7 @@ module ScreenKit
       def create_voiceover(log_path:)
         return if voiceover_path&.file? && !episode.options.overwrite
         return unless script_path.file?
-        return unless episode.tts?
+        return unless episode.tts_available?
 
         FileUtils.mkdir_p(voiceover_path.dirname)
 

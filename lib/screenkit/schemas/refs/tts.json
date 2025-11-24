@@ -3,45 +3,8 @@
   "$id": "https://screenkit.dev/schemas/refs/tts.json",
   "title": "The TTS engine used for voiceover",
   "oneOf": [
-    {
-      "type": "boolean",
-      "enum": [false]
-    },
-    {
-      "type": "object",
-      "$ref": "../tts/say.json",
-      "properties": {
-        "engine": {
-          "type": "string",
-          "enum": ["say"],
-          "description": "The TTS engine to use"
-        }
-      }
-    },
-    {
-      "type": "object",
-      "$ref": "../tts/elevenlabs.json",
-      "properties": {
-        "engine": {
-          "type": "string",
-          "enum": ["elevenlabs"],
-          "description": "The TTS engine to use"
-        }
-      }
-    },
-    {
-      "type": "object",
-      "required": ["engine"],
-      "additionalProperties": true,
-      "properties": {
-        "engine": {
-          "type": "string",
-          "description": "The TTS engine to use",
-          "not": {
-            "enum": ["say", "elevenlabs"]
-          }
-        }
-      }
-    }
+    { "type": "boolean", "enum": [false] },
+    { "$ref": "tts_builtin.json" },
+    { "type": "array", "items": { "$ref": "tts_builtin.json" } }
   ]
 }

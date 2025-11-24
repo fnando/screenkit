@@ -1,17 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://screenkit.dev/schemas/tts/say.json",
-  "title": "The Apple `say` voice engine options",
+  "$id": "https://screenkit.dev/schemas/tts/espeak.json",
+  "title": "espeak synthesizer for English and other languages",
   "type": "object",
-  "additionalProperties": false,
   "required": ["engine"],
+  "additionalProperties": false,
   "properties": {
     "enabled": {
       "type": "boolean"
     },
     "engine": {
       "type": "string",
-      "enum": ["say"],
+      "enum": ["espeak"],
       "description": "The TTS engine to use"
     },
     "voice": {

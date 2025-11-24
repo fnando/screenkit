@@ -37,12 +37,8 @@ module ScreenKit
         @logfile = Logfile.new(output_dir.join("logs"))
       end
 
-      def tts?
-        config.tts || project_config.tts
-      end
-
-      def tts_options
-        (config.tts || {}).merge(project_config.tts || {})
+      def tts_available?
+        tts_engines.any?(&:available?)
       end
 
       def demotape_options
@@ -50,9 +46,28 @@ module ScreenKit
       end
 
       def tts_engine
-        @tts_engine ||= TTS.const_get(
-          tts_options[:engine].camelize
-        ).new(**tts_options.except(:engine))
+        tts_engines.find(&:available?)
+      end
+
+      def tts_engines
+        @tts_engines ||= begin
+          project_tts = if project_config.tts.is_a?(Hash)
+                          [project_config.tts]
+                        else
+                          Array(project_config.tts)
+                        end
+
+          episode_tts = if config.tts.is_a?(Hash)
+                          [config.tts]
+                        else
+                          Array(config.tts)
+                        end
+
+          (episode_tts + project_tts).map do |opts|
+            TTS.const_get(opts[:engine].camelize)
+               .new(**opts.except(:engine), api_key: options.tts_api_key)
+          end
+        end
       end
 
       # Logs a message to the shell with a specific category.
@@ -188,7 +203,7 @@ module ScreenKit
         ]
 
         backtrack_adjustment = 1.0 / backtrack.volume
-        backtrack_fade_volume = if tts?
+        backtrack_fade_volume = if tts_available?
                                   0.15 * backtrack_adjustment
                                 else
                                   1.0
@@ -402,7 +417,7 @@ module ScreenKit
           dir: shell.set_color(relative_path(root_dir), :blue)
         )
 
-        unless tts?
+        unless tts_available?
           log(
             :info,
             shell.set_color("Voiceover is currently disabled", :red),

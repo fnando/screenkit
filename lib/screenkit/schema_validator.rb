@@ -6,7 +6,7 @@ module ScreenKit
       errors = JSON::Validator
                .fully_validate("file://#{schema_path}", attributes)
 
-      return if errors.empty?
+      return true if errors.empty?
 
       raise ArgumentError, "Invalid attributes: #{errors.first}"
     end

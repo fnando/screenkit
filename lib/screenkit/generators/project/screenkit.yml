@@ -1,5 +1,6 @@
 ---
-# yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
+# yaml-language-server: $schema=../../schemas/project.json
+## yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
 
 # ScreenKit project configuration file.
 schema: 1
@@ -76,19 +77,35 @@ watermark:
   margin: 100
 
 # TTS configuration.
-# To disable voiceover entirely, set `tts: false`.
-# tts:
-#   engine: elevenlabs
-#   voice_id: 56AoDkrOh6qfVPDXZ7Pt
-#   language_code: en
-#   voice_settings:
-#     speed: 0.9
-#     stability: 0.5
-#     similarity: 0.75
-#     style: 0.0
+# To disable voiceover entirely, set `tts: false` or disable all engines
+# individually.
+#
+# You can set up multiple TTS engines to be used as fallbacks in case one fails.
+# Each TTS engine has its own detection mechanism. For instance, say and espeak
+# checks for a binary with the same name. ElevenLabs checks for the presence of
+# `--tts-api-key`.
 tts:
-  engine: say
-  rate: 150
+  # Apple Say TTS engine configuration.
+  - engine: say
+    rate: 150
+    enabled: true
+
+  # eSpeak TTS engine configuration.
+  - engine: espeak
+    rate: 150
+    voice: en-us
+    enabled: true
+
+  # Eleven Labs TTS engine configuration.
+  - engine: eleven_labs
+    enabled: true
+    voice_id: 56AoDkrOh6qfVPDXZ7Pt
+    language_code: en
+    voice_settings:
+      speed: 0.9
+      stability: 0.5
+      similarity: 0.75
+      style: 0.0
 
 # Scene configurations define how different scenes in the video are rendered.
 # There are three types of scenes: intro, outro, and segment.

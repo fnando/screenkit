@@ -35,7 +35,7 @@ module ScreenKit
              type: :string,
              required: true,
              desc: "Directory of the episode to export"
-      option :voice_api_key,
+      option :tts_api_key,
              type: :string,
              desc: "API key for the voice synthesis service"
       option :overwrite,

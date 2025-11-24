@@ -32,6 +32,31 @@ by [opening an issue on Github](https://github.com/fnando/screenkit/issues).
 When you're ready to make your pull request, follow checklist below to make sure
 your contribution is according to how this project works.
 
+### Setting up your environment
+
+This project requires the following dependencies:
+
+- ffmpeg
+- imagemagick
+- espeak
+- ruby
+- ffmpeg-normalize
+
+If you are using macOS, you can install them using [Homebrew](https://brew.sh).
+There's a Brewfile at the root directory with the required dependencies:
+
+```sh
+brew bundle install
+```
+
+For ffmpeg-normalize, you can use pip:
+
+```sh
+pip install ffmpeg-normalize --user
+```
+
+### Guidelines
+
 1. [Fork](https://help.github.com/forking/) screenkit
 2. Create a topic branch - `git checkout -b my_branch`
 3. Make your changes using [descriptive commit messages](#commit-messages)

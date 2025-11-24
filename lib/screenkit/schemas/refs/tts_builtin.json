@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/refs/tts_builtin.json",
+  "oneOf": [
+    { "$ref": "../tts/say.json" },
+    { "$ref": "../tts/espeak.json" },
+    { "$ref": "../tts/elevenlabs.json" },
+    {
+      "type": "object",
+      "required": ["engine"],
+      "additionalProperties": true,
+      "properties": {
+        "engine": {
+          "type": "string",
+          "description": "The TTS engine to use",
+          "not": {
+            "enum": ["say", "eleven_labs", "espeak"]
+          }
+        }
+      }
+    }
+  ]
+}

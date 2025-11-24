@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module ScreenKit
-  module VoiceEngines
-    class TTS
-      extend SchemaValidator
-
+  module TTS
+    class ElevenLabs < Base
       def self.schema_path
         ScreenKit.root_dir
                  .join("screenkit/schemas/tts/elevenlabs.json")
@@ -13,12 +11,13 @@ module ScreenKit
       # The Eleven Labs API key.
       attr_reader :api_key
 
-      # Additional options for the Eleven Labs voice engine.
-      attr_reader :options
-
-      def initialize(api_key:, **options)
+      def initialize(api_key:, **)
+        super(**)
         @api_key = api_key
-        @options = options
+      end
+
+      def available?
+        enabled? && !api_key.to_s.empty?
       end
 
       def generate(output_path:, text:, log_path: nil)
