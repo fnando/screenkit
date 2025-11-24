@@ -1,0 +1,139 @@
+---
+name: ScreenKit Episode
+description: Export a screencast episode using Docker
+inputs:
+  episode:
+    description: "Episode number (e.g. 001)"
+    required: true
+  tts_preset_name:
+    description: "TTS preset name"
+    default: ""
+    required: false
+  overwrite:
+    description: "Regenerate files"
+    default: "false"
+    required: false
+  match:
+    description: "Match pattern for segments (e.g. 001)"
+    default: ""
+    required: false
+  tts_api_key:
+    description: "TTS API key"
+    required: true
+  github_token:
+    description: "GitHub token for cache operations"
+    required: true
+  retention:
+    description: "Retention days for artifacts"
+    default: 2
+
+runs:
+  using: composite
+  steps:
+    - name: Generate cache keys
+      shell: bash
+      run: |
+        VOICEOVER_HASH=$(find episodes/${{ inputs.episode }}-*/scripts/*.txt -type f 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "none")
+        CONTENT_HASH=$(find episodes/${{ inputs.episode }}-*/content/*.* -type f 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "none")
+
+        echo "VOICEOVER_CACHE_KEY=episode-voiceover-${{ inputs.episode }}-${VOICEOVER_HASH}" >> $GITHUB_ENV
+        echo "VOICEOVER_RESTORE_KEYS=episode-voiceover-${{ inputs.episode }}-" >> $GITHUB_ENV
+        echo "RAW_CACHE_KEY=episode-raw-${{ inputs.episode }}-${CONTENT_HASH}" >> $GITHUB_ENV
+        echo "RAW_RESTORE_KEYS=episode-raw-${{ inputs.episode }}-" >> $GITHUB_ENV
+
+    - name: Find episode dir
+      shell: bash
+      run: |
+        EPISODE_DIR=$(ls -1d episodes/${{ inputs.episode }}-* | head -n 1)
+        echo "EPISODE_DIR=$EPISODE_DIR" >> $GITHUB_ENV
+
+        if [[ ! -d "$EPISODE_DIR" ]]; then
+          echo "Episode directory not found!"
+          echo "Available episodes:"
+          ls -1 episodes
+          exit 1
+        fi
+
+    - name: Restore episode voice cache
+      id: cache-voice
+      uses: actions/cache/restore@v4
+      with:
+        path: episodes/${{ inputs.episode }}-*/audio
+        key: ${{ env.VOICEOVER_CACHE_KEY }}
+        restore-keys: ${{ env.VOICEOVER_RESTORE_KEYS }}
+        enableCrossOsArchive: true
+
+    - name: Restore raw cache
+      id: cache-raw
+      uses: actions/cache/restore@v4
+      with:
+        path: output/${{ inputs.episode }}-*/raw/*.mp4
+        key: ${{ env.RAW_CACHE_KEY }}
+        restore-keys: ${{ env.RAW_RESTORE_KEYS }}
+        enableCrossOsArchive: true
+
+    - name: Export Episode
+      shell: bash
+      id: screenkit
+      run: |
+        set -e
+        docker run \
+          --rm \
+          --cap-add=SYS_ADMIN \
+          --security-opt seccomp=unconfined \
+          -e ELEVENLABS_API_KEY="${{ inputs.elevenlabs_api_key }}" \
+          -v ${{ github.workspace }}:/source \
+          fnando/screenkit:latest \
+          export \
+          --dir="${{ env.EPISODE_DIR }}" \
+          ${{ inputs.match != '' && format('--match {0}', inputs.match) || '' }} \
+          ${{ inputs.overwrite == 'true' && '--overwrite' || '--no-overwrite' }} \
+          ${{ inputs.tts_preset_name != '' && format('--tts-preset-name {0}', inputs.tts_preset_name) || '' }}
+        echo "result=true" >> $GITHUB_OUTPUT
+
+    - name: Delete voice cache
+      if: steps.screenkit.outputs.result == 'true'
+      shell: bash
+      run: gh cache delete "${{ env.VOICEOVER_CACHE_KEY }}" || true
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+
+    - name: Delete raw cache
+      if: steps.screenkit.outputs.result == 'true'
+      shell: bash
+      run: gh cache delete "${{ env.RAW_CACHE_KEY }}" || true
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+
+    - name: List cache entries
+      shell: bash
+      run: |
+        echo "= Voiceover Cache ="
+        ls -la episodes/${{ inputs.episode }}-*/audio || true
+        echo
+        echo "= Raw Cache ="
+        ls -la output/${{ inputs.episode }}-*/raw || true
+
+    - name: Save episode voiceover cache
+      if: steps.screenkit.outputs.result == 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: episodes/${{ inputs.episode }}-*/audio
+        key: ${{ env.VOICEOVER_CACHE_KEY }}
+        enableCrossOsArchive: true
+
+    - name: Save raw recordings cache
+      if: steps.screenkit.outputs.result == 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: output/${{ inputs.episode }}-*/raw/*.mp4
+        key: ${{ env.RAW_CACHE_KEY }}
+        enableCrossOsArchive: true
+
+    - name: Upload output artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: output
+        path: output
+        retention-days: ${{ inputs.retention }}
