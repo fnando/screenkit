@@ -3,8 +3,7 @@
   "$id": "https://screenkit.dev/schemas/tts/elevenlabs.json",
   "title": "The ElevenLabs voice engine options",
   "type": "object",
-  "required": ["voice_id", "engine"],
-  "additionalProperties": false,
+  "required": ["voice_id"],
   "properties": {
     "enabled": {
       "type": "boolean"

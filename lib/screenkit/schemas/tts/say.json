@@ -3,8 +3,6 @@
   "$id": "https://screenkit.dev/schemas/tts/say.json",
   "title": "The Apple `say` voice engine options",
   "type": "object",
-  "additionalProperties": false,
-  "required": ["engine"],
   "properties": {
     "enabled": {
       "type": "boolean"

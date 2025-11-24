@@ -25,6 +25,8 @@ module ScreenKit
       end
 
       def bundle_install
+        return unless options.bundler
+
         in_root do
           run "bundle install"
         end

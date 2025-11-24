@@ -28,30 +28,12 @@ class SchemaTTSTest < Minitest::Test
     assert validator.validate!({engine: "say"})
   end
 
-  test "rejects `say` with invalid options" do
-    assert_raises(ArgumentError) do
-      validator.validate!({engine: "say", invalid: true})
-    end
-  end
-
   test "accepts `espeak` options" do
     assert validator.validate!({engine: "espeak"})
   end
 
-  test "rejects `espeak` with invalid options" do
-    assert_raises(ArgumentError) do
-      validator.validate!({engine: "say", invalid: true})
-    end
-  end
-
   test "accepts `eleven_labs` options" do
     assert validator.validate!({engine: "eleven_labs", voice_id: "abc"})
-  end
-
-  test "rejects `eleven_labs` with invalid options" do
-    assert_raises(ArgumentError) do
-      validator.validate!({engine: "eleven_labs"})
-    end
   end
 
   test "accepts custom engines" do

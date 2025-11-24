@@ -3,8 +3,6 @@
   "$id": "https://screenkit.dev/schemas/tts/espeak.json",
   "title": "espeak synthesizer for English and other languages",
   "type": "object",
-  "required": ["engine"],
-  "additionalProperties": false,
   "properties": {
     "enabled": {
       "type": "boolean"

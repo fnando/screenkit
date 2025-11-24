@@ -7,6 +7,10 @@ module ScreenKit
       subcommand "episode", CLI::Episode
 
       desc "new PATH", "Create a new project"
+      option :bundler,
+             type: :boolean,
+             desc: "Run bundle install after generating the project",
+             default: true
       def new(path)
         generator = Generators::Project.new
         generator.destination_root = path
