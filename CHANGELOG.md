@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## v0.0.3
+
+- [Changed] Do not expand path when creating project/episode.
+
 ## v0.0.2
 
 - [Added] Add file copy callout style, to copy files to the final output path.
