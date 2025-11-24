@@ -11,18 +11,22 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## Unreleased
+
+- [Added] Add `--tts-preset` option to select TTS preset when exporting
+  episodes.
+
 ## v0.0.5
 
-- [Added] Added `--skip-bundler` option to skip bundler when generating
-  projects.
+- [Added] Add `--skip-bundler` option to skip bundler when generating projects.
 
 ## v0.0.4
 
-- [Fixed] Fixed Gemfile template that was pointing to a local path.
+- [Fixed] Fix Gemfile template that was pointing to a local path.
 
 ## v0.0.3
 
-- [Changed] Do not expand path when creating project/episode.
+- [Changed] Keep path as it is when creating project/episode.
 
 ## v0.0.2
 

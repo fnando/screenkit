@@ -84,23 +84,51 @@ watermark:
 # Each TTS engine has its own detection mechanism. For instance, say and espeak
 # checks for a binary with the same name. ElevenLabs checks for the presence of
 # `--tts-api-key`.
+#
+# You can have multiple presets for the same engine. Just set a different
+# configuration block using a different `id`. Then, when you're exporting the
+# video, you can use `--tts-preset <id>`. If you don't provide a preset, the
+# first available engine will be used.
 tts:
   # Apple Say TTS engine configuration.
-  - engine: say
+  - id: say
+    engine: say
+    rate: 150
+    enabled: true
+
+  # Apple Say TTS engine configuration.
+  - id: say_pt_br
+    engine: say
+    voice: "Luciana"
     rate: 150
     enabled: true
 
   # eSpeak TTS engine configuration.
-  - engine: espeak
+  - id: espeak
+    engine: espeak
     rate: 150
     voice: en-us
     enabled: true
 
   # Eleven Labs TTS engine configuration.
-  - engine: eleven_labs
+  - id: eleven_labs
+    engine: eleven_labs
     enabled: true
     voice_id: 56AoDkrOh6qfVPDXZ7Pt
     language_code: en
+    voice_settings:
+      speed: 0.9
+      stability: 0.5
+      similarity: 0.75
+      style: 0.0
+
+  # Eleven Labs TTS engine configuration.
+  - id: eleven_labs_mp3_192k
+    engine: eleven_labs
+    enabled: true
+    voice_id: 56AoDkrOh6qfVPDXZ7Pt
+    language_code: en
+    output_format: mp3_44100_192
     voice_settings:
       speed: 0.9
       stability: 0.5

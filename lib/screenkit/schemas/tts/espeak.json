@@ -4,6 +4,10 @@
   "title": "espeak synthesizer for English and other languages",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for the tts configuration"
+    },
     "enabled": {
       "type": "boolean"
     },

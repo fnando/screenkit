@@ -25,18 +25,26 @@ class SchemaTTSTest < Minitest::Test
   end
 
   test "accepts `say` options" do
-    assert validator.validate!({engine: "say"})
+    assert validator.validate!(id: "say", engine: "say")
   end
 
   test "accepts `espeak` options" do
-    assert validator.validate!({engine: "espeak"})
+    assert validator.validate!(id: "espeak", engine: "espeak")
   end
 
   test "accepts `eleven_labs` options" do
-    assert validator.validate!({engine: "eleven_labs", voice_id: "abc"})
+    assert validator.validate!(
+      id: "eleven_labs",
+      engine: "eleven_labs",
+      voice_id: "abc"
+    )
   end
 
   test "accepts custom engines" do
-    assert validator.validate!({engine: "custom", some_property: "abc"})
+    assert validator.validate!(
+      engine: "custom",
+      id: "custom",
+      some_property: "abc"
+    )
   end
 end

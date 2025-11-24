@@ -205,7 +205,8 @@ Export an episode to video.
 **Options:**
 
 - `--dir` (required) - Episode directory path
-- `--voice-api-key` - API key for TTS service (e.g., ElevenLabs)
+- `--tts-api-key` - API key for TTS service (e.g., ElevenLabs)
+- `--tts-preset` - TTS preset name that will be used
 - `--overwrite` - Overwrite existing exported files (default: `false`)
 - `--match-segment` - Only export segments matching this string
 - `--output-dir` - Custom output directory path
@@ -287,12 +288,12 @@ watermark:
 watermark: false
 ```
 
-### Callout Definitions
+### Callout Styles
 
 Define reusable callout styles:
 
 ```yaml
-callouts:
+callout_styles:
   shadow_block:
     background_color: "#ffff00"
     shadow: "#2242d3" # Color string or false
@@ -357,8 +358,9 @@ backtrack: false  # Disable for this episode
 
 # Override TTS settings
 tts:
-  engine: elevenlabs
-  voice_id: custom_voice_id
+  - id: eleven_labs
+    engine: eleven_labs
+    voice_id: custom_voice_id
 
 # Override watermark
 watermark: false
@@ -709,9 +711,10 @@ Uses the built-in macOS `say` command.
 
 ```yaml
 tts:
-  engine: say
-  voice: Alex # Optional: Voice name
-  rate: 150 # Words per minute (optional)
+  - id: say
+    engine: say
+    voice: Alex # Optional: Voice name
+    rate: 150 # Words per minute (optional)
 ```
 
 ### ElevenLabs Engine
@@ -720,22 +723,23 @@ Professional AI voice synthesis.
 
 ```yaml
 tts:
-  engine: elevenlabs
-  voice_id: "56AoDkrOh6qfVPDXZ7Pt" # Required: ElevenLabs voice ID
-  language_code: en # 2-letter language code
+  - id: eleven_labs
+    engine: eleven_labs
+    voice_id: "56AoDkrOh6qfVPDXZ7Pt" # Required: ElevenLabs voice ID
+    language_code: en # 2-letter language code
 
-  # Optional: Voice settings
-  voice_settings:
-    speed: 0.9 # Speech speed (default: 1.0)
-    stability: 0.5 # Voice stability (0.0 - 1.0)
-    similarity: 0.75 # Voice similarity (0.0 - 1.0)
-    style: 0.0 # Speaking style (0.0+)
+    # Optional: Voice settings
+    voice_settings:
+      speed: 0.9 # Speech speed (default: 1.0)
+      stability: 0.5 # Voice stability (0.0 - 1.0)
+      similarity: 0.75 # Voice similarity (0.0 - 1.0)
+      style: 0.0 # Speaking style (0.0+)
 
-  # Optional: Output format
-  output_format: mp3_44100_128
+    # Optional: Output format
+    output_format: mp3_44100_128
 
-  # Optional: Model ID
-  model_id: eleven_monolingual_v1
+    # Optional: Model ID
+    model_id: eleven_monolingual_v1
 ```
 
 #### ElevenLabs Output Formats
@@ -796,10 +800,11 @@ end
 
 ```yaml
 tts:
-  engine: custom_engine # Camelized to CustomEngine
-  # Add your custom options here
-  api_key: your_api_key
-  custom_option: value
+  - id: custom_engine
+    engine: custom_engine # Camelized to CustomEngine
+    # Add your custom options here
+    api_key: your_api_key
+    custom_option: value
 ```
 
 The engine name is camelized (e.g., `custom_engine` → `CustomEngine`,
@@ -906,7 +911,7 @@ Today we'll learn how to create amazing screencasts.
 
 Files are matched by number:
 
-- `content/001.tape` → `scripts/001.txt` → `voiceovers/001.aiff`
+- `content/001.tape` → `scripts/001.txt` → `voiceovers/001.:ext`
 - Segments are processed in numerical order
 - Missing scripts create silent segments
 
@@ -1029,7 +1034,7 @@ ScreenKit validates configurations against JSON schemas:
 Use the `yaml-language-server` comment for IDE support:
 
 ```yaml
-# yaml-language-server: $schema=../../schemas/project.json
+# yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
 ```
 
 ---
@@ -1115,8 +1120,9 @@ bundle exec screenkit ...
 
 **TTS not working:**
 
-- For ElevenLabs: Set `--voice-api-key`
+- For ElevenLabs: Set `--tts-api-key`
 - For macOS `say`: Verify voice name with `say -v ?`
+- For `espeak`: Ensure `espeak` is installed and in PATH
 
 ---
 

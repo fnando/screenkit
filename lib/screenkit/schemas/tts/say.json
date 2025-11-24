@@ -4,6 +4,10 @@
   "title": "The Apple `say` voice engine options",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for the tts configuration"
+    },
     "enabled": {
       "type": "boolean"
     },

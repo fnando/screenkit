@@ -55,6 +55,9 @@ module ScreenKit
              type: :array,
              default: [],
              desc: "Additional Ruby files to require"
+      option :tts_preset,
+             type: :string,
+             desc: "Preset voice configuration for TTS"
       def export
         puts Banner.banner if options.banner
 

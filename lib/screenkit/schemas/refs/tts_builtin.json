@@ -7,9 +7,13 @@
     { "$ref": "../tts/elevenlabs.json" },
     {
       "type": "object",
-      "required": ["engine"],
+      "required": ["engine", "id"],
       "additionalProperties": true,
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for the tts configuration"
+        },
         "engine": {
           "type": "string",
           "description": "The TTS engine to use",

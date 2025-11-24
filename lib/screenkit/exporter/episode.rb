@@ -38,7 +38,7 @@ module ScreenKit
       end
 
       def tts_available?
-        tts_engines.any?(&:available?)
+        tts_engine
       end
 
       def demotape_options
@@ -46,7 +46,14 @@ module ScreenKit
       end
 
       def tts_engine
-        tts_engines.find(&:available?)
+        @tts_engine ||=
+          if options.tts_preset
+            tts_engines.find do |engine|
+              engine.id == options.tts_preset && engine.available?
+            end
+          else
+            tts_engines.find(&:available?)
+          end
       end
 
       def tts_engines
