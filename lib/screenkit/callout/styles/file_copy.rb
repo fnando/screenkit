@@ -21,8 +21,9 @@ module ScreenKit
         end
 
         def render
+          ext = File.extname(file_path)
           FileUtils.mkdir_p(File.dirname(output_path))
-          FileUtils.cp source.search(file_path), output_path
+          FileUtils.cp source.search(file_path), output_path.sub_ext(ext)
         end
       end
     end
