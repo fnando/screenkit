@@ -34,6 +34,7 @@ RUN apk add --no-cache \
     chromium \
     chromium-chromedriver \
     curl \
+    espeak \
     fish \
     ffmpeg \
     font-liberation \
