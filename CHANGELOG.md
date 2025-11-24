@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## v0.0.4
+
+- [Fixed] Fixed Gemfile template that was pointing to a local path.
+
 ## v0.0.3
 
 - [Changed] Do not expand path when creating project/episode.
