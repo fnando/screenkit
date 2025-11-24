@@ -36,7 +36,7 @@ Or add to your Gemfile:
 gem "screenkit"
 ```
 
-Using Docker:
+### Docker
 
 ```bash
 docker run --shm-size=2g -v $PWD:/source --rm -it docker.io/fnando/screenkit
@@ -44,6 +44,8 @@ docker run --shm-size=2g -v $PWD:/source --rm -it docker.io/fnando/screenkit
 
 Notice that Chrome requires a lot of memory, so you need `--shm-size=2g` (or
 more).
+
+To create a new project:
 
 ---
 
