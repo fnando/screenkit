@@ -11,6 +11,11 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## v0.0.5
+
+- [Added] Added `--skip-bundler` option to skip bundler when generating
+  projects.
+
 ## v0.0.4
 
 - [Fixed] Fixed Gemfile template that was pointing to a local path.
