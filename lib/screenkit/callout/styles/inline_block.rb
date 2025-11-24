@@ -6,30 +6,27 @@ module ScreenKit
   class Callout
     module Styles
       class InlineBlock < Base
-        extend SchemaValidator
-
         attr_reader :background_color, :text_style, :body,
-                    :output_path, :padding, :text, :width, :source
+                    :padding, :text, :width
 
         def self.schema_path
           ScreenKit.root_dir
                    .join("screenkit/schemas/callout_styles/inline_block.json")
         end
 
-        def initialize(source:, **kwargs) #  rubocop:disable Lint/MissingSuper
+        def initialize(source:, **kwargs)
           self.class.validate!(kwargs)
-
-          @source = source
+          super
 
           # Set default values
-          kwargs = hi_res({
+          self.options = hi_res({
             text_style: {size: 50, color: "#ffffff"}.merge(text_style || {}),
             width: 600,
             padding: [10, 10, 10, 10],
             background_color: "#000000"
           }.merge(kwargs))
 
-          kwargs.each do |key, value|
+          options.each do |key, value|
             value = case key
                     when :padding
                       Spacing.new(value)

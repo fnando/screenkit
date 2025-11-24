@@ -4,6 +4,18 @@ module ScreenKit
   class Callout
     module Styles
       class Base
+        attr_reader :source, :output_path, :log_path
+        attr_accessor :options
+
+        extend SchemaValidator
+
+        def initialize(source:, output_path:, log_path: nil, **options)
+          @source = source
+          @output_path = output_path
+          @log_path = log_path
+          @options = options
+        end
+
         def text_wrap(text, max_width:, font_size:)
           words = text.to_s.split(/\s+/)
           width_factor = 0.6

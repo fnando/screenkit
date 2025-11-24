@@ -6,20 +6,17 @@ module ScreenKit
   class Callout
     module Styles
       class ShadowBlock < Base
-        extend SchemaValidator
-
-        attr_reader :background_color, :body, :body_style,
-                    :output_path, :padding, :shadow,
-                    :title, :title_style, :width, :source
+        attr_reader :background_color, :body, :body_style, :padding, :shadow,
+                    :title, :title_style, :width
 
         def self.schema_path
           ScreenKit.root_dir
                    .join("screenkit/schemas/callout_styles/shadow_block.json")
         end
 
-        def initialize(source:, **kwargs) #  rubocop:disable Lint/MissingSuper
+        def initialize(source:, **kwargs)
           self.class.validate!(kwargs)
-          @source = source
+          super
 
           # Set default values
           kwargs[:shadow] = case kwargs[:shadow]
@@ -33,9 +30,9 @@ module ScreenKit
                               kwargs[:shadow]
                             end
 
-          kwargs = hi_res({width: 600}.merge(kwargs))
+          self.options = hi_res({width: 600}.merge(kwargs))
 
-          kwargs.each do |key, value|
+          options.each do |key, value|
             value = case key
                     when :body_style, :title_style
                       TextStyle.new(source:, **value)

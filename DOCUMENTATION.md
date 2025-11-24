@@ -559,6 +559,43 @@ callouts:
 > 1920x1080 and 24 FPS. If the video has sound, it will be kept on the final
 > output.
 
+#### Custom Callout Styles
+
+You can create custom callout styles by placing them in the
+`ScreenKit::Callout::Styles` namespace.
+
+```ruby
+module ScreenKit
+  class Callout
+    module Styles
+      class SomeStyle < Base
+        extend SchemaValidator
+
+        def self.schema_path
+          "some/path/to/your/schema.json"
+        end
+
+        # `source` is the way you search for resources.
+        # `output_path` is where you must save the generated callout file.
+        # `log_path` is where you can write logs (optional).
+        def initialize(source:, output_path:, log_path:, **options)
+          self.class.validate!(options)
+
+          @source = source
+          @output_path = output_path
+          @log_path = log_path
+          @options = options
+        end
+
+        def render
+          # Generate the image/video that will be used as a callout.
+        end
+      end
+    end
+  end
+end
+```
+
 ### Anchor Positions
 
 Anchor determines where the callout is positioned:
@@ -644,28 +681,33 @@ module. Custom engines must implement the `generate` method:
 ```ruby
 module ScreenKit
   module TTS
-    class CustomEngine
+    class CustomEngine < Base
       include Shell
-      extend SchemaValidator
 
       # Optional: Define schema path for validation
       def self.schema_path
         ScreenKit.root_dir.join("screenkit/schemas/tts/custom_engine.json")
       end
 
-      def initialize(**options)
-        @options = options
-        # Validate options against schema if defined
-        self.class.validate!(@options) if respond_to?(:validate!)
+      # This method is required.
+      def available?
+        enabled? && command_exist?("some-command")
       end
 
+      # This method is required.
       def generate(text:, output_path:, log_path: nil)
+        # Optional: validate options against JSON schema.
+        self.class.validate!(options)
+
         # Generate audio file from text
         # Write output to output_path
         # Optionally log to log_path
 
         # Example implementation:
-        # File.write(output_path, generated_audio_data)
+        # run_command "some-command",
+        #             "-o", output_path.sub_ext(".wav"),
+        #             text,
+        #             log_path:
       end
     end
   end

@@ -41,7 +41,8 @@ module ScreenKit
         shadow: "#000000",
         title_style: {color: "#ffffff", size: 32, font_path:},
         body_style: {color: "#ffffff55", size: 32, font_path:},
-        padding: [0, 0]
+        padding: [0, 0],
+        output_path: create_tmp_path(:png)
       )
 
       assert_equal [10, 10, 10, 10], callout.margin.as_json

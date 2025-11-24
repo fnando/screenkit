@@ -3,11 +3,7 @@
 module ScreenKit
   class Callout
     module Styles
-      class FileCopy
-        attr_reader :output_path, :file_path, :source
-
-        extend SchemaValidator
-
+      class FileCopy < Base
         def self.schema_path
           ScreenKit.root_dir
                    .join("screenkit/schemas/callout_styles/file_copy.json")
@@ -15,15 +11,14 @@ module ScreenKit
 
         def initialize(source:, **kwargs)
           self.class.validate!(kwargs)
-          @source = source
-          @file_path = kwargs[:file_path]
-          @output_path = kwargs[:output_path]
+          super
         end
 
         def render
-          ext = File.extname(file_path)
+          ext = File.extname(options[:file_path])
           FileUtils.mkdir_p(File.dirname(output_path))
-          FileUtils.cp source.search(file_path), output_path.sub_ext(ext)
+          FileUtils.cp source.search(options[:file_path]),
+                       output_path.sub_ext(ext)
         end
       end
     end
