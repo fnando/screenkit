@@ -24,8 +24,7 @@ module ScreenKit
         options[:episode_dir] = config.episode_dir.parent.join(dir)
 
         generator = Generators::Episode.new
-        generator.destination_root =
-          File.expand_path(File.dirname(options.config))
+        generator.destination_root = File.dirname(options.config)
         generator.options = options
         generator.invoke_all
       end

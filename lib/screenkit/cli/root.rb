@@ -9,7 +9,7 @@ module ScreenKit
       desc "new PATH", "Create a new project"
       def new(path)
         generator = Generators::Project.new
-        generator.destination_root = File.expand_path(path)
+        generator.destination_root = path
         generator.options = options
         generator.invoke_all
       end
