@@ -58,7 +58,7 @@ runs:
       id: cache-voice
       uses: actions/cache/restore@v4
       with:
-        path: episodes/${{ inputs.episode }}-*/audio
+        path: episodes/${{ inputs.episode }}-*/voiceovers
         key: ${{ env.VOICEOVER_CACHE_KEY }}
         restore-keys: ${{ env.VOICEOVER_RESTORE_KEY }}
         enableCrossOsArchive: true
@@ -110,7 +110,7 @@ runs:
       shell: bash
       run: |
         echo "= Voiceover Cache ="
-        ls -la episodes/${{ inputs.episode }}-*/audio || true
+        ls -la episodes/${{ inputs.episode }}-*/voiceovers || true
         echo
         echo "= Videos Cache ="
         ls -la output/${{ inputs.episode }}-*/videos || true
@@ -119,7 +119,7 @@ runs:
       if: steps.screenkit.outputs.result == 'true'
       uses: actions/cache/save@v4
       with:
-        path: episodes/${{ inputs.episode }}-*/audio
+        path: episodes/${{ inputs.episode }}-*/voiceovers
         key: ${{ env.VOICEOVER_CACHE_KEY }}
         enableCrossOsArchive: true
 
