@@ -132,7 +132,7 @@ runs:
         enableCrossOsArchive: true
 
     - name: Upload output artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: output
