@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-## Unreleased
+## v0.0.6
 
 - [Added] Add `--tts-preset` option to select TTS preset when exporting
   episodes.
