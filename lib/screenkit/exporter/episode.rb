@@ -46,18 +46,11 @@ module ScreenKit
       end
 
       def tts_engine
-        @tts_engine ||=
-          if options.tts_preset
-            tts_engines.find do |engine|
-              engine.id == options.tts_preset && engine.available?
-            end
-          else
-            tts_engines.find(&:available?)
-          end
+        tts_engines.first
       end
 
-      def tts_engines
-        @tts_engines ||= begin
+      def tts_config
+        @tts_config ||= begin
           project_tts = if project_config.tts.is_a?(Hash)
                           [project_config.tts]
                         else
@@ -70,10 +63,22 @@ module ScreenKit
                           Array(config.tts)
                         end
 
-          (episode_tts + project_tts).map do |opts|
-            TTS.const_get(opts[:engine].camelize)
-               .new(**opts.except(:engine), api_key: options.tts_api_key)
-          end
+          episode_tts + project_tts
+        end
+      end
+
+      def tts_engines
+        @tts_engines ||= tts_config.filter_map do |opts|
+          next unless opts[:enabled]
+
+          tts_class = TTS.const_get(opts[:engine].camelize)
+          tts_preset = options.tts_preset.to_s
+
+          next if !tts_preset.empty? && tts_preset != opts[:id]
+          next unless tts_class.available?(**opts)
+
+          opts = opts.except(:engine, :enabled)
+          tts_class.new(**opts, api_key: options.tts_api_key, segments:)
         end
       end
 

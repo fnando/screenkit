@@ -3,14 +3,14 @@
 module ScreenKit
   module TTS
     class Say < Base
-      include Shell
+      extend Shell
 
       def self.schema_path
         ScreenKit.root_dir.join("screenkit/schemas/tts/say.json")
       end
 
-      def available?
-        enabled? && command_exist?("say")
+      def self.available?(**)
+        command_exist?("say")
       end
 
       def generate(text:, output_path:, log_path: nil)
@@ -18,12 +18,12 @@ module ScreenKit
 
         {voice: nil, rate: nil}.merge(options) => {voice:, rate:}
 
-        run_command "say",
-                    (["-v", voice] if voice),
-                    (["-r", rate] if rate),
-                    "-o", output_path.sub_ext(".aiff"),
-                    text,
-                    log_path:
+        self.class.run_command "say",
+                               (["-v", voice] if voice),
+                               (["-r", rate] if rate),
+                               "-o", output_path.sub_ext(".aiff"),
+                               text,
+                               log_path:
       end
     end
   end

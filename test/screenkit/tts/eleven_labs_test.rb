@@ -7,7 +7,7 @@ class ElevenLabsTest < Minitest::Test
     api_key = ENV.fetch("ELEVENLABS_API_KEY", nil)
     skip "No API key defined" unless api_key
 
-    WebMock.allow_net_connect!
+    WebMock.allow_net_connect! if defined?(WebMock)
 
     output_path = fixtures("elevenlabs.mp3")
     skip if output_path.file?

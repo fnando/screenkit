@@ -8,21 +8,16 @@ module ScreenKit
                  .join("screenkit/schemas/tts/elevenlabs.json")
       end
 
-      # The Eleven Labs API key.
-      attr_reader :api_key
-
-      def initialize(api_key:, **)
-        super(**)
-        @api_key = api_key
+      def self.available?(api_key: nil, **)
+        api_key.to_s.empty?
       end
 
-      def available?
-        enabled? && !api_key.to_s.empty?
+      def all_texts
+        @all_texts ||= segments.map(&:script_content)
       end
 
       def generate(output_path:, text:, log_path: nil)
-        self.class.validate!(options)
-        voice_id = options.delete(:voice_id)
+        voice_id = options[:voice_id]
 
         if log_path
           File.open(log_path, "w") do |f|
@@ -32,9 +27,23 @@ module ScreenKit
 
         require "aitch"
 
+        Aitch.configure do |config|
+          config.logger = Logger.new(log_path) if log_path
+        end
+
+        current_index = all_texts.index { it == text }
+
+        if current_index
+          previous_text = all_texts[current_index - 1]
+          next_text = all_texts[current_index + 1]
+        end
+
+        params = options.merge(text:, previous_text:, next_text:)
+                        .except(:voice_id)
+
         response = Aitch.post(
           url: "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}",
-          body: JSON.dump(options.merge(text:)),
+          body: JSON.dump(params),
           options: {expect: 200},
           headers: {
             "content-type": "application/json",
@@ -44,6 +53,8 @@ module ScreenKit
         )
 
         File.binwrite(output_path, response.body)
+      ensure
+        redact_file(log_path, api_key)
       end
     end
   end

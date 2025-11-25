@@ -177,6 +177,10 @@ module ScreenKit
                     log_path:
       end
 
+      def script_content
+        @script_content ||= script_path.read if script_path.file?
+      end
+
       def create_voiceover(log_path:)
         return if voiceover_path&.file? && !episode.options.overwrite
         return unless script_path.file?
@@ -185,7 +189,7 @@ module ScreenKit
         FileUtils.mkdir_p(voiceover_path.dirname)
 
         episode.tts_engine.generate(
-          text: script_path.read,
+          text: script_content,
           output_path: voiceover_path,
           log_path:
         )

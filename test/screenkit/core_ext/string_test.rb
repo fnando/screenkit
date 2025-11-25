@@ -10,6 +10,9 @@ class StringTest < Minitest::Test
     expected = "this-is-a-test-string-its-unicode-special-characters"
 
     assert_equal expected, original.dasherize
+    assert_equal "this-is-a-test-string", "this_is_a_test_string".dasherize
+    assert_equal "camel-case", "CamelCase".dasherize
+    assert_equal "http-response", "HTTPResponse".dasherize
   end
 
   test "camelizes a string" do
@@ -19,5 +22,11 @@ class StringTest < Minitest::Test
 
     assert_equal expected_upper, original.camelize(:upper)
     assert_equal expected_lower, original.camelize(:lower)
+  end
+
+  test "underscores a string" do
+    assert_equal "this_is_a_test_string", "this-is-a-test-string".underscore
+    assert_equal "camel_case", "CamelCase".underscore
+    assert_equal "http_response", "HTTPResponse".underscore
   end
 end

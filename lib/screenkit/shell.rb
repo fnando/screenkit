@@ -20,9 +20,9 @@ module ScreenKit
       !`which #{command}`.strip.empty?
     end
 
-    def run_command(command, *args, log_path: nil)
+    def run_command(command, *args, log_path: nil, **)
       args = args.flatten.compact.map(&:to_s)
-      stdout, stderr, status = Open3.capture3(command, *args)
+      stdout, stderr, status = Open3.capture3(command, *args, **)
       exit_code = status.exitstatus
 
       if exit_code&.nonzero?

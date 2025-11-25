@@ -9,8 +9,12 @@ module ScreenKit
       # The path to the input video file.
       attr_reader :input_path
 
-      def initialize(input_path:)
+      # The path to the log file.
+      attr_reader :log_path
+
+      def initialize(input_path:, log_path: nil)
         @input_path = input_path
+        @log_path = log_path
       end
 
       def export(output_path)
@@ -26,7 +30,8 @@ module ScreenKit
                     "-r", "24",
                     "-c:v", "libx264",
                     "-y",
-                    output_path
+                    output_path,
+                    log_path:
       end
     end
   end

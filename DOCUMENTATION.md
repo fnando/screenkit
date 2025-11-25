@@ -764,7 +764,7 @@ module. Custom engines must implement the `generate` method:
 module ScreenKit
   module TTS
     class CustomEngine < Base
-      include Shell
+      extend Shell
 
       # Optional: Define schema path for validation
       def self.schema_path
@@ -772,8 +772,8 @@ module ScreenKit
       end
 
       # This method is required.
-      def available?
-        enabled? && command_exist?("some-command")
+      def self.available?
+        command_exist?("some-command")
       end
 
       # This method is required.
@@ -781,15 +781,20 @@ module ScreenKit
         # Optional: validate options against JSON schema.
         self.class.validate!(options)
 
+        # If you need access to previous/next text, you can access the method
+        # `segments`.
+        # current_index = segments.index { it.script_content == text }
+        # next_text = segments[current_index + 1]&.script_content
+
         # Generate audio file from text
         # Write output to output_path
         # Optionally log to log_path
 
         # Example implementation:
-        # run_command "some-command",
-        #             "-o", output_path.sub_ext(".wav"),
-        #             text,
-        #             log_path:
+        # self.class.run_command "some-command",
+        #                        "-o", output_path.sub_ext(".wav"),
+        #                        text,
+        #                        log_path:
       end
     end
   end
@@ -802,6 +807,7 @@ end
 tts:
   - id: custom_engine
     engine: custom_engine # Camelized to CustomEngine
+    enabled: true
     # Add your custom options here
     api_key: your_api_key
     custom_option: value
@@ -896,6 +902,12 @@ Sleep 100ms
 Enter
 Sleep 2s
 ```
+
+When running tape files, the working directory will be the episode directory. If
+you're importing anything from the parent directory, you must specify relative
+paths accordingly. For instance, `episodes/001-episode-name/content/001.tape`
+would need to reference `../../resources/some-file` to access
+`resources/some-file` in the project's directory.
 
 ### Script Files
 

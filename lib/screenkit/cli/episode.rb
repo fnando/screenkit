@@ -61,9 +61,13 @@ module ScreenKit
       def export
         puts Banner.banner if options.banner
 
-        episode_config = Config::Episode.load_file(
-          File.join(options.dir, "config.yml")
-        )
+        episode_config = File.join(options.dir, "config.yml")
+
+        episode_config = if File.file?(episode_config)
+                           Config::Episode.load_file(episode_config)
+                         else
+                           {}
+                         end
 
         options.require.each { require(it) }
 

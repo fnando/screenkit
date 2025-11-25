@@ -27,7 +27,8 @@ module ScreenKit
                     "--fps", 24,
                     "--overwrite",
                     "--output-path", output_path,
-                    log_path:
+                    log_path:,
+                    chdir: demotape_path.parent.parent
       end
 
       def options_to_args(options)
