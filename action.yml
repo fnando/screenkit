@@ -83,7 +83,7 @@ runs:
           --security-opt seccomp=unconfined \
           -v ${{ github.workspace }}:/source \
           fnando/screenkit:latest \
-          export \
+          episode export \
           --dir="${{ env.EPISODE_DIR }}" \
           ${{ inputs.match != '' && format('--match {0}', inputs.match) || '' }} \
           ${{ inputs.overwrite == 'true' && '--overwrite' || '--no-overwrite' }} \
