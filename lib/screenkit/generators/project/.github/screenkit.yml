@@ -1,0 +1,48 @@
+---
+name: Screenkit
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        type: string
+        description: "Episode number (e.g. 001)"
+        required: true
+      tts_preset:
+        description: "TTS preset name"
+        default: ""
+        type: choice
+        options:
+          - ""
+          - say
+          - espeak
+          - eleven_labs
+          - eleven_labs_mp3_192k
+      match:
+        type: string
+        description: "Match pattern for segments (e.g. 001)"
+        default: ""
+      overwrite:
+        type: boolean
+        description: "Regenerate files"
+
+jobs:
+  screenkit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Screenkit
+        uses: fnando/screenkit@v1
+        with:
+          episode: ${{ github.event.inputs.episode }}
+          tts_preset: ${{ github.event.inputs.tts_preset }}
+          tts_api_key: ${{ secrets.TTS_API_KEY }}
+          overwrite: ${{ github.event.inputs.overwrite }}
+          match: ${{ github.event.inputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

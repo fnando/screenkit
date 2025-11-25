@@ -22,6 +22,7 @@ module ScreenKit
       def copy_files
         copy_file "screenkit.yml"
         directory "resources", exclude_pattern: /DS_Store/
+        directory ".github", exclude_pattern: /DS_Store/
       end
 
       def bundle_install
