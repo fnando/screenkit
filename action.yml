@@ -80,6 +80,7 @@ runs:
         docker run \
           --rm \
           --cap-add=SYS_ADMIN \
+          --shm-size=2g \
           --security-opt seccomp=unconfined \
           -v ${{ github.workspace }}:/source \
           fnando/screenkit:latest \
