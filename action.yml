@@ -9,6 +9,9 @@ inputs:
     description: "TTS preset name"
     default: ""
     required: false
+  tts_api_key:
+    description: "TTS API key"
+    required: false
   overwrite:
     description: "Regenerate files"
     default: "false"
@@ -17,9 +20,6 @@ inputs:
     description: "Match pattern for segments (e.g. 001)"
     default: ""
     required: false
-  tts_api_key:
-    description: "TTS API key"
-    required: true
   github_token:
     description: "GitHub token for cache operations"
     required: true
@@ -34,12 +34,12 @@ runs:
       shell: bash
       run: |
         VOICEOVER_HASH=$(find episodes/${{ inputs.episode }}-*/scripts/*.txt -type f 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "none")
-        CONTENT_HASH=$(find episodes/${{ inputs.episode }}-*/content/*.* -type f 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "none")
+        CONTENT_HASH=$(find episodes/${{ inputs.episode }}-*/*/*.* -type f 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "none")
 
         echo "VOICEOVER_CACHE_KEY=episode-voiceover-${{ inputs.episode }}-${VOICEOVER_HASH}" >> $GITHUB_ENV
-        echo "VOICEOVER_RESTORE_KEYS=episode-voiceover-${{ inputs.episode }}-" >> $GITHUB_ENV
-        echo "RAW_CACHE_KEY=episode-raw-${{ inputs.episode }}-${CONTENT_HASH}" >> $GITHUB_ENV
-        echo "RAW_RESTORE_KEYS=episode-raw-${{ inputs.episode }}-" >> $GITHUB_ENV
+        echo "VOICEOVER_RESTORE_KEY=episode-voiceover-${{ inputs.episode }}-" >> $GITHUB_ENV
+        echo "VIDEO_CACHE_KEY=episode-${{ inputs.episode }}-${CONTENT_HASH}" >> $GITHUB_ENV
+        echo "VIDEO_RESTORE_KEY=episode-${{ inputs.episode }}-" >> $GITHUB_ENV
 
     - name: Find episode dir
       shell: bash
@@ -60,16 +60,16 @@ runs:
       with:
         path: episodes/${{ inputs.episode }}-*/audio
         key: ${{ env.VOICEOVER_CACHE_KEY }}
-        restore-keys: ${{ env.VOICEOVER_RESTORE_KEYS }}
+        restore-keys: ${{ env.VOICEOVER_RESTORE_KEY }}
         enableCrossOsArchive: true
 
-    - name: Restore raw cache
-      id: cache-raw
+    - name: Restore videos cache
+      id: cache-videos
       uses: actions/cache/restore@v4
       with:
-        path: output/${{ inputs.episode }}-*/raw/*.mp4
-        key: ${{ env.RAW_CACHE_KEY }}
-        restore-keys: ${{ env.RAW_RESTORE_KEYS }}
+        path: output/${{ inputs.episode }}-*/videos/*.mp4
+        key: ${{ env.VIDEO_CACHE_KEY }}
+        restore-keys: ${{ env.VIDEO_RESTORE_KEY }}
         enableCrossOsArchive: true
 
     - name: Export Episode
@@ -81,14 +81,14 @@ runs:
           --rm \
           --cap-add=SYS_ADMIN \
           --security-opt seccomp=unconfined \
-          -e ELEVENLABS_API_KEY="${{ inputs.elevenlabs_api_key }}" \
           -v ${{ github.workspace }}:/source \
           fnando/screenkit:latest \
           export \
           --dir="${{ env.EPISODE_DIR }}" \
           ${{ inputs.match != '' && format('--match {0}', inputs.match) || '' }} \
           ${{ inputs.overwrite == 'true' && '--overwrite' || '--no-overwrite' }} \
-          ${{ inputs.tts_preset_name != '' && format('--tts-preset-name {0}', inputs.tts_preset_name) || '' }}
+          ${{ inputs.tts_preset_name != '' && format('--tts-preset-name {0}', inputs.tts_preset_name) || '' }} \
+          ${{ inputs.tts_api_key != '' && format('--tts-api-key {0}', inputs.tts_api_key) || '' }}
         echo "result=true" >> $GITHUB_OUTPUT
 
     - name: Delete voice cache
@@ -98,10 +98,10 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github_token }}
 
-    - name: Delete raw cache
+    - name: Delete videos cache
       if: steps.screenkit.outputs.result == 'true'
       shell: bash
-      run: gh cache delete "${{ env.RAW_CACHE_KEY }}" || true
+      run: gh cache delete "${{ env.VIDEO_CACHE_KEY }}" || true
       env:
         GH_TOKEN: ${{ inputs.github_token }}
 
@@ -111,8 +111,8 @@ runs:
         echo "= Voiceover Cache ="
         ls -la episodes/${{ inputs.episode }}-*/audio || true
         echo
-        echo "= Raw Cache ="
-        ls -la output/${{ inputs.episode }}-*/raw || true
+        echo "= Videos Cache ="
+        ls -la output/${{ inputs.episode }}-*/videos || true
 
     - name: Save episode voiceover cache
       if: steps.screenkit.outputs.result == 'true'
@@ -122,12 +122,12 @@ runs:
         key: ${{ env.VOICEOVER_CACHE_KEY }}
         enableCrossOsArchive: true
 
-    - name: Save raw recordings cache
+    - name: Save video recordings cache
       if: steps.screenkit.outputs.result == 'true'
       uses: actions/cache/save@v4
       with:
-        path: output/${{ inputs.episode }}-*/raw/*.mp4
-        key: ${{ env.RAW_CACHE_KEY }}
+        path: output/${{ inputs.episode }}-*/videos/*.mp4
+        key: ${{ env.VIDEO_CACHE_KEY }}
         enableCrossOsArchive: true
 
     - name: Upload output artifacts
