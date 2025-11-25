@@ -5,7 +5,7 @@ inputs:
   episode:
     description: "Episode number (e.g. 001)"
     required: true
-  tts_preset_name:
+  tts_preset:
     description: "TTS preset name"
     default: ""
     required: false
@@ -87,7 +87,7 @@ runs:
           --dir="${{ env.EPISODE_DIR }}" \
           ${{ inputs.match != '' && format('--match {0}', inputs.match) || '' }} \
           ${{ inputs.overwrite == 'true' && '--overwrite' || '--no-overwrite' }} \
-          ${{ inputs.tts_preset_name != '' && format('--tts-preset-name {0}', inputs.tts_preset_name) || '' }} \
+          ${{ inputs.tts_preset != '' && format('--tts-preset {0}', inputs.tts_preset) || '' }} \
           ${{ inputs.tts_api_key != '' && format('--tts-api-key {0}', inputs.tts_api_key) || '' }}
         echo "result=true" >> $GITHUB_OUTPUT
 
