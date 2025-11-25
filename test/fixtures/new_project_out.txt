@@ -11,4 +11,6 @@
       create  resources/sounds/chime.mp3
       create  resources/sounds/pop.mp3
       create  resources/sounds/whoosh.mp3
+      create  .github
+      create  .github/screenkit.yml
          run  bundle install from "."
