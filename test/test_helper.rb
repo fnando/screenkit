@@ -5,7 +5,7 @@ require "simplecov"
 SimpleCov.start
 
 require "bundler/setup"
-require "screen_kit"
+require "screenkit"
 
 require "minitest/utils"
 require "minitest/autorun"

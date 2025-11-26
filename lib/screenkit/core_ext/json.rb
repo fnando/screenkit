@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "json"
+
 module ScreenKit
   module CoreExt
     refine JSON.singleton_class do

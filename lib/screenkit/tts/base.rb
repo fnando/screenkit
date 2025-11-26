@@ -3,6 +3,9 @@
 module ScreenKit
   module TTS
     class Base
+      require_relative "../core_ext"
+      require_relative "../schema_validator"
+
       extend SchemaValidator
 
       using CoreExt

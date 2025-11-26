@@ -4,6 +4,8 @@ module ScreenKit
   class Callout
     module Styles
       class Base
+        require_relative "../../schema_validator"
+
         attr_reader :source, :output_path, :log_path
         attr_accessor :options
 
@@ -16,6 +18,11 @@ module ScreenKit
           @options = options
         end
 
+        # Wrap text to fit within the specified maximum width.
+        # @param text [String] The text to wrap.
+        # @param max_width [Integer] The maximum width in pixels.
+        # @param font_size [Integer] The font size in points.
+        # @return [Array<String>] The wrapped lines of text.
         def text_wrap(text, max_width:, font_size:)
           words = text.to_s.split(/\s+/)
           width_factor = 0.6
@@ -42,10 +49,19 @@ module ScreenKit
           text.gsub("'", "\\\\'")
         end
 
+        # Remove a file if it exists.
+        # @param path [String] The file path to remove.
         def remove_file(path)
           File.unlink(path) if path && File.exist?(path)
         end
 
+        # Render text into an image using MiniMagick.
+        # @param text [String] The text to render.
+        # @param style [TextStyle] The text style to apply.
+        # @param width [Integer] The width of the text image.
+        # @param type [String] The ImageMagick text type (e.g., "caption").
+        # @return [Array] The path to the generated text image, width, and
+        # height.
         def render_text_image(text:, style:, width:, type:)
           return [nil, 0, 0] if text.to_s.empty?
 
