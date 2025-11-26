@@ -33,6 +33,12 @@ module ScreenKit
         end
       end
 
+      def instructions
+        cmd = set_color("screenkit episode new --title TITLE", :blue)
+        path = set_color(destination_root, :blue)
+        say "\nTo create a new episode, run #{cmd} from #{path}"
+      end
+
       no_commands do
         # Add helper methods here
       end
