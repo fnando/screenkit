@@ -10,6 +10,7 @@ require "tty-spinner"
 require "etc"
 require "securerandom"
 require "demo_tape/duration"
+require "aitch"
 
 module ScreenKit
   require_relative "screenkit/version"
@@ -23,6 +24,7 @@ module ScreenKit
   require_relative "screenkit/watermark"
   require_relative "screenkit/spinner"
   require_relative "screenkit/shell"
+  require_relative "screenkit/http"
   require_relative "screenkit/schema_validator"
   require_relative "screenkit/generators/project"
   require_relative "screenkit/generators/episode"

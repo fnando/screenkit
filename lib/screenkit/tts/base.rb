@@ -33,18 +33,18 @@ module ScreenKit
         name.split("::").last.underscore
       end
 
+      def self.api_key_prefix
+        "#{engine_name}:"
+      end
+
       def initialize(id: nil, segments: nil, api_key: nil, **options)
         @segments = Array(segments)
         @options = options
         @id = id
-        @api_key = api_key
-      end
 
-      def redact_file(path, text)
-        return unless File.file?(path)
+        return unless api_key
 
-        content = File.read(path).gsub(text, "[REDACTED]")
-        File.write(path, content)
+        @api_key = api_key.delete_prefix("#{self.class.engine_name}:")
       end
     end
   end

@@ -719,7 +719,9 @@ tts:
 
 ### ElevenLabs Engine
 
-Professional AI voice synthesis.
+The ElevenLabs TTS engine requires an API key. Set it via the `--tts-api-key`
+option when exporting an episode. The API key must be prefixed with
+`eleven_labs:`, e.g. `eleven_labs:sk_c195c0131de...`.
 
 ```yaml
 tts:
@@ -764,21 +766,30 @@ module. Custom engines must implement the `generate` method:
 module ScreenKit
   module TTS
     class CustomEngine < Base
-      extend Shell
+      # If you're using shell commands, you can include Shell,
+      # which provides helper methods.
+      # extend Shell
 
       # Optional: Define schema path for validation
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/tts/custom_engine.json")
+        File.join(__dir__, "yourschema.json")
       end
 
       # This method is required.
+      # The keyword arguments will be all the configuration options, plus
+      # api_key and segments. If you don't care about those, remember to use
+      # the `**` operator to ignore them.
       def self.available?(**)
-        command_exist?("some-command")
+        # If you're running a local command:
+        # command_exist?("some-command")
+
+        # If you're using an API key:
+        # api_key.to_s.start_with?("#{engine_name}:")
       end
 
       # This method is required.
       def generate(text:, output_path:, log_path: nil)
-        # Optional: validate options against JSON schema.
+        # Optional, but recommended: validate options against JSON schema.
         self.class.validate!(options)
 
         # If you need access to previous/next text, you can access the method
@@ -790,11 +801,21 @@ module ScreenKit
         # Write output to output_path
         # Optionally log to log_path
 
-        # Example implementation:
+        # Example implementation calling a command:
         # self.class.run_command "some-command",
         #                        "-o", output_path.sub_ext(".wav"),
         #                        text,
         #                        log_path:
+
+        # Example implementation using an API:
+        # response = Aitch.post(
+        #   url: "https://api.example.com/tts",
+        #   headers: {
+        #     content_type: "application/json",
+        #     authorization: "Bearer #{api_key}"
+        #   },
+        #   options: {expect: 200}
+        # )
       end
     end
   end
