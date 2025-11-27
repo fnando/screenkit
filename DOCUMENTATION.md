@@ -1121,26 +1121,26 @@ be processed).
 
 ### Common Issues
 
-**"Gem not found" error:**
+#### "Gem not found" error
 
 ```bash
 bundle install
 bundle exec screenkit ...
 ```
 
-**"Schema validation failed":**
+#### Schema validation failed
 
 - Check YAML syntax
 - Verify required fields are present
 - Use schema hints with `yaml-language-server`
 
-**Missing resources:**
+#### Missing resources
 
 - Check `resources_dir` configuration
 - Verify file paths are relative to resource directories
 - Use absolute paths for system resources
 
-**TTS not working:**
+#### TTS not working
 
 - For ElevenLabs: Set `--tts-api-key`
 - For macOS `say`: Verify voice name with `say -v ?`
