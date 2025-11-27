@@ -71,14 +71,15 @@ module ScreenKit
         @tts_engines ||= tts_config.filter_map do |opts|
           next unless opts[:enabled]
 
+          api_key = options.tts_api_key
           tts_class = TTS.const_get(opts[:engine].camelize)
           tts_preset = options.tts_preset.to_s
 
           next if !tts_preset.empty? && tts_preset != opts[:id]
-          next unless tts_class.available?(**opts)
+          next unless tts_class.available?(api_key:, **opts)
 
           opts = opts.except(:engine, :enabled)
-          tts_class.new(**opts, api_key: options.tts_api_key, segments:)
+          tts_class.new(**opts, api_key:, segments:)
         end
       end
 

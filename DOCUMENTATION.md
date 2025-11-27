@@ -772,7 +772,7 @@ module ScreenKit
       end
 
       # This method is required.
-      def self.available?
+      def self.available?(**)
         command_exist?("some-command")
       end
 
@@ -816,6 +816,16 @@ tts:
 The engine name is camelized (e.g., `custom_engine` → `CustomEngine`,
 `google_cloud` → `GoogleCloud`) and loaded as
 `ScreenKit::TTS::#{CamelizedName}`.
+
+### 3rd-party TTS Engines
+
+- [Search Github](https://github.com/topics/screenkit-tts)
+- [Google Text to Speech](https://github.com/fnando/screenkit-tts-google)
+
+> [!TIP]
+>
+> If you host your TTS engine on Github, use the topic `screekit-tts`, so other
+> people can find it.
 
 ---
 
