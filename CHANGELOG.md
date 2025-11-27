@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## v0.0.7
+
+- [Fixed] Improve support for extensions.
+
 ## v0.0.6
 
 - [Added] Add `--tts-preset` option to select TTS preset when exporting
