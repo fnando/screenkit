@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
+require "json-schema"
+require "aitch"
+require "logger"
+
 module ScreenKit
   module TTS
     class Base
-      require_relative "../core_ext"
       require_relative "../schema_validator"
+      require_relative "../shell"
+      require_relative "../http"
+      require_relative "../core_ext"
+      require_relative "../version"
 
       extend SchemaValidator
+      extend Shell
+      include HTTP
 
       using CoreExt
 

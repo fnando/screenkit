@@ -766,10 +766,6 @@ module. Custom engines must implement the `generate` method:
 module ScreenKit
   module TTS
     class CustomEngine < Base
-      # If you're using shell commands, you can include Shell,
-      # which provides helper methods.
-      # extend Shell
-
       # Optional: Define schema path for validation
       def self.schema_path
         File.join(__dir__, "yourschema.json")
@@ -801,20 +797,18 @@ module ScreenKit
         # Write output to output_path
         # Optionally log to log_path
 
-        # Example implementation calling a command:
+        # Example calling a command (provided by ScreenKit::Shell)
         # self.class.run_command "some-command",
         #                        "-o", output_path.sub_ext(".wav"),
         #                        text,
         #                        log_path:
 
-        # Example implementation using an API:
-        # response = Aitch.post(
+        # Example using an API (provided by ScreenKit::HTTP)
+        # response = json_post(
         #   url: "https://api.example.com/tts",
-        #   headers: {
-        #     content_type: "application/json",
-        #     authorization: "Bearer #{api_key}"
-        #   },
-        #   options: {expect: 200}
+        #   headers: {authorization: "Bearer #{api_key}"},
+        #   api_key:,
+        #   log_path:
         # )
       end
     end
@@ -842,6 +836,7 @@ The engine name is camelized (e.g., `custom_engine` → `CustomEngine`,
 
 - [Search Github](https://github.com/topics/screenkit-tts)
 - [Google Text to Speech](https://github.com/fnando/screenkit-tts-google)
+- [Minimax Text to Speech](https://github.com/fnando/screenkit-tts-minimax)
 
 > [!TIP]
 >
