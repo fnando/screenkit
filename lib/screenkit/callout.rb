@@ -32,7 +32,7 @@ module ScreenKit
                   :style_props, :style_class, :animation, :source, :log_path
 
     def self.schema_path
-      ScreenKit.root_dir.join("screenkit/schemas/refs/callout_style.json")
+      ScreenKit.root_dir.join("schemas/refs/callout_style.json")
     end
 
     def initialize(

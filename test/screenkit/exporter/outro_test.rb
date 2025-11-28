@@ -4,8 +4,7 @@ require "test_helper"
 
 class OutroTest < Minitest::Test
   let(:source) do
-    resources_dir = ScreenKit.root_dir
-                             .join("screenkit/generators/project/resources")
+    resources_dir = ScreenKit.root_dir.join("generators/project/resources")
     ScreenKit::PathLookup.new(
       resources_dir,
       resources_dir.join("images"),
@@ -60,13 +59,14 @@ class OutroTest < Minitest::Test
     config_path = fixtures("screenkit.yml")
     config = ScreenKit::Config::Project.load_file(config_path)
     config = config.scenes.fetch(:outro)
-    config[:background] = fixtures("bg_24fps.mp4").to_s
+    config[:background] = fixtures("bg.mp4").to_s
 
     outro_exporter = ScreenKit::Exporter::Outro.new(config:, source:)
     outro_path = create_tmp_path(:mp4)
     outro_exporter.export(outro_path)
 
     assert_similar_videos(fixtures("outro_with_bg_video.mp4"), outro_path)
+    refute fixtures("bg_24fps.mp4").file?
   end
 
   test "exports outro segment vertically centered" do

@@ -26,7 +26,7 @@ module ScreenKit
 
       def self.schema_path
         @schema_path ||=
-          ScreenKit.root_dir.join("screenkit/schemas/episode.json")
+          ScreenKit.root_dir.join("schemas/episode.json")
       end
 
       def initialize(**)

@@ -6,7 +6,7 @@ module ScreenKit
       extend Shell
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/tts/say.json")
+        ScreenKit.root_dir.join("schemas/tts/say.json")
       end
 
       def self.available?(**)

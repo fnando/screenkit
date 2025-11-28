@@ -10,8 +10,7 @@ module ScreenKit
                     :padding, :text, :width
 
         def self.schema_path
-          ScreenKit.root_dir
-                   .join("screenkit/schemas/callout_styles/inline_block.json")
+          ScreenKit.root_dir.join("schemas/callout_styles/inline_block.json")
         end
 
         def initialize(source:, **kwargs)

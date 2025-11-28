@@ -474,7 +474,109 @@ during the video.
 
 ### Callout Styles
 
-ScreenKit provides two built-in callout styles:
+ScreenKit provides a few built-in callout styles:
+
+#### Social Style
+
+The social callout style displays social media information with icons.
+
+```yaml
+callout_styles:
+  # Basic setup to use presets
+  social:
+    style: social
+    anchor: [left, bottom]
+    margin: 100
+    animation: fade
+    in_transition:
+      duration: 0.4s
+      sound: pop.mp3
+    out_transition:
+      duration: 0.4s
+      sound: pop.mp3
+
+  # Custom setup
+  custom_social:
+    style: social
+    background_color: "#E0D300"
+    label_style:
+      size: 24
+      color: "#00000088"
+      font_path: "open-sans/OpenSans-ExtraBold.ttf"
+    text_style:
+      size: 50
+      color: "#000000"
+      font_path: "open-sans/OpenSans-ExtraBold.ttf"
+    label: "CUSTOM"
+    icon:
+      path: "images/custom.png" # Must be a 160x160 image
+      background_color: "#000000"
+    anchor: [left, bottom]
+    margin: 100
+    animation: fade
+    in_transition:
+      duration: 0.4s
+      sound: pop.mp3
+    out_transition:
+      duration: 0.4s
+      sound: pop.mp3
+```
+
+##### Usage in episode
+
+ScreenKit comes with some presets where you don't need to set up anything, but 
+you can also create custom callouts.
+
+Available presets:
+
+- `blog`
+- `bsky`
+- `discord`
+- `dribbble`
+- `github`
+- `linkedin`
+- `mastodon`
+- `snap`
+- `soundcloud`
+- `spotify`
+- `tiktok`
+- `twitch`
+- `youtube`
+
+```yaml
+callouts:
+  # Using a preset
+  - type: social
+    preset: github
+    text: "@fnando"
+    starts: 1
+    duration: 5s
+
+  # Using a custom callout style
+  - type: custom_social
+    text: "@fnando"
+    starts: 1
+    duration: 5s
+
+  # Defining a custom callout inline
+  - type: social
+    text: "@fnando"
+    starts: 1
+    duration: 5s
+    background_color: "#E0D300"
+    label_style:
+      size: 24
+      color: "#00000088"
+      font_path: "open-sans/OpenSans-ExtraBold.ttf"
+    text_style:
+      size: 50
+      color: "#000000"
+      font_path: "open-sans/OpenSans-ExtraBold.ttf"
+    label: "CUSTOM"
+    icon:
+      path: "images/custom.png" # Must be a 160x160 image
+      background_color: "#000000"
+```
 
 #### Shadow Block Style
 

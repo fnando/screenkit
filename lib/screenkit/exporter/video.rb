@@ -4,7 +4,7 @@ module ScreenKit
   module Exporter
     class Video
       include Shell
-      include Utils
+      extend Utils
 
       # The path to the input video file.
       attr_reader :input_path
@@ -17,10 +17,12 @@ module ScreenKit
         @log_path = log_path
       end
 
-      def export(output_path)
-        fps = fps(input_path)
+      def self.right_fps?(path)
+        (-0.02..0.02).cover?(24 - fps(path))
+      end
 
-        if (-0.02..0.02).cover?(24 - fps)
+      def export(output_path)
+        if self.class.right_fps?(input_path)
           FileUtils.cp(input_path, output_path)
           return
         end

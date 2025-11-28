@@ -11,6 +11,7 @@ require "etc"
 require "securerandom"
 require "demo_tape/duration"
 require "aitch"
+require "erb"
 
 module ScreenKit
   require_relative "screenkit/version"
@@ -67,7 +68,11 @@ module ScreenKit
   require_files.call("screenkit/tts/*.rb")
 
   def self.root_dir
-    @root_dir ||= Pathname(__dir__)
+    @root_dir ||= Pathname(__dir__).join("screenkit")
+  end
+
+  def self.resources_dir
+    @resources_dir ||= root_dir.join("resources")
   end
 
   # Raised when the configuration schema is invalid.

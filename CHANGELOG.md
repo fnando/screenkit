@@ -13,6 +13,7 @@ Prefix your message with one of the following:
 
 ## Unreleased
 
+- [Added] Add social callouts.
 - [Added] Add align support for inline block callouts.
 
 ## v0.0.8

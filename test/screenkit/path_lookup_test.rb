@@ -14,8 +14,8 @@ class PathLookupTest < Minitest::Test
                  lookup.search("path_lookup_test.rb")
     assert_equal Pathname(__FILE__),
                  lookup.search("test/screenkit/path_lookup_test.rb")
-    assert_equal ScreenKit.root_dir.join("screenkit"),
-                 lookup.search("screenkit")
+    assert_equal ScreenKit.root_dir.join("resources"),
+                 lookup.search("resources")
   end
 
   test "looks up dir/" do

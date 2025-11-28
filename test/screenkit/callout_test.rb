@@ -5,8 +5,7 @@ require "test_helper"
 module ScreenKit
   class CalloutTest < Minitest::Test
     let(:source) do
-      resources_dir = ScreenKit.root_dir
-                               .join("screenkit/generators/project/resources")
+      resources_dir = ScreenKit.root_dir.join("generators/project/resources")
       ScreenKit::PathLookup.new(resources_dir.join("fonts"))
     end
     let(:font_path) { "open-sans/OpenSans-ExtraBold.ttf" }

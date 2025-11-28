@@ -8,7 +8,7 @@ class SchemaTTSTest < Minitest::Test
       extend ScreenKit::SchemaValidator
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/refs/tts.json")
+        ScreenKit.root_dir.join("schemas/refs/tts.json")
       end
     end
   end

@@ -3,8 +3,10 @@
 require "test_helper"
 
 class FileCopyTest < Minitest::Test
+  setup { slow_test }
+
   let(:resources_dir) do
-    ScreenKit.root_dir.join("screenkit/generators/project/resources")
+    ScreenKit.root_dir.join("generators/project/resources")
   end
 
   let(:source) do

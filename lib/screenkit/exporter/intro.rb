@@ -8,7 +8,7 @@ module ScreenKit
       extend SchemaValidator
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/refs/intro.json")
+        ScreenKit.root_dir.join("schemas/refs/intro.json")
       end
 
       # The intro scene configuration.
@@ -109,11 +109,10 @@ module ScreenKit
         # Background layer
         if background_path&.file?
           if video_file?(background_path)
-            # Ensure video is 24fps
             extname = background_path.extname
             optimized_path = background_path.sub_ext("_24fps#{extname}")
 
-            if (-0.02..0.02).cover?(fps(background_path))
+            if Video.right_fps?(background_path)
               optimized_path = background_path
             end
 

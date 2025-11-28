@@ -5,12 +5,17 @@ module ScreenKit
     class Base
       extend SchemaValidator
 
+      attr_reader :raw_options
+
       def self.load_file(path)
         unless File.file?(path)
           raise FileNotFoundError, "Config file not found: #{path}"
         end
 
-        config = YAML.load_file(path, symbolize_names: true)
+        template = File.read(path)
+        contents = ERB.new(template).result
+
+        config = YAML.load(contents, symbolize_names: true)
         load(config)
       end
 
@@ -21,6 +26,8 @@ module ScreenKit
       end
 
       def initialize(**kwargs)
+        @raw_options = kwargs
+
         kwargs.each do |key, value|
           value = process(key, value)
           instance_variable_set(:"@#{key}", value)

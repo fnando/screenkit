@@ -41,6 +41,7 @@ resources_dir:
   - "%{episode_dir}/resources/fonts"
   - resources
   - "%{episode_dir}/resources"
+  - "<%= ScreenKit.resources_dir %>"
   - ~/Library/Fonts
   - /Library/Fonts
   - /System/Library/Fonts
@@ -272,6 +273,8 @@ demotape:
 # in the video. Callouts are visual elements that highlight important
 # information. Each callout type can have its own settings for icon, background,
 # text styles, animations, and sounds.
+#
+# https://github.com/fnando/screenkit/blob/main/DOCUMENTATION.md#callouts
 callout_styles:
   shadow_block:
     # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/default.json
@@ -302,6 +305,19 @@ callout_styles:
   inline_block:
     # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/inline_block.json
     style: inline_block
+    anchor: [left, bottom]
+    margin: 100
+    animation: fade
+    in_transition:
+      duration: 0.4s
+      sound: pop.mp3
+    out_transition:
+      duration: 0.4s
+      sound: pop.mp3
+
+  social:
+    # yaml-language-server: $schema=https://screenkit.dev/schemas/callout_styles/social.json
+    style: social
     anchor: [left, bottom]
     margin: 100
     animation: fade

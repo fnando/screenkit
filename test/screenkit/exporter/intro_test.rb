@@ -6,7 +6,7 @@ class IntroTest < Minitest::Test
   let(:text) { "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT" }
   let(:source) do
     resources_dir = ScreenKit.root_dir
-                             .join("screenkit/generators/project/resources")
+                             .join("generators/project/resources")
     ScreenKit::PathLookup.new(
       Pathname.pwd.join("test/fixtures"),
       resources_dir,
@@ -49,13 +49,14 @@ class IntroTest < Minitest::Test
     config_path = fixtures("screenkit.yml")
     config = ScreenKit::Config::Project.load_file(config_path)
     config = config.scenes.fetch(:intro)
-    config[:background] = fixtures("bg_24fps.mp4").expand_path.to_s
+    config[:background] = fixtures("bg.mp4").expand_path.to_s
 
     intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
     assert_similar_videos(fixtures("intro_with_bg_video.mp4"), intro_path)
+    refute fixtures("bg_24fps.mp4").file?
   end
 
   test "exports intro segment with background image" do

@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "aitch"
   spec.add_dependency "demotape"
+  spec.add_dependency "erb"
   spec.add_dependency "etc"
   spec.add_dependency "json-schema"
   spec.add_dependency "mini_magick"

@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/callout_styles/shadow_block.json",
+  "title": "Social Callout",
+  "oneOf": [
+    {
+      "preset": {
+        "type": "string",
+        "enum": [
+          "spotify",
+          "youtube",
+          "tiktok",
+          "snap",
+          "mastodon",
+          "blog",
+          "linkedin",
+          "discord",
+          "twitch",
+          "github",
+          "soundcloud",
+          "dribbble"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "required": ["label", "icon", "label_style", "account_style"],
+      "properties": {
+        "icon": {
+          "type": "object",
+          "required": ["path", "background_color"],
+          "properties": {
+            "path": { "type": "string", "format": "uri" },
+            "background_color": { "$ref": "../refs/color.json" }
+          }
+        },
+        "background_color": {
+          "$ref": "../refs/color.json"
+        },
+        "label_style": {
+          "$ref": "../refs/text_style.json"
+        },
+        "account_style": {
+          "$ref": "../refs/text_style.json"
+        },
+        "label": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

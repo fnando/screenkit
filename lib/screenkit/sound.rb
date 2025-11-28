@@ -20,7 +20,7 @@ module ScreenKit
 
       case input
       when FalseClass, nil
-        @path = ScreenKit.root_dir.join("screenkit/resources/mute.mp3")
+        @path = ScreenKit.resources_dir.join("mute.mp3")
       when Hash
         {path: nil, volume: 1.0}.merge(input) => {path:, volume:}
         @path = Pathname(path)

@@ -5,8 +5,7 @@ module ScreenKit
     module Styles
       class FileCopy < Base
         def self.schema_path
-          ScreenKit.root_dir
-                   .join("screenkit/schemas/callout_styles/file_copy.json")
+          ScreenKit.root_dir.join("schemas/callout_styles/file_copy.json")
         end
 
         def initialize(source:, **kwargs)

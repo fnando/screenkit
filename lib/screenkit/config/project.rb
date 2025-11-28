@@ -32,7 +32,7 @@ module ScreenKit
 
       def self.schema_path
         @schema_path ||=
-          ScreenKit.root_dir.join("screenkit/schemas/project.json")
+          ScreenKit.root_dir.join("schemas/project.json")
       end
 
       private def process(key, value)
@@ -44,6 +44,10 @@ module ScreenKit
         else
           value
         end
+      end
+
+      def to_h
+        raw_options
       end
     end
   end

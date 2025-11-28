@@ -8,7 +8,7 @@ module ScreenKit
       extend SchemaValidator
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/refs/outro.json")
+        ScreenKit.root_dir.join("schemas/refs/outro.json")
       end
 
       # The outro scene configuration.
@@ -65,7 +65,6 @@ module ScreenKit
         cmd = [
           "ffmpeg",
           *inputs,
-          "-sws_flags", "lanczos+accurate_rnd+full_chroma_int",
           "-filter_complex", filters,
           *maps,
           "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv444p",
@@ -95,15 +94,26 @@ module ScreenKit
         # Background layer
         if background_path&.file?
           if video_file?(background_path)
+            extname = background_path.extname
+            optimized_path = background_path.sub_ext("_24fps#{extname}")
+
+            if Video.right_fps?(background_path)
+              optimized_path = background_path
+            end
+
+            unless optimized_path.file?
+              Video.new(input_path: background_path).export(optimized_path)
+            end
+
             # Video background
-            video_duration = duration(background_path)
+            video_duration = duration(optimized_path)
 
             # Calculate how many loops we need
             loops_needed = (duration / video_duration).ceil
 
             inputs += [
               "-stream_loop", (loops_needed - 1).to_s, "-i",
-              background_path
+              optimized_path
             ]
 
             # Scale, crop, then trim to exact duration needed

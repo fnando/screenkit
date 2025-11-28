@@ -10,7 +10,7 @@ module ScreenKit
       end
 
       def self.schema_path
-        ScreenKit.root_dir.join("screenkit/schemas/tts/espeak.json")
+        ScreenKit.root_dir.join("schemas/tts/espeak.json")
       end
 
       def generate(text:, output_path:, log_path: nil)

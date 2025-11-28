@@ -10,8 +10,7 @@ module ScreenKit
                     :title, :title_style, :width
 
         def self.schema_path
-          ScreenKit.root_dir
-                   .join("screenkit/schemas/callout_styles/shadow_block.json")
+          ScreenKit.root_dir.join("schemas/callout_styles/shadow_block.json")
         end
 
         def initialize(source:, **kwargs)

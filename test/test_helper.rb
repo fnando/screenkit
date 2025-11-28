@@ -30,8 +30,12 @@ module Minitest
       Pathname.pwd.join("tmp")
     end
 
+    def fixtures_dir
+      Pathname(__dir__).join("fixtures")
+    end
+
     def fixtures(path)
-      Pathname(__dir__).join("fixtures", path)
+      fixtures_dir.join(path)
     end
 
     def create_tmp_path(ext)
