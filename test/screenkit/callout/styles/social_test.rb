@@ -259,7 +259,7 @@ class SocialTest < Minitest::Test
         size: 24,
         font_path: "open-sans/OpenSans-ExtraBold.ttf"
       },
-      account_style: {
+      text_style: {
         color: "#ffffff",
         size: 50,
         font_path: "open-sans/OpenSans-ExtraBold.ttf"
