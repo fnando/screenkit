@@ -56,6 +56,19 @@ class OutroTest < Minitest::Test
     assert_similar_videos(fixtures("outro_with_bg_image.mp4"), outro_path)
   end
 
+  test "exports outro segment with background video" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Config::Project.load_file(config_path)
+    config = config.scenes.fetch(:outro)
+    config[:background] = fixtures("bg_24fps.mp4").to_s
+
+    outro_exporter = ScreenKit::Exporter::Outro.new(config:, source:)
+    outro_path = create_tmp_path(:mp4)
+    outro_exporter.export(outro_path)
+
+    assert_similar_videos(fixtures("outro_with_bg_video.mp4"), outro_path)
+  end
+
   test "exports outro segment vertically centered" do
     config_path = fixtures("screenkit.yml")
     config = ScreenKit::Config::Project.load_file(config_path)

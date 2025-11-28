@@ -45,6 +45,19 @@ class IntroTest < Minitest::Test
     assert_lufs(intro_path, expected: -21.3)
   end
 
+  test "exports intro segment with background video" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Config::Project.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:background] = fixtures("bg_24fps.mp4").expand_path.to_s
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_with_bg_video.mp4"), intro_path)
+  end
+
   test "exports intro segment with background image" do
     config_path = fixtures("screenkit.yml")
     config = ScreenKit::Config::Project.load_file(config_path)
