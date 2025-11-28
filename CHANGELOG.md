@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+# v0.0.8
+
+- [Fixed] Further improvements to support extensions.
+
 ## v0.0.7
 
 - [Fixed] Improve support for extensions.
