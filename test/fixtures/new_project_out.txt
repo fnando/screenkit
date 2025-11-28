@@ -1,5 +1,6 @@
       create  Gemfile
       create  screenkit.yml
+      create  .gitignore
       create  resources
       create  resources/backtracks/default.aac
       create  resources/fonts/open-sans/OFL.txt
