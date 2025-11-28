@@ -11,7 +11,11 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-# v0.0.8
+## Unreleased
+
+- [Added] Add align support for inline block callouts.
+
+## v0.0.8
 
 - [Fixed] Further improvements to support extensions.
 

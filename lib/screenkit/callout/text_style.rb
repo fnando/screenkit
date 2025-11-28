@@ -3,7 +3,7 @@
 module ScreenKit
   class Callout
     class TextStyle
-      attr_reader :color, :size, :font_path
+      attr_reader :color, :size, :font_path, :align
 
       def initialize(source:, **kwargs)
         @source = source
@@ -37,7 +37,7 @@ module ScreenKit
       end
 
       def as_json(*)
-        {color:, size:, font_path:, rgb_color:, opacity:}
+        {color:, size:, font_path:, rgb_color:, opacity:, align:}
       end
     end
   end

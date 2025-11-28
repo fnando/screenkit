@@ -13,6 +13,10 @@
     },
     "color": {
       "$ref": "color.json"
+    },
+    "align": {
+      "type": "string",
+      "enum": ["left", "center", "right"]
     }
   }
 }

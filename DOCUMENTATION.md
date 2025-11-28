@@ -552,6 +552,7 @@ callouts_styles:
       color: "#ffffff"
       size: 40
       font_path: open-sans/OpenSans-ExtraBold.ttf
+      align: left # Text alignment: left, center, right
 
     # Layout
     padding: 20

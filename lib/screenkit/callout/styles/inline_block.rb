@@ -88,18 +88,27 @@ module ScreenKit
             image << "xc:none"
 
             line_images.each do |path, width, height|
+              offset_x = case text_style.align
+                         when "right"
+                           max_line_width - width
+                         when "center"
+                           (max_line_width - width) / 2
+                         else
+                           0
+                         end
+
               # Draw rectangle background
               image << "-fill"
               image << background_color
               image << "-draw"
-              image << "rectangle 0,#{offset_y}," \
-                       "#{width + padding_x}," \
+              image << "rectangle #{offset_x},#{offset_y}," \
+                       "#{width + padding_x + offset_x}," \
                        "#{offset_y + height + padding_y}"
 
               # Composite line text
               image << path
               image << "-geometry"
-              image << "+#{padding.top}+#{offset_y + padding.left}"
+              image << "+#{padding.left + offset_x}+#{offset_y + padding.top}"
               image << "-composite"
               offset_y += padding_y + height
             end

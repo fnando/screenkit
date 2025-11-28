@@ -46,4 +46,96 @@ class InlineBlockTest < Minitest::Test
     assert_similar_images fixtures("callout_inline_block_linebreaks.png"),
                           output_path
   end
+
+  test "generates callout image aligned right" do
+    output_path = create_tmp_path(:png)
+    style = ScreenKit::Callout::Styles::InlineBlock.new(
+      source:,
+      background_color: "#000000",
+      text_style: {color: "#ffffff", font_path: font, size: 40, align: "right"},
+      padding: 20,
+      width: 600,
+      text: "This is one big text that will have automatic linebreaks".upcase,
+      output_path:
+    )
+
+    style.render
+
+    assert_path_exists output_path
+    assert_similar_images fixtures("callout_inline_block_align_right.png"),
+                          output_path
+  end
+
+  test "generates callout image aligned right with forced linebreaks" do
+    output_path = create_tmp_path(:png)
+    style = ScreenKit::Callout::Styles::InlineBlock.new(
+      source:,
+      background_color: "#000000",
+      text_style: {color: "#ffffff", font_path: font, size: 40, align: "right"},
+      padding: 20,
+      width: 600,
+      text: "Line one\nThis is line two\nAnd finally line three".upcase,
+      output_path:
+    )
+
+    style.render
+
+    assert_path_exists output_path
+    assert_similar_images(
+      fixtures("callout_inline_block_align_right_forced.png"),
+      output_path
+    )
+  end
+
+  test "generates callout image aligned center" do
+    output_path = create_tmp_path(:png)
+    style = ScreenKit::Callout::Styles::InlineBlock.new(
+      source:,
+      background_color: "#000000",
+      text_style: {
+        color: "#ffffff",
+        font_path: font,
+        size: 40,
+        align: "center"
+      },
+      padding: 20,
+      width: 600,
+      text: "This is one big text that will have automatic linebreaks".upcase,
+      output_path:
+    )
+
+    style.render
+
+    assert_path_exists output_path
+    assert_similar_images(
+      fixtures("callout_inline_block_align_center.png"),
+      output_path
+    )
+  end
+
+  test "generates callout image aligned center with forced linebreaks" do
+    output_path = create_tmp_path(:png)
+    style = ScreenKit::Callout::Styles::InlineBlock.new(
+      source:,
+      background_color: "#000000",
+      text_style: {
+        color: "#ffffff",
+        font_path: font,
+        size: 40,
+        align: "center"
+      },
+      padding: 20,
+      width: 600,
+      text: "Line one\nThis is line two\nAnd finally line three".upcase,
+      output_path:
+    )
+
+    style.render
+
+    assert_path_exists output_path
+    assert_similar_images(
+      fixtures("callout_inline_block_align_center_forced.png"),
+      output_path
+    )
+  end
 end
