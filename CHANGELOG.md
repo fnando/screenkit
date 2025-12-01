@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-## Unreleased
+## v0.0.10
 
 - [Added] Add `--overwrite-content` and `--overwrite-voiceover` to individually
   control overwriting content and voiceover when generating episodes.
