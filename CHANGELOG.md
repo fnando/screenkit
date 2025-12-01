@@ -11,6 +11,11 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## Unreleased
+
+- [Added] Add `--overwrite-content` and `--overwrite-voiceover` to individually
+  control overwriting content and voiceover when generating episodes.
+
 ## v0.0.9
 
 - [Added] Add social callouts.

@@ -41,6 +41,14 @@ module ScreenKit
              type: :boolean,
              default: false,
              desc: "Overwrite existing exported file"
+      option :overwrite_voiceover,
+             type: :boolean,
+             default: false,
+             desc: "Regenerate all voiceover audio files"
+      option :overwrite_content,
+             type: :boolean,
+             default: false,
+             desc: "Regenerate all content files (e.g., demo tapes)"
       option :match_segment,
              type: :string,
              desc: "Only export segments matching this string"
@@ -70,6 +78,11 @@ module ScreenKit
                          end
 
         options.require.each { require(it) }
+
+        # Ensure overwrite is only set if other individual options aren't set.
+        options[:overwrite] = options.overwrite &&
+                              !options.overwrite_content &&
+                              !options.overwrite_voiceover
 
         exporter = ScreenKit::Exporter::Episode.new(
           project_config: config,

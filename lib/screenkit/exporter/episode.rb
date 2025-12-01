@@ -35,6 +35,8 @@ module ScreenKit
         @options = options
         @mutex = Mutex.new
         @logfile = Logfile.new(output_dir.join("logs"))
+
+        Thread.report_on_exception = false
       end
 
       def tts_available?
@@ -105,6 +107,10 @@ module ScreenKit
 
       def export
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+        Signal.trap("INT", "EXIT") do
+          exit 1
+        end
 
         cleanup_output_dir
         prelude

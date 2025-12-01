@@ -60,7 +60,7 @@ module ScreenKit
       end
 
       def export_video(log_path:)
-        return if video_path.file? && !episode.options.overwrite
+        return if video_path.file? && !overwrite_content?
 
         log_path = format(log_path.to_s, prefix:) if log_path
 
@@ -181,8 +181,16 @@ module ScreenKit
         @script_content ||= script_path.read if script_path.file?
       end
 
+      def overwrite_voiceover?
+        episode.options.overwrite || episode.options.overwrite_voiceover
+      end
+
+      def overwrite_content?
+        episode.options.overwrite || episode.options.overwrite_content
+      end
+
       def create_voiceover(log_path:)
-        return if voiceover_path&.file? && !episode.options.overwrite
+        return if voiceover_path&.file? && !overwrite_voiceover?
         return unless script_path.file?
         return unless episode.tts_available?
 

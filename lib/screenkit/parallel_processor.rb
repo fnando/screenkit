@@ -23,11 +23,14 @@ module ScreenKit
       indexed_list.each_slice(Etc.nprocessors) do |slice|
         threads = slice.map do |args|
           thread = Thread.new do
+            update_message
             yield(*args.take([1, arity].max), log_path:)
-            update_progress
+            mutex.synchronize { self.progress += 1 }
+            update_message
           end
 
           thread.abort_on_exception = true
+          thread.report_on_exception = false
           thread
         end
 
@@ -40,11 +43,8 @@ module ScreenKit
       ended_at - started_at
     end
 
-    def update_progress
-      mutex.synchronize do
-        self.progress += 1
-        spinner.update(format(message, count:, progress:))
-      end
+    def update_message
+      spinner.update(format(message, count:, progress:))
     end
   end
 end
