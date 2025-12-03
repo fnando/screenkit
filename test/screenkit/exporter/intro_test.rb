@@ -3,7 +3,8 @@
 require "test_helper"
 
 class IntroTest < Minitest::Test
-  let(:text) { "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT" }
+  let(:title) { "CREATING YOUR FIRST SCREENCAST WITH SCREENKIT" }
+  let(:url) { "https://example.com" }
   let(:source) do
     resources_dir = ScreenKit.root_dir
                              .join("generators/project/resources")
@@ -18,25 +19,44 @@ class IntroTest < Minitest::Test
 
   test "exports intro segment with background color" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:background] = "#100f50"
+    config[:title][:text] = title
+    config[:url][:text] = url
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
     assert_similar_videos(fixtures("intro_with_bgcolor.mp4"), intro_path)
   end
 
-  test "exports intro segment with sound" do
+  test "exports intro segment without url" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:background] = "#100f50"
+    config[:title][:text] = title
+    config[:url][:text] = nil
+
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
+    intro_path = create_tmp_path(:mp4)
+    intro_exporter.export(intro_path)
+
+    assert_similar_videos(fixtures("intro_no_url.mp4"), intro_path)
+  end
+
+  test "exports intro segment with sound" do
+    config_path = fixtures("screenkit.yml")
+    config = ScreenKit::Config.load_file(config_path)
+    config = config.scenes.fetch(:intro)
+    config[:background] = "#100f50"
+    config[:title][:text] = title
+    config[:url][:text] = url
     config[:sound] = "chime.mp3"
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
@@ -47,11 +67,13 @@ class IntroTest < Minitest::Test
 
   test "exports intro segment with background video" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:background] = fixtures("bg.mp4").expand_path.to_s
+    config[:title][:text] = title
+    config[:url][:text] = url
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
@@ -61,65 +83,29 @@ class IntroTest < Minitest::Test
 
   test "exports intro segment with background image" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
+    config[:title][:text] = title
+    config[:url][:text] = url
     config[:background] =
       fixtures("sean-sinclair-C_NJKfnTR5A-unsplash.jpg").expand_path.to_s
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
     assert_similar_videos(fixtures("intro_with_bg_image.mp4"), intro_path)
   end
 
-  test "exports intro segment logo vertically centered" do
-    config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
-    config = config.scenes.fetch(:intro)
-    config[:logo][:y] = "center"
-
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
-    intro_path = create_tmp_path(:mp4)
-    intro_exporter.export(intro_path)
-
-    assert_similar_videos(fixtures("intro_logo_vertical.mp4"), intro_path)
-  end
-
-  test "exports intro segment logo horizontally centered" do
-    config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
-    config = config.scenes.fetch(:intro)
-    config[:logo][:x] = "center"
-
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
-    intro_path = create_tmp_path(:mp4)
-    intro_exporter.export(intro_path)
-
-    assert_similar_videos(fixtures("intro_logo_horizontal.mp4"), intro_path)
-  end
-
-  test "exports intro segment text horizontally centered" do
-    config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
-    config = config.scenes.fetch(:intro)
-    config[:title][:x] = "center"
-    config[:logo][:x] = "center"
-
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
-    intro_path = create_tmp_path(:mp4)
-    intro_exporter.export(intro_path)
-
-    assert_similar_videos(fixtures("intro_text_horizontal.mp4"), intro_path)
-  end
-
   test "exports intro segment with no sound" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:sound] = false
+    config[:title][:text] = title
+    config[:url][:text] = url
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 
@@ -129,11 +115,13 @@ class IntroTest < Minitest::Test
 
   test "exports intro segment with custom volume" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:intro)
     config[:sound] = {path: "chime.mp3", volume: 0.2}
+    config[:title][:text] = title
+    config[:url][:text] = url
 
-    intro_exporter = ScreenKit::Exporter::Intro.new(config:, text:, source:)
+    intro_exporter = ScreenKit::Exporter::Intro.new(config:, source:)
     intro_path = create_tmp_path(:mp4)
     intro_exporter.export(intro_path)
 

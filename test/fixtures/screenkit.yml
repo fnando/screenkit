@@ -89,7 +89,7 @@ tts:
 scenes:
   intro:
     # The duration of the intro scene in seconds.
-    duration: 5.5
+    duration: 6
 
     # The fade-in duration in seconds.
     fade_in: 0
@@ -102,20 +102,26 @@ scenes:
 
     # The title text to be displayed in the intro scene.
     title:
-      x: 100
-      y: 300
       font_path: open-sans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
+
+    # The url text to be displayed in the intro scene.
+    url:
+      text: "https://screenkit.dev"
+      font_path: open-sans/OpenSans-SemiBold.ttf
+      size: 42
+      color: "#ffffff80"
 
     # The logo to be displayed in the video intro.
     # Works best with a transparent PNG file in high resolution (at least 2x the
     # size it'll be displayed).
     logo:
       path: logo.png
-      x: 100
-      y: 200
       width: 300
+
+    # The padding around the video.
+    padding: 100
 
     # The sound to be played along with the logo in the intro.
     # This must correspond to a sound file in the sounds directory, with any

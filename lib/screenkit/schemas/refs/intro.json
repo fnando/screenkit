@@ -7,12 +7,16 @@
     "fade_in": { "$ref": "duration.json" },
     "fade_out": { "$ref": "duration.json" },
     "title": {
-      "type": "object",
       "description": "Title configuration",
-      "allOf": [{ "$ref": "text_style.json" }, { "$ref": "position.json" }]
+      "$ref": "text_style.json"
     },
     "background": { "$ref": "background.json" },
     "logo": { "$ref": "logo.json" },
-    "sound": { "$ref": "sound.json" }
+    "sound": { "$ref": "sound.json" },
+    "padding": { "$ref": "spacing.json" },
+    "url": {
+      "description": "URL configuration",
+      "$ref": "text_style.json"
+    }
   }
 }

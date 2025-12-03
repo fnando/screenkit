@@ -50,6 +50,15 @@ class IntegrationTest < Minitest::Test
 
   test "exports generated episode" do
     screenkit "new", "tmp/screencasts"
+
+    gemfile_path = "tmp/screencasts/Gemfile"
+    File.write gemfile_path,
+               File.read(gemfile_path)
+                   .gsub(
+                     %[gem "screenkit"],
+                     %[gem "screenkit", path: "#{Dir.pwd}"]
+                   )
+
     screenkit "episode",
               "new",
               "--title",

@@ -15,7 +15,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment background color" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:background] = "#100f50"
 
@@ -28,7 +28,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment with sound" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:background] = "#100f50"
 
@@ -43,7 +43,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment with background image" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:background] =
       fixtures("sean-sinclair-C_NJKfnTR5A-unsplash.jpg").to_s
@@ -57,7 +57,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment with background video" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:background] = fixtures("bg.mp4").to_s
 
@@ -71,7 +71,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment vertically centered" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:logo][:x] = 50
 
@@ -84,7 +84,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment horizontally centered" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:logo][:y] = 800
 
@@ -97,7 +97,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro with no sound" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:sound] = false
 
@@ -111,7 +111,7 @@ class OutroTest < Minitest::Test
 
   test "exports outro segment with custom volume" do
     config_path = fixtures("screenkit.yml")
-    config = ScreenKit::Config::Project.load_file(config_path)
+    config = ScreenKit::Config.load_file(config_path)
     config = config.scenes.fetch(:outro)
     config[:sound] = {path: config[:sound], volume: 0.2}
 

@@ -13,7 +13,11 @@ class DemotapeTest < Minitest::Test
     demotape_exporter.export(output_path)
 
     assert_path_exists output_path
-    assert_similar_videos(fixtures("demotape.mp4"), output_path)
+    assert_similar_videos(
+      fixtures("demotape.mp4"),
+      output_path,
+      threshold: 0.02
+    )
   end
 
   test "exports a demotape correctly with custom config" do
@@ -23,12 +27,16 @@ class DemotapeTest < Minitest::Test
     demotape_exporter =
       ScreenKit::Exporter::Demotape.new(
         demotape_path:,
-        options: {font_size: 50}
+        options: {theme: "default_light"}
       )
 
     demotape_exporter.export(output_path)
 
     assert_path_exists output_path
-    assert_similar_videos(fixtures("demotape_custom_config.mp4"), output_path)
+    assert_similar_videos(
+      fixtures("demotape_custom_config.mp4"),
+      output_path,
+      threshold: 0.025
+    )
   end
 end

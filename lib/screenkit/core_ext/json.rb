@@ -4,6 +4,12 @@ require "json"
 
 module ScreenKit
   module CoreExt
+    refine Pathname do
+      def as_json(*)
+        to_s
+      end
+    end
+
     refine JSON.singleton_class do
       def pretty_generate(target, *)
         super(target.as_json, *)

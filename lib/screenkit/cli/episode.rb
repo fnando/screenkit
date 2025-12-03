@@ -69,10 +69,15 @@ module ScreenKit
       def export
         puts Banner.banner if options.banner
 
-        episode_config = File.join(options.dir, "config.yml")
+        project_config = if File.file?(options.config)
+                           Config.load_yaml_file(options.config)
+                         else
+                           {}
+                         end
 
+        episode_config = File.join(options.dir, "config.yml")
         episode_config = if File.file?(episode_config)
-                           Config::Episode.load_file(episode_config)
+                           Config.load_yaml_file(episode_config)
                          else
                            {}
                          end
@@ -85,8 +90,7 @@ module ScreenKit
                               !options.overwrite_voiceover
 
         exporter = ScreenKit::Exporter::Episode.new(
-          project_config: config,
-          config: episode_config,
+          config: Config.load(**project_config.deep_merge(**episode_config)),
           options:
         )
 

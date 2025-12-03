@@ -11,12 +11,8 @@ module ScreenKit
       # Each file will be used as a segment in the episode.
       CONTENT_PATTERN = "content/**/*.{#{ContentType.all.join(',')}}".freeze
 
-      # The project configuration, usually the root's screenkit.yml file.
-      # @return [ScreenKit::Config::Project]
-      attr_reader :project_config
-
-      # The episode configuration, usually the episode's config.yml file.
-      # @return [ScreenKit::Config::Episode]
+      # The merged result of project and episode configurations.
+      # @return [Hash]
       attr_reader :config
 
       # The export options.
@@ -29,8 +25,7 @@ module ScreenKit
       # The logfile for logging export details.
       attr_reader :logfile
 
-      def initialize(project_config:, config:, options:)
-        @project_config = project_config
+      def initialize(config:, options:)
         @config = config
         @options = options
         @mutex = Mutex.new
@@ -44,33 +39,19 @@ module ScreenKit
       end
 
       def demotape_options
-        (config.demotape || {}).merge(project_config.demotape || {})
+        config.demotape
       end
 
       def tts_engine
         tts_engines.first
       end
 
-      def tts_config
-        @tts_config ||= begin
-          project_tts = if project_config.tts.is_a?(Hash)
-                          [project_config.tts]
-                        else
-                          Array(project_config.tts)
-                        end
-
-          episode_tts = if config.tts.is_a?(Hash)
-                          [config.tts]
-                        else
-                          Array(config.tts)
-                        end
-
-          episode_tts + project_tts
-        end
+      def tts_options
+        config.tts
       end
 
       def tts_engines
-        @tts_engines ||= tts_config.filter_map do |opts|
+        @tts_engines ||= tts_options.filter_map do |opts|
           next unless opts[:enabled]
 
           api_key = options.tts_api_key
@@ -197,7 +178,7 @@ module ScreenKit
         crossfade_duration = Duration.parse(
           scenes.dig(:segment, :crossfade_duration) || 0.5
         )
-        watermark = Watermark.new(config.watermark || project_config.watermark)
+        watermark = Watermark.new(config.watermark)
 
         watermark_path = if watermark.path
                            source.search(watermark.path)
@@ -418,11 +399,7 @@ module ScreenKit
       def prelude
         logfile.json_log(
           :config,
-          options.merge(
-            pwd: Dir.pwd,
-            episode_config: config.to_h,
-            project_config: project_config.to_h
-          )
+          options.merge(pwd: Dir.pwd, config:)
         )
 
         log(
@@ -485,7 +462,7 @@ module ScreenKit
       def output_dir
         @output_dir ||= Pathname(
           format(
-            options.output_dir || project_config.output_dir.to_s,
+            options.output_dir || config.output_dir.to_s,
             episode_dirname: root_dir.basename
           )
         ).expand_path
@@ -504,11 +481,11 @@ module ScreenKit
           spinner.update("Exporting intro…")
 
           intro_config = scenes.fetch(:intro)
+          intro_config[:title][:text] = config.title
+
           log_path = logfile.create(:intro)
 
-          Intro
-            .new(config: intro_config, text: config.title, source:, log_path:)
-            .export(intro_path)
+          Intro.new(config: intro_config, source:, log_path:).export(intro_path)
 
           spinner.stop
         end
@@ -542,7 +519,7 @@ module ScreenKit
       end
 
       def scenes
-        @scenes ||= project_config.scenes.merge(config.scenes)
+        config.scenes
       end
 
       def project_root_dir
@@ -554,7 +531,7 @@ module ScreenKit
       end
 
       def resources_dir
-        @resources_dir ||= project_config.resources_dir.map do |dir|
+        @resources_dir ||= config.resources_dir.map do |dir|
           path = dir
           path = File.expand_path(dir) if dir.start_with?("~")
           path = Pathname(format(path, episode_dir: root_dir))
@@ -564,7 +541,8 @@ module ScreenKit
       end
 
       def callout_styles
-        (project_config.callout_styles || {}).merge(config.callout_styles || {})
+        @callout_styles ||= project_config.callout_styles
+                                          .deep_merge(config.callout_styles)
       end
 
       def output_video_path
@@ -578,14 +556,11 @@ module ScreenKit
       end
 
       def backtrack
-        @backtrack ||=
-          if config.backtrack
-            Sound.new(input: config.backtrack, source:)
-          elsif project_config.backtrack
-            Sound.new(input: project_config.backtrack, source:)
-          else
-            Sound.new(input: mute_sound_path, source:)
-          end
+        @backtrack ||= if config.backtrack
+                         Sound.new(input: config.backtrack, source:)
+                       else
+                         Sound.new(input: mute_sound_path, source:)
+                       end
       end
 
       def segments

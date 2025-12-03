@@ -1,8 +1,7 @@
 ---
-# yaml-language-server: $schema=../../schemas/project.json
-## yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
+# yaml-language-server: $schema=https://screenkit.dev/schemas/config.json
 
-# ScreenKit project configuration file.
+# ScreenKit configuration version.
 schema: 1
 
 # The episodes directory is where the source files for each episode are stored.
@@ -155,10 +154,18 @@ scenes:
     # The background color/image of the intro scene.
     background: "#100f50"
 
+    # The padding around the intro.
+    padding: 100
+
+    # Show the url text in the intro scene.
+    url:
+      text: "https://screenkit.dev"
+      font_path: open-sans/OpenSans-SemiBold.ttf
+      size: 42
+      color: "#ffffff80"
+
     # The title text to be displayed in the intro scene.
     title:
-      x: 100
-      y: 300
       font_path: open-sans/OpenSans-ExtraBold.ttf
       size: 144
       color: "#ffffff"
@@ -168,8 +175,6 @@ scenes:
     # size it'll be displayed).
     logo:
       path: logo.png
-      x: 100
-      y: 200
       width: 300
 
     # The sound to be played along with the logo in the intro.

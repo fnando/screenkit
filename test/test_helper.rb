@@ -118,14 +118,10 @@ module Minitest
           assert_similar_images(expected_frame, actual_frame, threshold:)
         rescue Minitest::Assertion => error
           new_message = "#{error.message}\n\n" \
-                        "Expected video:#{expected_path}\n" \
+                        "Expected video: #{expected_path}\n" \
                         "Actual video: #{actual_path}"
 
-          error.singleton_class.instance_eval do
-            define_method :message do
-              new_message
-            end
-          end
+          raise Minitest::Assertion, new_message
         end
       end
     end

@@ -3,8 +3,11 @@
 module ScreenKit
   module Exporter
     class Intro
+      using CoreExt
+
       include Shell
       include Utils
+      include ImageMagick
       extend SchemaValidator
 
       def self.schema_path
@@ -14,19 +17,15 @@ module ScreenKit
       # The intro scene configuration.
       attr_reader :config
 
-      # The title text.
-      attr_reader :text
-
       # The source path lookup instance.
       attr_reader :source
 
       # The log path.
       attr_reader :log_path
 
-      def initialize(config:, text:, source:, log_path: nil)
+      def initialize(config:, source:, log_path: nil)
         self.class.validate!(config)
         @config = config
-        @text = text
         @source = source
         @log_path = log_path
       end
@@ -75,8 +74,89 @@ module ScreenKit
         @font_path ||= source.search(title_config[:font_path])
       end
 
+      def render_elements(overlay_path)
+        padding = Spacing.new(hi_res(config.fetch(:padding, 100)))
+
+        hi_res(
+          image_width: 1920,
+          image_height: 1080,
+          content_width: 1920 - (padding.horizontal / 2)
+        ) => {
+          image_width:,
+          image_height:,
+          content_width:,
+        }
+
+        logo = hi_res({width: 350, x: 0, y: 0}.deep_merge(config[:logo]))
+        title = hi_res({size: 144, x: 0, y: 0}.deep_merge(config[:title]))
+        url = hi_res({size: 42, x: 0, y: 0}.deep_merge(config[:url]))
+        url_height = 0
+
+        logo_intermediary_path = overlay_path.sub_ext("_logo.png")
+        title_intermediary_path = overlay_path.sub_ext("_title.png")
+        url_intermediary_path = overlay_path.sub_ext("_url.png")
+
+        MiniMagick.convert do |image|
+          image << logo_path
+          image << "-resize"
+          image << "#{logo[:width]}x"
+          image << "PNG:#{logo_intermediary_path}"
+        end
+
+        title_style = TextStyle.new(source:, **title)
+        url_style = TextStyle.new(source:, **url)
+
+        _, _, title_height =
+          *render_text_image(path: title_intermediary_path,
+                             text: title[:text],
+                             style: title_style,
+                             width: content_width,
+                             type: "caption")
+
+        if url[:text]
+          _, _, url_height =
+            *render_text_image(path: url_intermediary_path,
+                               text: url[:text],
+                               style: url_style,
+                               width: content_width,
+                               type: "caption")
+        end
+
+        MiniMagick.convert do |image|
+          image << "-size"
+          image << "#{image_width}x#{image_height}"
+          image << "xc:none"
+
+          image << logo_intermediary_path
+          image << "-geometry"
+          image << "+#{padding.left}+#{padding.top}"
+          image << "-composite"
+
+          offset_y = (image_height - title_height) / 2
+
+          image << title_intermediary_path
+          image << "-geometry"
+          image << "+#{padding.left}+#{offset_y}"
+          image << "-composite"
+
+          offset_y = image_height - padding.bottom - url_height
+
+          if url[:text]
+            image << url_intermediary_path
+            image << "-geometry"
+            image << "+#{padding.left}+#{offset_y}"
+            image << "-composite"
+          end
+
+          image << "PNG:#{overlay_path}"
+        end
+      end
+
       def export(path)
-        ffmpeg_params => {inputs:, filters:, maps:}
+        overlay_path = path.sub_ext(".png")
+        render_elements(overlay_path)
+
+        ffmpeg_params(overlay_path) => {inputs:, filters:, maps:}
 
         cmd = [
           "ffmpeg",
@@ -95,11 +175,11 @@ module ScreenKit
         run_command(*cmd, log_path:)
       end
 
-      private def ffmpeg_params
+      private def ffmpeg_params(overlay_path)
         duration = Duration.parse(config[:duration])
         fade_in = Duration.parse(config.fetch(:fade_in, 0.0))
         fade_out = Duration.parse(config.fetch(:fade_out, 0.5))
-        fade_out_start = duration - fade_out - 0.1
+        fade_out_start = duration - fade_out - 0.2
 
         # Build filter chain
         inputs = []
@@ -155,59 +235,13 @@ module ScreenKit
 
         current_layer = "bg"
 
-        # Logo layer (if present)
-        if logo_path
-          logo_width = logo_config.fetch(:width, 350)
-          logo_x = logo_config.fetch(:x, "center")
-          logo_y = logo_config.fetch(:y, "center")
-          overlay_x = logo_x == "center" ? "(W-w)/2" : logo_x
-          overlay_y = logo_y == "center" ? "(H-h)/2" : logo_y
-
-          inputs += ["-loop", "1", "-i", logo_path]
-          filters << "[#{stream_index}:v]scale=#{logo_width}:" \
-                     "-1:flags=lanczos[logo]"
-          filters << "[#{current_layer}][logo]overlay=#{overlay_x}:" \
-                     "#{overlay_y}[with_logo]"
-          current_layer = "with_logo"
+        # Overlay layer (if present)
+        if overlay_path.file?
+          inputs += ["-loop", "1", "-i", overlay_path]
+          filters << "[#{stream_index}:v]scale=1920:1080[overlay]"
+          filters << "[#{current_layer}][overlay]overlay=0:0[with_overlay]"
+          current_layer = "with_overlay"
           stream_index += 1
-        end
-
-        # Title layer (if present)
-        if title_config
-          title_x = title_config.fetch(:x, "center")
-          title_y = title_config.fetch(:y, "center")
-          title_size = title_config.fetch(:size, 72)
-          title_color = title_config.fetch(:color, "white")
-
-          # Calculate max width based on x offset
-          max_width = if title_x == "center"
-                        1720 # 1920 - (2 * 100)
-                      else
-                        1920 - (2 * title_x.to_i)
-                      end
-
-          # Rough estimate characters per line based on font size
-          avg_char_width = title_size * 0.7
-          max_chars_per_line = (max_width / avg_char_width).floor
-
-          # Auto-wrap text
-          wrapped_text = wrap_text(text, max_chars_per_line)
-
-          # Convert position to drawtext coordinates
-          drawtext_x = title_x == "center" ? "(w-text_w)/2" : title_x
-          drawtext_y = title_y == "center" ? "(h-text_h)/2" : title_y
-
-          # Center align text when x is centered
-          text_align = title_x == "center" ? ":text_align=center" : ""
-
-          # Escape special characters in text
-          wrapped_text = wrapped_text.gsub("'", "'\\\\\\''").gsub(":", "\\:")
-
-          filters << "[#{current_layer}]drawtext=text='#{wrapped_text}':" \
-                     "fontfile=#{font_path}:fontsize=#{title_size}:" \
-                     "fontcolor=#{title_color}:x=#{drawtext_x}:" \
-                     "y=#{drawtext_y}#{text_align}[with_title]"
-          current_layer = "with_title"
         end
 
         # Apply fades to final video layer
