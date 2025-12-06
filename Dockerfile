@@ -48,6 +48,8 @@ RUN apk add --no-cache \
     jq \
     less \
     mesa-gl \
+    nodejs \
+    npm \
     nss \
     python3 \
     py3-pip \
@@ -61,9 +63,14 @@ RUN apk add --no-cache \
 
 ARG USER=screenkit
 ENV TERM=xterm-256color
-ENV PATH="/venv/bin:/source/bin:/${USER}/bin:$PATH"
+ENV GEM_HOME=/usr/local/bundle
+ENV BUNDLE_PATH=/usr/local/bundle
+ENV PATH="/usr/local/bundle/bin:/venv/bin:/source/bin:/${USER}/bin:$PATH"
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_BROWSERS_PATH=0
+ENV FFMPEG_BIN=/usr/bin/ffmpeg
 
 # Copy binaries and fonts from builder stages
 COPY --from=binaries /bin-download/slides /usr/local/bin/slides
@@ -85,7 +92,7 @@ RUN mkdir -p /venv && chown -R ${USER}:${USER} /venv
 RUN mkdir -p /${USER}-local && chown -R ${USER}:${USER} /${USER}-local
 
 # Install screenkit gem
-RUN gem install screenkit && \
+RUN gem install screenkit screenkit-tts-google screenkit-tts-minimax && \
     mkdir -p /usr/share/bash-completion/completions && \
     mkdir -p /usr/share/zsh/site-functions && \
     mkdir -p /usr/share/fish/vendor_completions.d && \
@@ -95,6 +102,9 @@ RUN gem install screenkit && \
     echo 'autoload -Uz compinit && compinit' >> /etc/zsh/zshrc && \
     echo 'source /usr/share/bash-completion/bash_completion' >> /etc/bash/bashrc && \
     apk del build-base
+
+# Install playwright-video globally
+RUN npm install -g @fnando/playwright-video
 
 USER ${USER}
 WORKDIR /${USER}
