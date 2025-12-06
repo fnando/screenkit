@@ -114,8 +114,6 @@ $ docker run \
 Notice that Chrome requires a lot of memory, so you need `--shm-size=2g` (or
 more).
 
-To create a new project:
-
 ---
 
 ## Quick Start
@@ -958,7 +956,7 @@ The engine name is camelized (e.g., `custom_engine` → `CustomEngine`,
 
 > [!TIP]
 >
-> If you host your TTS engine on Github, use the topic `screekit-tts`, so other
+> If you host your TTS engine on Github, use the topic `screenkit-tts`, so other
 > people can find it.
 
 ---
@@ -1320,9 +1318,10 @@ bundle exec screenkit ...
 
 #### TTS not working
 
-- For ElevenLabs: Set `--tts-api-key`
-- For macOS `say`: Verify voice name with `say -v ?`
-- For `espeak`: Ensure `espeak` is installed and in PATH
+- For ElevenLabs: set `--tts-api-key` with valid prefixed key, like
+  `eleven_labs:API_KEY`
+- For macOS `say`: verify voice name with `say -v ?`
+- For `espeak`: ensure `espeak` is installed and in PATH
 
 #### Playwright scripts not working
 
