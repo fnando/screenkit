@@ -69,15 +69,23 @@ module ScreenKit
       def export
         puts Banner.banner if options.banner
 
-        project_config = if File.file?(options.config)
+        episode_config_path = File.join(options.dir, "config.yml")
+        has_project_config = File.file?(options.config)
+        has_episode_config = File.file?(episode_config_path)
+
+        if !has_project_config && !has_episode_config
+          shell.say "Error: No configuration file found.", :red
+          exit 1
+        end
+
+        project_config = if has_project_config
                            Config.load_yaml_file(options.config)
                          else
                            {}
                          end
 
-        episode_config = File.join(options.dir, "config.yml")
-        episode_config = if File.file?(episode_config)
-                           Config.load_yaml_file(episode_config)
+        episode_config = if has_episode_config
+                           Config.load_yaml_file(episode_config_path)
                          else
                            {}
                          end
@@ -95,6 +103,14 @@ module ScreenKit
         )
 
         exporter.export
+      ensure
+        exporter.output_dir.join("logs").glob("*.txt").each do |path|
+          redact_file(path, options.tts_api_key)
+        end
+      end
+
+      no_commands do
+        include RedactFile
       end
     end
   end
