@@ -90,7 +90,7 @@ module ScreenKit
                               !options.overwrite_voiceover
 
         exporter = ScreenKit::Exporter::Episode.new(
-          config: Config.load(**project_config.deep_merge(**episode_config)),
+          config: Config.load(project_config.deep_merge(episode_config)),
           options:
         )
 
