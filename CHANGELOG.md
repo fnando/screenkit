@@ -11,6 +11,11 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## v0.0.12
+
+- [Fixed] Fix how configuration is merged.
+- [Fixed] Fix how extensions are loaded.
+
 ## v0.0.11
 
 - [Added] Add support for playwright scripts, so you can have browser-based
