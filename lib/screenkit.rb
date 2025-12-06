@@ -56,7 +56,7 @@ module ScreenKit
   require_relative "screenkit/exporter/playwright"
 
   require_files = lambda do |pattern|
-    Gem.find_files_from_load_path(pattern).each do |path|
+    Gem.find_files(pattern).each do |path|
       next if path.include?("test")
 
       require(path)
