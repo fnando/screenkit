@@ -64,7 +64,19 @@ module ScreenKit
 
         log_path = format(log_path.to_s, prefix:) if log_path
 
-        case content_path.extname.downcase.gsub(/^\./, "")
+        # Consider all extnames, after the first dot.
+        # E.g. "video.playwright.js" -> "playwright.js"
+        extname = content_path.basename.to_s.downcase.split(".")[1..].join(".")
+
+        case extname
+        when *ContentType.playwright
+          Exporter::Playwright
+            .new(
+              script_path: content_path,
+              options: episode.playwright_options,
+              log_path:,
+            )
+            .export(video_path)
         when *ContentType.video
           Exporter::Video
             .new(input_path: content_path, log_path:)

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://screenkit.dev/schemas/refs/playwright.json",
+  "title": "playwright-video settings (https://github.com/fnando/playwright-video)",
+  "type": "object",
+  "properties": {
+    "color_scheme": {
+      "type": "string",
+      "description": "Color scheme to use when capturing the video.",
+      "enum": ["light", "dark"]
+    }
+  }
+}

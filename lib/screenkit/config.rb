@@ -35,6 +35,9 @@ module ScreenKit
     # The demotape configuration.
     attr_reader :demotape
 
+    # The Playwright configuration.
+    attr_reader :playwright
+
     def self.schema_path
       @schema_path ||=
         ScreenKit.root_dir.join("schemas/config.json")

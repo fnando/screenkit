@@ -42,6 +42,10 @@ module ScreenKit
         config.demotape
       end
 
+      def playwright_options
+        config.playwright
+      end
+
       def tts_engine
         tts_engines.first
       end

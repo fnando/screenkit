@@ -37,7 +37,8 @@
         "$ref": "refs/callout_style.json"
       }
     },
-    "demotape": { "$ref": "refs/demotape.json" }
+    "demotape": { "$ref": "refs/demotape.json" },
+    "playwright": { "$ref": "refs/playwright.json" }
   },
   "additionalProperties": false
 }

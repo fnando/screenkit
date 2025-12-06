@@ -3,8 +3,10 @@
 **Terminal to screencast, simplified**
 
 ScreenKit is a Ruby-based tool for creating professional screencasts from
-terminal recordings. It automates the process of combining intro/outro scenes,
-terminal recordings (via [demotapes](https://github.com/fnando/demotape)),
+terminal and browser recordings. It automates the process of combining
+intro/outro scenes, terminal recordings (via
+[demotapes](https://github.com/fnando/demotape)), browser recordings (via
+[@fnando/playwright-video](https://github.com/fnando/playwright-video)),
 voiceovers, background music, callouts (lower thirds), and watermarks into
 polished video content.
 
@@ -141,7 +143,8 @@ screenkit episode new --title "My First Episode"
 This creates an episode directory with:
 
 - `config.yml` - Episode configuration
-- `content/` - Terminal recording files (`.tape` files)
+- `content/` - Content files (`.tape` files for terminal,
+  `.playwright.js`/`.playwright.mjs` for browser)
 - `scripts/` - Voiceover scripts (`.txt` files)
 - `voiceovers/` - Generated voiceover audio
 - `resources/` - Episode-specific resources
@@ -257,6 +260,18 @@ resources_dir:
   - ~/Library/Fonts
   - /usr/share/fonts
 ```
+
+### Playwright Configuration
+
+Configure options for Playwright-based browser recordings:
+
+```yaml
+playwright:
+  color_scheme: dark # Color scheme: "light" or "dark"
+```
+
+For more options, see
+[@fnando/playwright-video documentation](https://github.com/fnando/playwright-video).
 
 ### Background Music
 
@@ -524,7 +539,7 @@ callout_styles:
 
 ##### Usage in episode
 
-ScreenKit comes with some presets where you don't need to set up anything, but 
+ScreenKit comes with some presets where you don't need to set up anything, but
 you can also create custom callouts.
 
 Available presets:
@@ -1001,9 +1016,9 @@ episodes/001-episode-name/
 │   ├── 001.yml             # Callouts that will appear on segment 001
 │   ├── 002.yml
 │   └── ...
-├── content/                # Terminal recordings
+├── content/                # Content files (recordings/scripts)
 │   ├── 001.tape            # Demo Tape files
-│   ├── 002.tape
+│   ├── 002.playwright.js   # Playwright scripts
 │   └── ...
 ├── scripts/                # Voiceover scripts
 │   ├── 001.txt            # Text for TTS
@@ -1019,7 +1034,11 @@ episodes/001-episode-name/
     └── fonts/
 ```
 
-### Demo Tape Files
+### Content Files
+
+ScreenKit supports multiple content formats for creating screencast segments:
+
+#### Demo Tape Files
 
 ScreenKit uses [Demo Tape](https://github.com/fnando/demotape) tape files for
 terminal recordings:
@@ -1038,6 +1057,38 @@ paths accordingly. For instance, `episodes/001-episode-name/content/001.tape`
 would need to reference `../../resources/some-file` to access
 `resources/some-file` in the project's directory.
 
+#### Playwright Scripts
+
+For browser-based recordings, ScreenKit supports Playwright scripts via
+[@fnando/playwright-video](https://github.com/fnando/playwright-video):
+
+```javascript
+// content/001.playwright.js
+export default async function ({ page }) {
+  await page.goto("https://example.com");
+  await page.click("#button");
+  await page.waitForTimeout(2000);
+}
+```
+
+**Requirements:**
+
+- Install the npm package: `npm install -D @fnando/playwright-video`
+- Use `.playwright.js` or `.playwright.mjs` file extension
+
+**Configuration:**
+
+Add Playwright options to your project configuration:
+
+```yaml
+# screenkit.yml
+playwright:
+  color_scheme: dark # or "light"
+```
+
+When running Playwright scripts, the working directory will be the episode
+directory, similar to Demo Tape files.
+
 ### Script Files
 
 Plain text files for voiceover generation:
@@ -1053,8 +1104,11 @@ Today we'll learn how to create amazing screencasts.
 Files are matched by number:
 
 - `content/001.tape` → `scripts/001.txt` → `voiceovers/001.:ext`
+- `content/002.playwright.js` → `scripts/002.txt` → `voiceovers/002.:ext`
 - Segments are processed in numerical order
 - Missing scripts create silent segments
+- Content files can be `.tape` (Demo Tape), `.playwright.js`/`.playwright.mjs`
+  (Playwright), or media files (video/image)
 
 ---
 
@@ -1186,8 +1240,13 @@ When exporting an episode, ScreenKit:
 
 1. **Validates** project and episode configurations
 2. **Generates voiceovers** from script files (if TTS enabled)
-3. **Renders terminal recordings** from tape files using
-   [Demo Tape](https://github.com/fnando/demotape)
+3. **Renders content** from:
+   - Terminal recordings via [Demo Tape](https://github.com/fnando/demotape)
+     (`.tape` files)
+   - Browser recordings via
+     [@fnando/playwright-video](https://github.com/fnando/playwright-video)
+     (`.playwright.js`/`.playwright.mjs` files)
+   - Media files (video/image)
 4. **Combines segments** with crossfade transitions
 5. **Adds intro/outro** scenes
 6. **Overlays callouts** with animations
@@ -1264,6 +1323,13 @@ bundle exec screenkit ...
 - For ElevenLabs: Set `--tts-api-key`
 - For macOS `say`: Verify voice name with `say -v ?`
 - For `espeak`: Ensure `espeak` is installed and in PATH
+
+#### Playwright scripts not working
+
+- Install the required npm package: `npm install -D @fnando/playwright-video`
+- Ensure `playwright-video` command is available in PATH
+- Check file extension is `.playwright.js` or `.playwright.mjs`
+- Verify Playwright browsers are installed: `npx playwright install`
 
 ---
 
