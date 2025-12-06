@@ -4,6 +4,7 @@ module ScreenKit
   module Exporter
     class Episode
       using CoreExt
+      include RedactFile
       include Utils
       include Shell
 
@@ -401,10 +402,11 @@ module ScreenKit
 
       # Logs initial information about the episode export process.
       def prelude
-        logfile.json_log(
+        path = logfile.json_log(
           :config,
-          options.merge(pwd: Dir.pwd, config:)
+          options.merge(pwd: Dir.pwd, config: config.as_json)
         )
+        redact_file(path, options.tts_api_key)
 
         log(
           :info,

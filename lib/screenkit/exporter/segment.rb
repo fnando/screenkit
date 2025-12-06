@@ -74,7 +74,7 @@ module ScreenKit
             .new(
               script_path: content_path,
               options: episode.playwright_options,
-              log_path:,
+              log_path:
             )
             .export(video_path)
         when *ContentType.video

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class JsonTest < Minitest::Test
@@ -8,8 +10,8 @@ class JsonTest < Minitest::Test
   end
 
   test "transforms hash" do
-    obj = { path: Pathname("/foo"), name: "bar" }
-    expected = { path: "/foo", name: "bar" }
+    obj = {path: Pathname("/foo"), name: "bar"}
+    expected = {path: "/foo", name: "bar"}
 
     assert_equal expected, obj.as_json
   end

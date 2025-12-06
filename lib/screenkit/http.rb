@@ -2,7 +2,10 @@
 
 module ScreenKit
   module HTTP
+    include RedactFile
+
     # Sends a POST request.
+    #
     # @param url [String] The request URL.
     # @param params [Hash] The request parameters.
     # @param headers [Hash] The request headers.
@@ -32,6 +35,7 @@ module ScreenKit
     end
 
     # Sends a JSON POST request.
+    #
     # @param url [String] The request URL.
     # @param params [Hash] The request parameters.
     # @param headers [Hash] The request headers.
@@ -41,18 +45,6 @@ module ScreenKit
     def json_post(headers:, **)
       headers = headers.merge(content_type: "application/json")
       post(headers:, **)
-    end
-
-    # Redacts sensitive text from a file.
-    # @param path [String] The file path.
-    # @param text [String] The text to redact.
-    # @return [void]
-    def redact_file(path, text)
-      return unless path
-      return unless File.file?(path)
-
-      content = File.read(path).gsub(text, "[REDACTED]")
-      File.write(path, content)
     end
   end
 end

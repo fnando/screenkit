@@ -18,6 +18,7 @@ module ScreenKit
   require_relative "screenkit/duration"
   require_relative "screenkit/core_ext"
   require_relative "screenkit/content_type"
+  require_relative "screenkit/redact_file"
   require_relative "screenkit/anchor"
   require_relative "screenkit/banner"
   require_relative "screenkit/time_formatter"

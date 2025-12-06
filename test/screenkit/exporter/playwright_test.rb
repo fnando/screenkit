@@ -5,6 +5,7 @@ require "test_helper"
 class PlaywrightTest < Minitest::Test
   setup do
     next unless `which playwright-video`.strip.empty?
+
     skip "playwright-video is not installed"
   end
 

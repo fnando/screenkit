@@ -23,6 +23,7 @@ module ScreenKit
       path = create(*args)
       FileUtils.mkdir_p(File.dirname(path))
       File.open(path, "w") { it << message.to_s }
+      path
     end
 
     def json_log(*args)
