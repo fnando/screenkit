@@ -94,6 +94,8 @@ module ScreenKit
         image << "-pointsize"
         image << style.size.to_s
         image << "#{type}:#{escape_text_for_image(text)}"
+        image << "-trim"
+        image << "+repage"
         image << "PNG:#{path}"
       end
 

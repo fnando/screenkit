@@ -14,6 +14,7 @@ Prefix your message with one of the following:
 ## Unreleased
 
 - [Fixed] Fix file redacting when no API key is defined.
+- [Fixed] Trim transparent pixels from rendered text.
 
 ## v0.0.13
 
