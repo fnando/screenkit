@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## Unreleased
+
+- [Fixed] Fix file redacting when no API key is defined.
+
 ## v0.0.13
 
 - [Fixed] Redact API key in config log.

@@ -9,6 +9,7 @@ module ScreenKit
     def redact_file(path, text)
       return unless path
       return unless File.file?(path)
+      return if text.to_s.strip.empty?
 
       content = File.read(path).gsub(text, "[REDACTED]")
       File.write(path, content)
