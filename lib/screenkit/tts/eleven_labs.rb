@@ -14,6 +14,10 @@ module ScreenKit
         api_key.to_s.start_with?(api_key_prefix)
       end
 
+      def concurrency
+        3
+      end
+
       def all_texts
         @all_texts ||= segments.map(&:script_content)
       end

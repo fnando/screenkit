@@ -55,6 +55,10 @@ module ScreenKit
 
         @api_key = api_key.delete_prefix("#{self.class.engine_name}:")
       end
+
+      def concurrency
+        # to be implemented by subclasses if applicable
+      end
     end
   end
 end

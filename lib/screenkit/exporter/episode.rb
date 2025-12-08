@@ -149,7 +149,8 @@ module ScreenKit
           spinner:,
           list: filtered_segments,
           message: "Exporting voiceovers (%{progress}/%{count})",
-          log_path: logfile.create("%{prefix}", :voiceover)
+          log_path: logfile.create("%{prefix}", :voiceover),
+          concurrency: tts_engine.concurrency
         ).run(&:export_voiceover)
 
         log_elapsed("Generated voiceover in %{elapsed}", elapsed)

@@ -2,10 +2,11 @@
 
 module ScreenKit
   class ParallelProcessor
-    attr_reader :spinner, :list, :message, :mutex, :count, :log_path
+    attr_reader :spinner, :list, :message, :mutex, :count, :log_path,
+                :concurrency
     attr_accessor :progress
 
-    def initialize(spinner:, list:, message:, log_path: nil)
+    def initialize(spinner:, list:, message:, log_path: nil, concurrency: nil)
       @list = list
       @message = message
       @spinner = spinner
@@ -13,6 +14,7 @@ module ScreenKit
       @progress = 0
       @count = list.size
       @log_path = log_path
+      @concurrency = concurrency || Etc.nprocessors
     end
 
     def run(&block)
@@ -20,7 +22,7 @@ module ScreenKit
       indexed_list = list.map.with_index {|item, index| [item, index] }
       arity = block.arity
 
-      indexed_list.each_slice(Etc.nprocessors) do |slice|
+      indexed_list.each_slice(concurrency) do |slice|
         threads = slice.map do |args|
           thread = Thread.new do
             update_message
