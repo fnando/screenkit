@@ -189,7 +189,7 @@ module ScreenKit
                            source.search(watermark.path)
                          else
                            ScreenKit.root_dir
-                                    .join("screenkit/resources/transparent.png")
+                                    .join("resources/transparent.png")
                          end
 
         watermark_width, watermark_height = image_size(watermark_path)
