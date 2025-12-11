@@ -8,6 +8,14 @@
       "type": "string",
       "description": "Color scheme to use when capturing the video.",
       "enum": ["light", "dark"]
+    },
+    "state_path": {
+      "type": "string",
+      "format": "uri"
+    },
+    "user_data_path": {
+      "type": "string",
+      "format": "uri"
     }
   }
 }

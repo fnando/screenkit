@@ -548,8 +548,8 @@ module ScreenKit
       end
 
       def callout_styles
-        @callout_styles ||= project_config.callout_styles
-                                          .deep_merge(config.callout_styles)
+        @callout_styles ||= config.callout_styles
+                                  .deep_merge(config.callout_styles)
       end
 
       def output_video_path

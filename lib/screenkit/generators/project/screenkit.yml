@@ -312,6 +312,11 @@ callout_styles:
     style: inline_block
     anchor: [left, bottom]
     margin: 100
+    background_color: "#ffffff"
+    text_style:
+      color: "#000000"
+      size: 48
+      font_path: open-sans/OpenSans-ExtraBold.ttf
     animation: fade
     in_transition:
       duration: 0.4s

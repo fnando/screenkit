@@ -11,6 +11,11 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+## Unreleased
+
+- [Fixed] Fix reference to wrong configuration object.
+- [Fixed] Add required properties to the inline block callout.
+
 ## v0.0.14
 
 - [Fixed] Fix file redacting when no API key is defined.
