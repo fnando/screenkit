@@ -86,7 +86,7 @@ runs:
           fnando/screenkit:latest \
           episode export \
           --dir="${{ env.EPISODE_DIR }}" \
-          ${{ inputs.match != '' && format('--match {0}', inputs.match) || '' }} \
+          ${{ inputs.match != '' && format('--match-segment {0}', inputs.match) || '' }} \
           ${{ inputs.overwrite == 'true' && '--overwrite' || '--no-overwrite' }} \
           ${{ inputs.tts_preset != '' && format('--tts-preset {0}', inputs.tts_preset) || '' }} \
           ${{ inputs.tts_api_key != '' && format('--tts-api-key {0}', inputs.tts_api_key) || '' }}
