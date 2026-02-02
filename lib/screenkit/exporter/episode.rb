@@ -557,9 +557,7 @@ module ScreenKit
       end
 
       def mute_sound_path
-        @mute_sound_path ||= ScreenKit.root_dir.join(
-          "screenkit/resources/mute.mp3"
-        )
+        @mute_sound_path ||= ScreenKit.resources_dir.join("mute.mp3")
       end
 
       def backtrack
