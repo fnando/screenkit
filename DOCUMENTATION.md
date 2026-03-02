@@ -1219,15 +1219,14 @@ line breaks in the episode title are preserved.
 
 ScreenKit validates configurations against JSON schemas:
 
-- **Project**: `lib/screenkit/schemas/project.json`
-- **Episode**: `lib/screenkit/schemas/episode.json`
-- **Callouts**: `lib/screenkit/schemas/callouts/*.json`
+- **Project**: `lib/screenkit/schemas/config.json`
+- **Callouts**: `lib/screenkit/schemas/callouts/*.json` and `lib/screenkit/schemas/callout_styles/*.json`
 - **TTS**: `lib/screenkit/schemas/tts/*.json`
 
 Use the `yaml-language-server` comment for IDE support:
 
 ```yaml
-# yaml-language-server: $schema=https://screenkit.dev/schemas/project.json
+# yaml-language-server: $schema=https://screenkit.dev/schemas/config.json
 ```
 
 ---
