@@ -184,6 +184,18 @@ Generate a standalone callout PNG for testing.
 screenkit callout --type info --title "Note" --body "This is important" --output callout.png
 ```
 
+#### `screenkit completion`
+
+Generate shell completion script.
+
+**Options:**
+
+- `--shell` (required) - Shell type (`bash`, `zsh`, `powershell`, `fish`)
+
+```bash
+screenkit completion --shell zsh
+```
+
 ### Episode Commands
 
 #### `screenkit episode new`
@@ -209,6 +221,8 @@ Export an episode to video.
 - `--tts-api-key` - API key for TTS service (e.g., ElevenLabs)
 - `--tts-preset` - TTS preset name that will be used
 - `--overwrite` - Overwrite existing exported files (default: `false`)
+- `--overwrite-voiceover` - Regenerate all voiceover audio files (default: `false`)
+- `--overwrite-content` - Regenerate all content files (e.g., demo tapes) (default: `false`)
 - `--match-segment` - Only export segments matching this string
 - `--output-dir` - Custom output directory path
 - `--banner` - Display ScreenKit banner (default: `true`)
@@ -547,6 +561,7 @@ Available presets:
 - `discord`
 - `dribbble`
 - `github`
+- `instagram`
 - `linkedin`
 - `mastodon`
 - `snap`
@@ -833,6 +848,20 @@ tts:
     rate: 150 # Words per minute (optional)
 ```
 
+### `espeak` Engine
+
+Uses the `espeak` command-line TTS tool.
+
+```yaml
+tts:
+  - id: espeak
+    engine: espeak
+    voice: en # Optional: Voice name
+    rate: 150 # Optional: Speaking rate
+```
+
+Requires `espeak` installed and in PATH.
+
 ### ElevenLabs Engine
 
 The ElevenLabs TTS engine requires an API key. Set it via the `--tts-api-key`
@@ -862,9 +891,9 @@ tts:
 
 #### ElevenLabs Output Formats
 
-- MP3: `mp3_22050_32`, `mp3_44100_128`, `mp3_44100_192`
-- PCM: `pcm_16000`, `pcm_24000`, `pcm_44100`
-- Opus: `opus_48000_32`, `opus_48000_64`
+- MP3: `mp3_22050_32`, `mp3_24000_48`, `mp3_44100_32`, `mp3_44100_64`, `mp3_44100_96`, `mp3_44100_128`, `mp3_44100_192`
+- PCM: `pcm_8000`, `pcm_16000`, `pcm_22050`, `pcm_24000`, `pcm_32000`, `pcm_44100`, `pcm_48000`
+- Opus: `opus_48000_32`, `opus_48000_64`, `opus_48000_96`, `opus_48000_128`, `opus_48000_192`
 - Others: `ulaw_8000`, `alaw_8000`
 
 ### Disable TTS
